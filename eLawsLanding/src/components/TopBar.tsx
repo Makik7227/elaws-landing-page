@@ -6,7 +6,7 @@ import {
     alpha,
     Container,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 import MotionTypography from "./MotionTypography";
 import MotionButton from "./MotionButton.tsx";
 
@@ -83,6 +83,7 @@ const TopBar = () => {
                     {/* Auth Buttons */}
                     <Box sx={{ display: "flex", gap: 1.5 }}>
                         <MotionButton
+                            to="/login"
                             component={RouterLink}
                             variant="contained"
                             color="primary"

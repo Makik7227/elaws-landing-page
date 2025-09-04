@@ -15,7 +15,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Web uses default persistence
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
