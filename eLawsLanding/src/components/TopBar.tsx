@@ -1,53 +1,116 @@
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import {
+    AppBar,
+    Toolbar,
+    Box,
+    useScrollTrigger,
+    alpha,
+    Container,
+} from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import MotionTypography from "./MotionTypography";
+import MotionButton from "./MotionButton.tsx";
+
 
 const TopBar = () => {
+    const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 10 });
     return (
-        <AppBar position="static" elevation={0}>
-            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-                {/* Logo / Title */}
-                <Typography
-                    variant="h6"
-                    component={RouterLink}
-                    to="/"
-                    sx={{ textDecoration: "none", color: "inherit", fontWeight: 600 }}
-                >
-                    E-Laws
-                </Typography>
-
-                {/* Nav Links */}
-                <Box sx={{ display: "flex", gap: 2 }}>
-                    <Button component={RouterLink} to="/features" color="inherit">
-                        Features
-                    </Button>
-                    <Button component={RouterLink} to="/pricing" color="inherit">
-                        Pricing
-                    </Button>
-                    <Button component={RouterLink} to="/about" color="inherit">
-                        About
-                    </Button>
-                </Box>
-
-                {/* Auth Buttons */}
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button
+        <AppBar
+            position="sticky"
+            elevation={trigger ? 3 : 0}
+            sx={{
+                backdropFilter: "blur(16px)",
+                backgroundColor: (theme) =>
+                    trigger
+                        ? alpha(theme.palette.background.paper, 0.9)
+                        : alpha(theme.palette.background.paper, 0.6),
+                transition: "all 0.3s ease",
+            }}
+        >
+            <Container maxWidth="lg">
+                <Toolbar sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>
+                    {/* Logo */}
+                    <MotionTypography
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        variant="h5"
                         component={RouterLink}
-                        to="/login"
-                        variant="outlined"
-                        color="primary"
+                        to="/"
+                        sx={{
+                            textDecoration: "none",
+                            color: "primary.main",
+                            fontWeight: 800,
+                            letterSpacing: -0.5,
+                            fontSize: { xs: "1.25rem", md: "1.5rem" },
+                        }}
                     >
-                        Login
-                    </Button>
-                    <Button
-                        component={RouterLink}
-                        to="/signup"
-                        variant="contained"
-                        color="primary"
-                    >
-                        Sign Up
-                    </Button>
-                </Box>
-            </Toolbar>
+                        E-Laws
+                    </MotionTypography>
+
+                    {/* Nav Links */}
+                    <Box sx={{ display: "flex", gap: 3 }}>
+                        {["Features", "Pricing", "About"].map((item) => (
+                            <MotionTypography
+                                key={item}
+                                component={RouterLink}
+                                to={`/${item.toLowerCase()}`}
+                                color="inherit"
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                sx={{
+                                    fontWeight: 600,
+                                    fontSize: "0.95rem",
+                                    textTransform: "none",
+                                    color: "text.primary",
+                                    position: "relative",
+                                    "&:after": {
+                                        content: '""',
+                                        position: "absolute",
+                                        width: "0%",
+                                        height: "2px",
+                                        bottom: -4,
+                                        left: 0,
+                                        backgroundColor: "currentColor",
+                                        transition: "width 0.3s ease",
+                                    },
+                                    "&:hover:after": { width: "100%" },
+                                }}
+                            >
+                                {item}
+                            </MotionTypography>
+                        ))}
+                    </Box>
+
+                    {/* Auth Buttons */}
+                    <Box sx={{ display: "flex", gap: 1.5 }}>
+                        <MotionButton
+                            component={RouterLink}
+                            variant="contained"
+                            color="primary"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            sx={{ borderRadius: 2, px: 2.5, fontWeight: 600, textTransform: "none" }}
+                        >
+                            Login
+                        </MotionButton>
+                        <MotionButton
+                            component={RouterLink}
+                            variant="outlined"
+                            color="primary"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            sx={{
+                                borderRadius: 2,
+                                px: 2.5,
+                                fontWeight: 700,
+                                textTransform: "none",
+                                boxShadow: "0 4px 14px rgba(0,0,0,.15)",
+                            }}
+                        >
+                            Sign Up
+                        </MotionButton>
+                    </Box>
+                </Toolbar>
+            </Container>
         </AppBar>
     );
 };
