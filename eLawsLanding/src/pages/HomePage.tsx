@@ -74,6 +74,7 @@ const StepCard: React.FC<{
             sx={{
                 p: 2.5,
                 borderRadius: 2.5,
+                margin: 10,
                 alignItems: "flex-start",
                 bgcolor: theme.palette.background.paper,
                 border: `1px solid ${theme.palette.divider}`,
@@ -276,7 +277,7 @@ const HomePage: React.FC = () => {
                             How it works
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
-                            Three steps. No bullshit.
+                            Three steps. Simple as that.
                         </Typography>
                     </Stack>
 

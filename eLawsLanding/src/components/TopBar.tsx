@@ -6,22 +6,22 @@ import {
     alpha,
     Container,
 } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
 import MotionTypography from "./MotionTypography";
 import MotionButton from "./MotionButton";
-import {auth} from "../../firebase.ts";
+import { auth } from "../../firebase.ts"; // keep your existing path
 
 const TopBar = () => {
     const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 10 });
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        // subscribe to auth changes
         const unsub = onAuthStateChanged(auth, (u) => setUser(u));
         return () => unsub();
     }, []);
@@ -34,6 +34,19 @@ const TopBar = () => {
             console.error("Failed to sign out:", e);
         }
     };
+
+    const NAV = useMemo(
+        () => [
+            { label: "Home", to: "/" },
+            { label: "Features", to: "/features" },
+            { label: "Pricing", to: "/pricing" },
+            { label: "About", to: "/about" },
+        ],
+        []
+    );
+
+    const isActive = (to: string) =>
+        location.pathname === to || location.pathname.startsWith(to + "/");
 
     return (
         <AppBar
@@ -68,38 +81,44 @@ const TopBar = () => {
                         E-Laws
                     </MotionTypography>
 
-                    {/* Nav Links */}
+                    {/* Nav Links with persistent active underline */}
                     <Box sx={{ display: "flex", gap: 3 }}>
-                        {["Features", "Pricing", "About"].map((item) => (
-                            <MotionTypography
-                                key={item}
-                                component={RouterLink}
-                                to={`/${item.toLowerCase()}`}
-                                color="inherit"
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                whileTap={{ scale: 0.95 }}
-                                sx={{
-                                    fontWeight: 600,
-                                    fontSize: "0.95rem",
-                                    textTransform: "none",
-                                    color: "text.primary",
-                                    position: "relative",
-                                    "&:after": {
-                                        content: '""',
-                                        position: "absolute",
-                                        width: "0%",
-                                        height: "2px",
-                                        bottom: -4,
-                                        left: 0,
-                                        backgroundColor: "currentColor",
-                                        transition: "width 0.3s ease",
-                                    },
-                                    "&:hover:after": { width: "100%" },
-                                }}
-                            >
-                                {item}
-                            </MotionTypography>
-                        ))}
+                        {NAV.map(({ label, to }) => {
+                            const active = isActive(to);
+                            return (
+                                <MotionTypography
+                                    key={to}
+                                    component={RouterLink}
+                                    to={to}
+                                    color="inherit"
+                                    aria-current={active ? "page" : undefined}
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    sx={{
+                                        fontWeight: 600,
+                                        fontSize: "0.95rem",
+                                        textTransform: "none",
+                                        color: active ? "primary.main" : "text.primary",
+                                        position: "relative",
+                                        "&:after": {
+                                            content: '""',
+                                            position: "absolute",
+                                            left: 0,
+                                            bottom: -4,
+                                            height: "2px",
+                                            width: active ? "100%" : "0%",
+                                            backgroundColor: "currentColor",
+                                            transition: "width 0.3s ease",
+                                        },
+                                        "&:hover:after": {
+                                            width: "100%",
+                                        },
+                                    }}
+                                >
+                                    {label}
+                                </MotionTypography>
+                            );
+                        })}
                     </Box>
 
                     {/* Right side: Auth-aware */}
@@ -108,14 +127,14 @@ const TopBar = () => {
                             <>
                                 <MotionButton
                                     component={RouterLink}
-                                    to="/cases" // change to your dashboard route
+                                    to="/manage"
                                     variant="contained"
                                     color="primary"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     sx={{ borderRadius: 2, px: 2.5, fontWeight: 700, textTransform: "none" }}
                                 >
-                                    My Cases
+                                    My Account
                                 </MotionButton>
                                 <MotionButton
                                     onClick={handleLogout}
