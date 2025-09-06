@@ -33,18 +33,24 @@ type Plan = {
     tokens: string;
     badge?: "Best value" | "Recommended";
     features: string[];
-    cta: string;
+};
+
+type ButtonMeta = {
+    label: string;
+    disabled: boolean;
+    variant: "contained" | "outlined" | "text";
+    actionHref: string; // where we navigate
 };
 
 const PlanCard = ({
                       plan,
                       current,
-                      onSelect,
+                      cta,
                       recommended,
                   }: {
     plan: Plan;
     current: boolean;
-    onSelect: () => void;
+    cta: ButtonMeta;
     recommended?: boolean;
 }) => {
     return (
@@ -111,12 +117,13 @@ const PlanCard = ({
                     </Stack>
 
                     <Button
-                        variant={current ? "outlined" : "contained"}
-                        disabled={current}
-                        onClick={onSelect}
+                        component={RouterLink}
+                        to={cta.actionHref}
+                        variant={cta.variant}
+                        disabled={cta.disabled}
                         sx={{ mt: 2, borderRadius: 2, fontWeight: 800 }}
                     >
-                        {current ? "You're on this plan" : plan.cta}
+                        {cta.label}
                     </Button>
                 </Stack>
             </CardContent>
@@ -166,11 +173,7 @@ const PricingPage: React.FC = () => {
                 name: "Free",
                 priceLabel: "$0",
                 tokens: "10,000 tokens / month",
-                features: [
-                    "AI legal chat (basic)",
-                    "“Stopped by Police” quick access",
-                ],
-                cta: "Start for free",
+                features: ["AI legal chat (basic)", "“Stopped by Police” quick access"],
             },
             {
                 id: "plus",
@@ -185,7 +188,6 @@ const PricingPage: React.FC = () => {
                     "AI legal chat (enhanced)",
                     "“Stopped by Police” quick access",
                 ],
-                cta: "Upgrade to Plus",
             },
             {
                 id: "premium",
@@ -200,20 +202,94 @@ const PricingPage: React.FC = () => {
                     "Case management for clients",
                     "Priority support",
                 ],
-                cta: "Go Premium",
             },
         ],
         []
     );
 
-    const handleSelect = (planId: PlanId) => {
+    // compute CTA per plan based on auth + current tier
+    const ctaFor = (plan: Plan): ButtonMeta => {
+        // not logged in → push to signup
         if (!uid) {
-            // not logged in → sign up first, pass intended plan
-            navigate(`/signup?plan=${planId}`);
-            return;
+            return {
+                label: plan.id === "free" ? "Start for Free" : `Upgrade to ${capitalize(plan.id)}`,
+                disabled: false,
+                variant: "contained",
+                actionHref: `/signup?plan=${plan.id}`,
+            };
         }
-        // logged in → take them to subscribe flow
-        navigate(`/subscribe?plan=${planId}`);
+
+        // logged in
+        if (currentTier === plan.id) {
+            return {
+                label: "You're on this plan",
+                disabled: true,
+                variant: "outlined",
+                actionHref: "#",
+            };
+        }
+
+        // switching logic
+        if (currentTier === "free" && (plan.id === "plus" || plan.id === "premium")) {
+            return {
+                label: `Upgrade to ${capitalize(plan.id)}`,
+                disabled: false,
+                variant: "contained",
+                actionHref: `/subscribe?plan=${plan.id}&action=upgrade`,
+            };
+        }
+
+        if (currentTier === "plus") {
+            if (plan.id === "premium") {
+                // (RN app has a $10.99 one-time upgrade; keep label simple here)
+                return {
+                    label: "Upgrade to Premium",
+                    disabled: false,
+                    variant: "contained",
+                    actionHref: `/subscribe?plan=premium&action=upgrade`,
+                };
+            }
+            if (plan.id === "free") {
+                return {
+                    label: "Downgrade to Free",
+                    disabled: false,
+                    variant: "outlined",
+                    actionHref: `/subscribe?plan=free&action=downgrade`,
+                };
+            }
+        }
+
+        if (currentTier === "premium") {
+            if (plan.id === "plus") {
+                return {
+                    label: "Downgrade to Plus",
+                    disabled: false,
+                    variant: "outlined",
+                    actionHref: `/subscribe?plan=plus&action=downgrade`,
+                };
+            }
+            if (plan.id === "free") {
+                return {
+                    label: "Downgrade to Free",
+                    disabled: false,
+                    variant: "outlined",
+                    actionHref: `/subscribe?plan=free&action=downgrade`,
+                };
+            }
+        }
+
+        // fallback
+        return {
+            label: `Select ${capitalize(plan.id)}`,
+            disabled: false,
+            variant: "contained",
+            actionHref: `/subscribe?plan=${plan.id}`,
+        };
+    };
+
+    const handleQuickOpen = () => {
+        if (!uid) navigate("/signup");
+        else navigate("/cases");
     };
 
     return (
@@ -246,7 +322,12 @@ const PricingPage: React.FC = () => {
                         Pick what fits your workflow. Cancel anytime.
                     </Typography>
 
-                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} justifyContent="center" sx={{ mt: 3 }}>
+                    <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={1.5}
+                        justifyContent="center"
+                        sx={{ mt: 3 }}
+                    >
                         <Button
                             component={RouterLink}
                             to="/features"
@@ -261,8 +342,7 @@ const PricingPage: React.FC = () => {
                             See Features
                         </Button>
                         <Button
-                            component={RouterLink}
-                            to={uid ? "/cases" : "/signup"}
+                            onClick={handleQuickOpen}
                             variant="contained"
                             sx={{ borderRadius: 3, fontWeight: 800 }}
                         >
@@ -288,7 +368,7 @@ const PricingPage: React.FC = () => {
                                 plan={p}
                                 current={!loading && currentTier === p.id}
                                 recommended={p.id === "premium"}
-                                onSelect={() => handleSelect(p.id)}
+                                cta={ctaFor(p)}
                             />
                         ))}
                     </Stack>
@@ -364,7 +444,7 @@ const PricingPage: React.FC = () => {
                             variant="contained"
                             sx={{ borderRadius: 3, fontWeight: 800 }}
                         >
-                            {uid ? "Upgrade now" : "Create your account"}
+                            {uid ? "Manage subscription" : "Create your account"}
                         </Button>
                     </Stack>
                 </Container>
@@ -374,3 +454,7 @@ const PricingPage: React.FC = () => {
 };
 
 export default PricingPage;
+
+function capitalize(s: string) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}

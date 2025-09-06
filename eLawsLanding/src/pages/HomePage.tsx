@@ -271,7 +271,7 @@ const HomePage: React.FC = () => {
                     bgcolor: theme.palette.background.default,
                 }}
             >
-                <Container>
+                <Container sx={{ maxWidth: '60%' }}>
                     <Stack spacing={1.5} mb={4} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
                             How it works
@@ -283,20 +283,23 @@ const HomePage: React.FC = () => {
 
                     <Stack
                         direction={{ xs: "column", md: "row" }}
-                        spacing={2.5}
                         justifyContent="center"
                         flexWrap="wrap"
+                        spacing={2}
                     >
-                        <StepCard
-                            step={1}
-                            title="Pick country & topic"
-                            desc="We tailor context to your jurisdiction and area of law."
-                        />
-                        <StepCard
-                            step={2}
-                            title="Ask or generate"
-                            desc="Chat with AI, draft documents, or create procedures."
-                        />
+
+                        <Stack direction="row">
+                            <StepCard
+                                step={1}
+                                title="Pick country & topic"
+                                desc="We tailor context to your jurisdiction and area of law."
+                            />
+                            <StepCard
+                                step={2}
+                                title="Ask or generate"
+                                desc="Chat with AI, draft documents, or create procedures."
+                            />
+                        </Stack>
                         <StepCard
                             step={3}
                             title="Save & share"
