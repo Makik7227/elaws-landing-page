@@ -287,7 +287,6 @@ const HomePage: React.FC = () => {
                         flexWrap="wrap"
                         spacing={2}
                     >
-
                         <Stack direction="row">
                             <StepCard
                                 step={1}

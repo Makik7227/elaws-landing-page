@@ -8,6 +8,8 @@ import FeaturesPage from "./pages/FeaturesPage.tsx";
 import PricingPage from "./pages/PricingPage.tsx";
 import AboutPage from "./pages/AboutPage.tsx";
 import ManageAccount from "./pages/ManageAccount.tsx";
+import DashboardView from "./pages/DashboardView.tsx";
+import CasesPage from "./pages/CasesPage.tsx";
 
 function App() {
 
@@ -21,6 +23,8 @@ function App() {
               <Route path="/pricing" element={<PricingPage/>}/>
               <Route path="/about" element={<AboutPage/>}/>
               <Route path="/manage" element={<ManageAccount/>}/>
+              <Route path="/dashboard" element={<DashboardView/>}/>
+              <Route path="/dashboard/cases" element={<CasesPage/>}/>
           </Route>
       </Routes>
   )

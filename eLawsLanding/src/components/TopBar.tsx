@@ -81,71 +81,82 @@ const TopBar = () => {
                         E-Laws
                     </MotionTypography>
 
-                    {/* Nav Links with persistent active underline */}
-                    <Box sx={{ display: "flex", gap: 3 }}>
-                        {NAV.map(({ label, to }) => {
-                            const active = isActive(to);
-                            return (
-                                <MotionTypography
-                                    key={to}
-                                    component={RouterLink}
-                                    to={to}
-                                    color="inherit"
-                                    aria-current={active ? "page" : undefined}
-                                    whileHover={{ scale: 1.05, y: -2 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    sx={{
-                                        fontWeight: 600,
-                                        fontSize: "0.95rem",
-                                        textTransform: "none",
-                                        color: active ? "primary.main" : "text.primary",
-                                        position: "relative",
-                                        "&:after": {
-                                            content: '""',
-                                            position: "absolute",
-                                            left: 0,
-                                            bottom: -4,
-                                            height: "2px",
-                                            width: active ? "100%" : "0%",
-                                            backgroundColor: "currentColor",
-                                            transition: "width 0.3s ease",
-                                        },
-                                        "&:hover:after": {
-                                            width: "100%",
-                                        },
-                                    }}
-                                >
-                                    {label}
-                                </MotionTypography>
-                            );
-                        })}
-                    </Box>
+                    {/* Center: Nav (only when logged OUT) */}
+                    {!user && (
+                        <Box sx={{ display: "flex", gap: 3 }}>
+                            {NAV.map(({ label, to }) => {
+                                const active = isActive(to);
+                                return (
+                                    <MotionTypography
+                                        key={to}
+                                        component={RouterLink}
+                                        to={to}
+                                        color="inherit"
+                                        aria-current={active ? "page" : undefined}
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        sx={{
+                                            fontWeight: 600,
+                                            fontSize: "0.95rem",
+                                            textTransform: "none",
+                                            color: active ? "primary.main" : "text.primary",
+                                            position: "relative",
+                                            "&:after": {
+                                                content: '""',
+                                                position: "absolute",
+                                                left: 0,
+                                                bottom: -4,
+                                                height: "2px",
+                                                width: active ? "100%" : "0%",
+                                                backgroundColor: "currentColor",
+                                                transition: "width 0.3s ease",
+                                            },
+                                            "&:hover:after": { width: "100%" },
+                                        }}
+                                    >
+                                        {label}
+                                    </MotionTypography>
+                                );
+                            })}
+                        </Box>
+                    )}
 
-                    {/* Right side: Auth-aware */}
+                    {/* Right: Auth-aware */}
                     <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
                         {user ? (
                             <>
                                 <MotionButton
                                     component={RouterLink}
-                                    to="/manage"
-                                    variant="contained"
+                                    to="/dashboard" // Dashboard route
+                                    variant={isActive("/cases") ? "contained" : "outlined"}
                                     color="primary"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     sx={{ borderRadius: 2, px: 2.5, fontWeight: 700, textTransform: "none" }}
                                 >
-                                    My Account
+                                    Dashboard
                                 </MotionButton>
                                 <MotionButton
-                                    onClick={handleLogout}
-                                    variant="outlined"
+                                    component={RouterLink}
+                                    to="/manage"
+                                    variant={isActive("/manage") ? "contained" : "outlined"}
                                     color="primary"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    sx={{ borderRadius: 2, px: 2.5, fontWeight: 600, textTransform: "none" }}
+                                    sx={{ borderRadius: 2, px: 2.5, fontWeight: 700, textTransform: "none" }}
                                 >
-                                    Logout
+                                    Account
                                 </MotionButton>
+                <MotionButton
+                  onClick={handleLogout}
+                  variant="text"
+                  color="primary"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  sx={{ borderRadius: 2, px: 2, fontWeight: 600, textTransform: "none" }}
+                >
+                  Logout
+                </MotionButton>
                             </>
                         ) : (
                             <>
