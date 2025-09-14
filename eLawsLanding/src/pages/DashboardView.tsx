@@ -368,7 +368,7 @@ const Dashboard: React.FC = () => {
                                     <QuickAction to="/chat" icon={<ChatBubbleOutlineRoundedIcon />} title="Ask Legal Q" />
                                     <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
                                     {role === "lawyer" && (
-                                        <QuickAction to="/cases/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
+                                        <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
                                     )}
                                 </Stack>
                             </CardContent>
