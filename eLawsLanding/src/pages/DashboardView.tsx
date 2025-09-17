@@ -171,8 +171,8 @@ const Dashboard: React.FC = () => {
                 try {
                     const q1 = query(
                         collection(db, "cases"),
-                        where("userId", "==", uid),
-                        orderBy("updatedAt", "desc"),
+                        where("lawyerId", "==", uid),
+                        orderBy("created_at", "desc"),
                         limit(1)
                     );
                     const ss1 = await getDocs(q1);
@@ -421,7 +421,7 @@ const Dashboard: React.FC = () => {
                     <Card elevation={2} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                             <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap justifyContent="flex-start">
-                                <MenuTile to="/chat" icon={<ChatBubbleOutlineRoundedIcon />} title="AI Chat" />
+                                <MenuTile to="/ai/chat" icon={<ChatBubbleOutlineRoundedIcon />} title="AI Chat" />
                                 <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title="Account" />
                                 {subscriptionTier !== "free" && (
                                     <>

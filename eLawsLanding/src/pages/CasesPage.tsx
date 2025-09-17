@@ -445,7 +445,6 @@ const CasesPage: React.FC = () => {
                                             </Button>
                                         </Stack>
                                     )}
-
                                     <Divider sx={{ my: 2 }} />
                                     <Typography fontWeight={700} mb={1}>
                                         Notes
