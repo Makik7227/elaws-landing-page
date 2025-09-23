@@ -37,7 +37,6 @@ import {
     Timestamp,
     QueryDocumentSnapshot,
 } from "firebase/firestore";
-import type { DocumentData } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import PanicButtonWeb from "../components/PanicButton.tsx";
 
@@ -131,7 +130,7 @@ const Dashboard: React.FC = () => {
                     limit(20)
                 );
                 unsubChats = onSnapshot(qChats, (ss) => {
-                    const list: ChatMeta[] = ss.docs.map((d: QueryDocumentSnapshot<DocumentData>) => {
+                    const list: ChatMeta[] = ss.docs.map((d: QueryDocumentSnapshot) => {
                         const raw = d.data() as {
                             users?: unknown;
                             lastMessage?: unknown;

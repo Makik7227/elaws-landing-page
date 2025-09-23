@@ -19,8 +19,6 @@ import {
     InputAdornment,
     Snackbar,
     Stack,
-    Tab,
-    Tabs,
     TextField,
     Typography,
     Tooltip,
@@ -33,6 +31,8 @@ import {
     Delete as DeleteIcon,
     Save as SaveIcon,
     Clear as ClearIcon,
+    KeyboardArrowLeft,
+    KeyboardArrowRight,
 } from "@mui/icons-material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { auth, db } from "../../firebase";
@@ -58,6 +58,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import caseProperties from "../utils/caseProperties.json";
 
 const popularProperties = caseProperties as { key: string; label: string }[];
+
+// ---- Config ----
+const PROPS_PAGE_SIZE = 5;
+const NOTES_PAGE_SIZE = 5;
+
 // ---- Types ----
 type CaseDoc = {
     id: string;
@@ -87,7 +92,6 @@ type CasePropertyDoc = {
     createdBy?: string;
 };
 
-// ---- Component ----
 const CasesPage: React.FC = () => {
     const [cases, setCases] = useState<CaseDoc[]>([]);
     const [loading, setLoading] = useState(true);
@@ -111,6 +115,20 @@ const CasesPage: React.FC = () => {
     const [newPropName, setNewPropName] = useState("");
     const [newPropValue, setNewPropValue] = useState("");
     const [showAddProperty, setShowAddProperty] = useState(false);
+    const [selectedProp, setSelectedProp] = useState<{ key: string; label: string } | null>(null);
+
+    // Property edit/delete state
+    const [editingPropId, setEditingPropId] = useState<string | null>(null);
+    const [editPropName, setEditPropName] = useState<string>("");
+    const [editPropValue, setEditPropValue] = useState<string>("");
+    const [deleteDialogPropId, setDeleteDialogPropId] = useState<string | null>(null);
+
+    // Carousel state (0 = Properties, 1 = Notes)
+    const [slide, setSlide] = useState<number>(0);
+
+    // Pagination state
+    const [propsPage, setPropsPage] = useState<number>(0);
+    const [notesPage, setNotesPage] = useState<number>(0);
 
     // Auth / Role
     const [userRole, setUserRole] = useState<"lawyer" | "client" | null>(null);
@@ -119,7 +137,6 @@ const CasesPage: React.FC = () => {
     // UX
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
-    const [selectedProp, setSelectedProp] = useState<{ key: string; label: string } | null>(null);
 
     const navigate = useNavigate();
 
@@ -188,6 +205,7 @@ const CasesPage: React.FC = () => {
             (ss) => {
                 setNotes(ss.docs.map((d) => ({ id: d.id, ...(d.data() as Partial<NoteDoc>) })));
                 setNotesLoading(false);
+                setNotesPage(0); // reset page when case changes
             },
             (err) => {
                 console.error(err);
@@ -219,6 +237,7 @@ const CasesPage: React.FC = () => {
                     ss.docs.map((d) => ({ id: d.id, ...(d.data() as Partial<CasePropertyDoc>) }))
                 );
                 setPropertiesLoading(false);
+                setPropsPage(0); // reset page when case changes
             },
             (err) => {
                 console.error(err);
@@ -230,6 +249,7 @@ const CasesPage: React.FC = () => {
         return () => unsub();
     }, [selectedCase]);
 
+    // Derived
     const filteredCases = useMemo(() => {
         const q = search.trim().toLowerCase();
         return cases.filter((c) => {
@@ -241,6 +261,20 @@ const CasesPage: React.FC = () => {
     const canWriteNotes = userRole === "lawyer" && selectedCase?.status === "open";
     const canEditOrDeleteNote = (n: NoteDoc) =>
         userRole === "lawyer" && user && n.createdBy === user.uid;
+
+    const isLawyer = userRole === "lawyer";
+
+    // Pagination slices
+    const propsTotalPages = Math.max(1, Math.ceil(properties.length / PROPS_PAGE_SIZE));
+    const notesTotalPages = Math.max(1, Math.ceil(notes.length / NOTES_PAGE_SIZE));
+    const pagedProperties = properties.slice(
+        propsPage * PROPS_PAGE_SIZE,
+        propsPage * PROPS_PAGE_SIZE + PROPS_PAGE_SIZE
+    );
+    const pagedNotes = notes.slice(
+        notesPage * NOTES_PAGE_SIZE,
+        notesPage * NOTES_PAGE_SIZE + NOTES_PAGE_SIZE
+    );
 
     // ----- Note handlers -----
     const handleAddNote = async () => {
@@ -254,6 +288,10 @@ const CasesPage: React.FC = () => {
             });
             setNewNote("");
             setSuccessMsg("Note added.");
+            // jump to last page so the user sees their newly added note
+            const nextCount = notes.length + 1;
+            setNotesPage(Math.floor((nextCount - 1) / NOTES_PAGE_SIZE));
+            setSlide(1); // switch to Notes slide to show it
         } catch (err) {
             console.error(err);
             setErrorMsg("Failed to add note.");
@@ -303,7 +341,7 @@ const CasesPage: React.FC = () => {
 
     // ----- Property handlers -----
     const handleAddProperty = async () => {
-        if (!selectedCase || !user || userRole !== "lawyer" || !newPropName.trim()) return;
+        if (!selectedCase || !user || !isLawyer || !newPropName.trim()) return;
         try {
             await addDoc(collection(db, "cases", selectedCase.id, "properties"), {
                 name: newPropName.trim(),
@@ -314,14 +352,60 @@ const CasesPage: React.FC = () => {
             setNewPropName("");
             setNewPropValue("");
             setSuccessMsg("Property added.");
+            // jump to last page to reveal the new property
+            const nextCount = properties.length + 1;
+            setPropsPage(Math.floor((nextCount - 1) / PROPS_PAGE_SIZE));
+            setSlide(0); // ensure properties slide is visible
         } catch (err) {
             console.error(err);
             setErrorMsg("Failed to add property.");
         }
     };
 
+    const startEditProperty = (p: CasePropertyDoc) => {
+        if (!isLawyer) return;
+        setEditingPropId(p.id);
+        setEditPropName(p.name ?? "");
+        setEditPropValue(p.value ?? "");
+    };
+    const cancelEditProperty = () => {
+        setEditingPropId(null);
+        setEditPropName("");
+        setEditPropValue("");
+    };
+    const saveEditProperty = async () => {
+        if (!selectedCase || !editingPropId || !isLawyer) return;
+        try {
+            await updateDoc(doc(db, "cases", selectedCase.id, "properties", editingPropId), {
+                name: editPropName.trim(),
+                value: editPropValue.trim(),
+            });
+            setSuccessMsg("Property updated.");
+            cancelEditProperty();
+        } catch (err) {
+            console.error(err);
+            setErrorMsg("Failed to update property.");
+        }
+    };
+    const requestDeleteProperty = (propId: string) => {
+        if (!isLawyer) return;
+        setDeleteDialogPropId(propId);
+    };
+    const confirmDeleteProperty = async () => {
+        if (!selectedCase || !deleteDialogPropId || !isLawyer) return;
+        try {
+            await deleteDoc(doc(db, "cases", selectedCase.id, "properties", deleteDialogPropId));
+            setSuccessMsg("Property deleted.");
+        } catch (err) {
+            console.error(err);
+            setErrorMsg("Failed to delete property.");
+        } finally {
+            setDeleteDialogPropId(null);
+        }
+    };
+
     const handleToggleStatus = async () => {
-        if (!selectedCase || userRole !== "lawyer") return;
+        if (!selectedCase || !isLawyer) return;
         const newStatus = selectedCase.status === "open" ? "closed" : "open";
         try {
             await updateDoc(doc(db, "cases", selectedCase.id), { status: newStatus });
@@ -333,7 +417,7 @@ const CasesPage: React.FC = () => {
         }
     };
     const handleDeleteCase = async () => {
-        if (!selectedCase || userRole !== "lawyer") return;
+        if (!selectedCase || !isLawyer) return;
         try {
             await deleteDoc(doc(db, "cases", selectedCase.id));
             setSelectedCase(null);
@@ -345,22 +429,42 @@ const CasesPage: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ py: 5, display: "flex", flexDirection: "column", minHeight: "100dvh" }}>
+        <Container maxWidth="lg" sx={{ py: 5, display: "flex", flexDirection: "column", minHeight: "50dvh" }}>
             <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                 <Typography variant="h4" fontWeight={800}>Cases</Typography>
                 <Box flex={1} />
-                {userRole === "lawyer" && (
+                {isLawyer && (
                     <Button variant="contained" startIcon={<Add />} onClick={() => navigate("/cases/create")}>
                         New Case
                     </Button>
                 )}
             </Stack>
+
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3}>
-                <Tabs value={filter} onChange={(_, v) => setFilter(v)} variant="scrollable" allowScrollButtonsMobile>
-                    <Tab value="all" label="All" />
-                    <Tab value="open" label="Open" />
-                    <Tab value="closed" label="Closed" />
-                </Tabs>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        variant={filter === "all" ? "contained" : "outlined"}
+                        onClick={() => setFilter("all")}
+                        size="small"
+                    >
+                        All
+                    </Button>
+                    <Button
+                        variant={filter === "open" ? "contained" : "outlined"}
+                        onClick={() => setFilter("open")}
+                        size="small"
+                    >
+                        Open
+                    </Button>
+                    <Button
+                        variant={filter === "closed" ? "contained" : "outlined"}
+                        onClick={() => setFilter("closed")}
+                        size="small"
+                    >
+                        Closed
+                    </Button>
+                </Stack>
+
                 <TextField
                     size="small"
                     placeholder="Search…"
@@ -389,7 +493,10 @@ const CasesPage: React.FC = () => {
                             {filteredCases.map((c) => (
                                 <motion.div key={c.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }} transition={{ duration: 0.3 }}>
                                     <Card
-                                        onClick={() => setSelectedCase(c)}
+                                        onClick={() => {
+                                            setSelectedCase(c);
+                                            setSlide(0); // default to Properties when selecting a case
+                                        }}
                                         sx={{
                                             cursor: "pointer",
                                             mb: 2,
@@ -421,8 +528,6 @@ const CasesPage: React.FC = () => {
                         </AnimatePresence>
                     </Box>
                 </Stack>
-
-                {/* Case detail */}
                 <AnimatePresence>
                     {selectedCase && (
                         <motion.div
@@ -437,12 +542,13 @@ const CasesPage: React.FC = () => {
                                 <IconButton size="small" onClick={() => setSelectedCase(null)} sx={{ position: "absolute", top: 8, right: 8 }} aria-label="Close case detail">
                                     <CloseIcon />
                                 </IconButton>
+
                                 <CardContent sx={{ pb: 1 }}>
                                     <Typography variant="h6" fontWeight={800} mb={1}>{selectedCase.title}</Typography>
                                     <Chip label={selectedCase.status && selectedCase.status.toUpperCase()} color={selectedCase.status === "open" ? "success" : "default"} size="small" sx={{ mb: 2 }} />
                                     <Typography mb={2}>{selectedCase.description || "No description"}</Typography>
 
-                                    {userRole === "lawyer" && (
+                                    {isLawyer && (
                                         <Stack direction="row" spacing={1} mb={2} flexWrap="wrap" useFlexGap>
                                             <Button onClick={handleToggleStatus} variant="outlined">
                                                 {selectedCase.status === "open" ? "Close Case" : "Reopen Case"}
@@ -452,189 +558,301 @@ const CasesPage: React.FC = () => {
                                             </Button>
                                         </Stack>
                                     )}
-
-                                    {/* ---- Properties ---- */}
                                     <Divider sx={{ my: 2 }} />
-                                    <Typography fontWeight={700} mb={1}>Case Properties</Typography>
-                                    {propertiesLoading && <CircularProgress size={20} />}
-                                    {!propertiesLoading && properties.length === 0 && (
-                                        <Typography color="text.secondary">No properties yet.</Typography>
-                                    )}
-                                    <Stack spacing={1}>
-                                        {properties.map((p) => (
-                                            <Card key={p.id} sx={{ borderRadius: 2, p: 1 }}>
-                                                <Typography variant="body2" fontWeight={600}>{p.name}</Typography>
-                                                <Typography variant="body2" color="text.secondary">{p.value || "—"}</Typography>
-                                            </Card>
-                                        ))}
-                                    </Stack>
+                                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                        <IconButton size="small" onClick={() => setSlide(Math.max(0, slide - 1))} disabled={slide === 0} aria-label="Back">
+                                            <KeyboardArrowLeft />
+                                        </IconButton>
+                                                <IconButton size="small" onClick={() => setSlide(Math.min(1, slide + 1))} disabled={slide === 1} aria-label="Next">
+                                                    <KeyboardArrowRight />
+                                                </IconButton>
+                                        </Stack>
+                                    {slide === 0 && (
+                                        <Box>
+                                            <Typography fontWeight={700} mb={1}>Case Properties</Typography>
 
-                                    {userRole === "lawyer" && (
-                                        <>
-                                            {!showAddProperty ? (
-                                                <Box width="100%" display="flex" justifyContent="center">
-                                                    <IconButton
-                                                        onClick={() => setShowAddProperty(true)}
-                                                        sx={{
-                                                            mt: 2,
-                                                            bgcolor: "primary.main",
-                                                            color: "white",
-                                                            "&:hover": { bgcolor: "primary.dark" },
-                                                        }}
-                                                    >
-                                                        <Add />
-                                                    </IconButton>
-                                                </Box>
-                                            ) : (
-                                                <Stack direction="row" spacing={1} mt={2} alignItems="center" flexWrap="wrap">
-                                                    <Autocomplete
-                                                        sx={{ minWidth: 200, flex: 1 }}
-                                                        options={popularProperties}
-                                                        getOptionLabel={(option) =>
-                                                            typeof option === "string" ? option : option.label
-                                                        }
-                                                        value={selectedProp}
-                                                        onChange={(_, newValue) => {
-                                                            if (typeof newValue === "string") {
-                                                                setSelectedProp({ key: newValue, label: newValue });
-                                                                setNewPropName(newValue);
-                                                            } else if (newValue) {
-                                                                setSelectedProp(newValue);
-                                                                setNewPropName(newValue.label);
-                                                            } else {
-                                                                setSelectedProp(null);
-                                                                setNewPropName("");
-                                                            }
-                                                        }}
-                                                        freeSolo
-                                                        renderInput={(params) => (
-                                                            <TextField
-                                                                {...params}
-                                                                label="Property name"
-                                                                size="small"
-                                                                value={newPropName}
-                                                                onChange={(e) => setNewPropName(e.target.value)}
-                                                            />
-                                                        )}
-                                                    />
-                                                    <TextField
-                                                        size="small"
-                                                        label="Value"
-                                                        value={newPropValue}
-                                                        onChange={(e) => setNewPropValue(e.target.value)}
-                                                    />
-                                                    <Button
-                                                        variant="contained"
-                                                        onClick={() => {
-                                                            handleAddProperty();
-                                                            setShowAddProperty(false);
-                                                            setSelectedProp(null);
-                                                        }}
-                                                    >
-                                                        Add
-                                                    </Button>
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="inherit"
-                                                        onClick={() => {
-                                                            setShowAddProperty(false);
-                                                            setNewPropName("");
-                                                            setNewPropValue("");
-                                                            setSelectedProp(null);
-                                                        }}
-                                                    >
-                                                        Cancel
-                                                    </Button>
-                                                </Stack>
+                                            {propertiesLoading && <CircularProgress size={20} />}
+
+                                            {!propertiesLoading && properties.length === 0 && (
+                                                <Typography color="text.secondary">No properties yet.</Typography>
                                             )}
-                                        </>
-                                    )}
-                                    {/* ---- Notes ---- */}
-                                    <Divider sx={{ my: 2 }} />
-                                    <Typography fontWeight={700} mb={1}>Notes</Typography>
-                                </CardContent>
 
-                                {/* Notes list */}
-                                <Box sx={{ px: 2, pb: 2, flex: 1, minHeight: 0 }}>
-                                    <Box sx={{ borderRadius: 2, border: "1px solid", borderColor: "divider", p: 1, height: { xs: 240, md: 320 }, overflowY: "auto", pr: 1.5, backgroundColor: "background.paper" }}>
-                                        {notesLoading && (
-                                            <Stack alignItems="center" justifyContent="center" sx={{ py: 4 }}>
-                                                <CircularProgress size={24} />
-                                            </Stack>
-                                        )}
-
-                                        {!notesLoading && notes.length === 0 && (
-                                            <Typography color="text.secondary" sx={{ px: 1, py: 0.5 }}>No notes yet.</Typography>
-                                        )}
-
-                                        <Stack spacing={1}>
-                                            <AnimatePresence>
-                                                {notes.map((n) => {
-                                                    const isEditing = editingNoteId === n.id;
+                                            {/* Paginated list */}
+                                            <Stack spacing={1}>
+                                                {pagedProperties.map((p) => {
+                                                    const isEditing = editingPropId === p.id;
                                                     return (
-                                                        <motion.div key={n.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
-                                                            <Card sx={{ borderRadius: 2, bgcolor: "background.default", border: "1px solid", borderColor: "divider" }}>
-                                                                <CardContent sx={{ pb: 1.5 }}>
-                                                                    {!isEditing ? (
-                                                                        <>
-                                                                            <Stack direction="row" alignItems="flex-start" spacing={1}>
-                                                                                <Box flex={1} minWidth={0}>
-                                                                                    <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{n.text}</Typography>
-                                                                                </Box>
-                                                                                {canEditOrDeleteNote(n) && (
-                                                                                    <Stack direction="row" spacing={0.5}>
-                                                                                        <Tooltip title="Edit">
-                                                                                            <IconButton size="small" onClick={() => startEditNote(n)} aria-label="Edit note">
-                                                                                                <EditIcon fontSize="small" />
-                                                                                            </IconButton>
-                                                                                        </Tooltip>
-                                                                                        <Tooltip title="Delete">
-                                                                                            <IconButton size="small" onClick={() => requestDeleteNote(n)} aria-label="Delete note">
-                                                                                                <DeleteIcon fontSize="small" />
-                                                                                            </IconButton>
-                                                                                        </Tooltip>
-                                                                                    </Stack>
-                                                                                )}
-                                                                            </Stack>
-                                                                            <Typography variant="caption" color="text.secondary" display="block" mt={0.5}>
-                                                                                {n.role ?? "unknown"}{" "}
-                                                                                {n.createdAt?.seconds
-                                                                                    ? "– " + new Date(n.createdAt.seconds * 1000).toLocaleString()
-                                                                                    : ""}
-                                                                            </Typography>
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <TextField fullWidth multiline minRows={2} value={editingText} onChange={(e) => setEditingText(e.target.value)} size="small" />
-                                                                            <Stack direction="row" spacing={1} mt={1} justifyContent="flex-end">
-                                                                                <Button startIcon={<ClearIcon />} onClick={cancelEditNote} variant="outlined" color="inherit">Cancel</Button>
-                                                                                <Button startIcon={<SaveIcon />} onClick={saveEditNote} variant="contained" disabled={!editingText.trim()}>Save</Button>
-                                                                            </Stack>
-                                                                        </>
+                                                        <Card key={p.id} sx={{ borderRadius: 2, p: 1, border: "1px solid", borderColor: "divider" }}>
+                                                            {!isEditing ? (
+                                                                <Stack direction="row" spacing={1} alignItems="flex-start">
+                                                                    <Box flex={1} minWidth={0}>
+                                                                        <Typography variant="body2" fontWeight={600} noWrap>{p.name}</Typography>
+                                                                        <Typography variant="body2" color="text.secondary" sx={{ wordBreak: "break-word" }}>
+                                                                            {p.value || "—"}
+                                                                        </Typography>
+                                                                    </Box>
+                                                                    {isLawyer && (
+                                                                        <Stack direction="row" spacing={0.5}>
+                                                                            <Tooltip title="Edit property">
+                                                                                <IconButton size="small" onClick={() => startEditProperty(p)}>
+                                                                                    <EditIcon fontSize="small" />
+                                                                                </IconButton>
+                                                                            </Tooltip>
+                                                                            <Tooltip title="Delete property">
+                                                                                <IconButton size="small" onClick={() => requestDeleteProperty(p.id!)}>
+                                                                                    <DeleteIcon fontSize="small" />
+                                                                                </IconButton>
+                                                                            </Tooltip>
+                                                                        </Stack>
                                                                     )}
-                                                                </CardContent>
-                                                            </Card>
-                                                        </motion.div>
+                                                                </Stack>
+                                                            ) : (
+                                                                <Stack spacing={1}>
+                                                                    <TextField
+                                                                        size="small"
+                                                                        label="Name"
+                                                                        value={editPropName}
+                                                                        onChange={(e) => setEditPropName(e.target.value)}
+                                                                    />
+                                                                    <TextField
+                                                                        size="small"
+                                                                        label="Value"
+                                                                        value={editPropValue}
+                                                                        onChange={(e) => setEditPropValue(e.target.value)}
+                                                                    />
+                                                                    <Stack direction="row" spacing={1} justifyContent="flex-end">
+                                                                        <Button startIcon={<ClearIcon />} onClick={cancelEditProperty} variant="outlined" color="inherit">
+                                                                            Cancel
+                                                                        </Button>
+                                                                        <Button startIcon={<SaveIcon />} onClick={saveEditProperty} variant="contained" disabled={!editPropName.trim()}>
+                                                                            Save
+                                                                        </Button>
+                                                                    </Stack>
+                                                                </Stack>
+                                                            )}
+                                                        </Card>
                                                     );
                                                 })}
-                                            </AnimatePresence>
-                                        </Stack>
-                                    </Box>
+                                            </Stack>
+                                            {properties.length > PROPS_PAGE_SIZE && (
+                                                <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end" mt={1.5}>
+                                                    <Typography variant="caption">
+                                                        Page {propsPage + 1} / {propsTotalPages}
+                                                    </Typography>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => setPropsPage((p) => Math.max(0, p - 1))}
+                                                        disabled={propsPage === 0}
+                                                        aria-label="Previous properties page"
+                                                    >
+                                                        <KeyboardArrowLeft />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => setPropsPage((p) => Math.min(propsTotalPages - 1, p + 1))}
+                                                        disabled={propsPage >= propsTotalPages - 1}
+                                                        aria-label="Next properties page"
+                                                    >
+                                                        <KeyboardArrowRight />
+                                                    </IconButton>
+                                                </Stack>
+                                            )}
 
-                                    {canWriteNotes && (
-                                        <Stack direction="row" spacing={1} mt={2}>
-                                            <TextField size="small" fullWidth placeholder="Add note…" value={newNote} onChange={(e) => setNewNote(e.target.value)} multiline minRows={1} maxRows={6} />
-                                            <Button variant="contained" onClick={handleAddNote} disabled={!newNote.trim()}>Add</Button>
-                                        </Stack>
+                                            {/* Add property */}
+                                            {isLawyer && (
+                                                <>
+                                                    {!showAddProperty ? (
+                                                        <Box width="100%" display="flex" justifyContent="center">
+                                                            <IconButton
+                                                                onClick={() => setShowAddProperty(true)}
+                                                                sx={{
+                                                                    mt: 2,
+                                                                    bgcolor: "primary.main",
+                                                                    color: "white",
+                                                                    "&:hover": { bgcolor: "primary.dark" },
+                                                                }}
+                                                            >
+                                                                <Add />
+                                                            </IconButton>
+                                                        </Box>
+                                                    ) : (
+                                                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1} mt={2} alignItems={{ xs: "stretch", sm: "center" }}>
+                                                            <Autocomplete
+                                                                sx={{ minWidth: 200, flex: 1 }}
+                                                                options={popularProperties}
+                                                                getOptionLabel={(option) =>
+                                                                    typeof option === "string" ? option : option.label
+                                                                }
+                                                                value={selectedProp}
+                                                                onChange={(_, newValue) => {
+                                                                    if (typeof newValue === "string") {
+                                                                        setSelectedProp({ key: newValue, label: newValue });
+                                                                        setNewPropName(newValue);
+                                                                    } else if (newValue) {
+                                                                        setSelectedProp(newValue);
+                                                                        setNewPropName(newValue.label);
+                                                                    } else {
+                                                                        setSelectedProp(null);
+                                                                        setNewPropName("");
+                                                                    }
+                                                                }}
+                                                                freeSolo
+                                                                renderInput={(params) => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        label="Property name"
+                                                                        size="small"
+                                                                        value={newPropName}
+                                                                        onChange={(e) => setNewPropName(e.target.value)}
+                                                                    />
+                                                                )}
+                                                            />
+                                                            <TextField
+                                                                size="small"
+                                                                label="Value"
+                                                                value={newPropValue}
+                                                                onChange={(e) => setNewPropValue(e.target.value)}
+                                                            />
+                                                            <Button
+                                                                variant="contained"
+                                                                onClick={() => {
+                                                                    handleAddProperty();
+                                                                    setShowAddProperty(false);
+                                                                    setSelectedProp(null);
+                                                                }}
+                                                            >
+                                                                Add
+                                                            </Button>
+                                                            <Button
+                                                                variant="outlined"
+                                                                color="inherit"
+                                                                onClick={() => {
+                                                                    setShowAddProperty(false);
+                                                                    setNewPropName("");
+                                                                    setNewPropValue("");
+                                                                    setSelectedProp(null);
+                                                                }}
+                                                            >
+                                                                Cancel
+                                                            </Button>
+                                                        </Stack>
+                                                    )}
+                                                </>
+                                            )}
+                                        </Box>
                                     )}
-                                </Box>
+
+                                    {/* ---- Slide: Notes ---- */}
+                                    {slide === 1 && (
+                                        <Box>
+                                            <Typography fontWeight={700} mb={1}>Notes</Typography>
+
+                                            <Box sx={{ borderRadius: 2, border: "1px solid", borderColor: "divider", p: 1, height: '100%', overflowY: "auto", pr: 1.5, backgroundColor: "background.paper" }}>
+                                                {notesLoading && (
+                                                    <Stack alignItems="center" justifyContent="center" sx={{ py: 4 }}>
+                                                        <CircularProgress size={24} />
+                                                    </Stack>
+                                                )}
+
+                                                {!notesLoading && notes.length === 0 && (
+                                                    <Typography color="text.secondary" sx={{ px: 1, py: 0.5 }}>No notes yet.</Typography>
+                                                )}
+
+                                                <Stack spacing={1}>
+                                                    <AnimatePresence>
+                                                        {pagedNotes.map((n) => {
+                                                            const isEditing = editingNoteId === n.id;
+                                                            return (
+                                                                <motion.div key={n.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                                                                    <Card sx={{ borderRadius: 2, bgcolor: "background.default", border: "1px solid", borderColor: "divider" }}>
+                                                                        <CardContent sx={{ pb: 1.5 }}>
+                                                                            {!isEditing ? (
+                                                                                <>
+                                                                                    <Stack direction="row" alignItems="flex-start" spacing={1}>
+                                                                                        <Box flex={1} minWidth={0}>
+                                                                                            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{n.text}</Typography>
+                                                                                        </Box>
+                                                                                        {canEditOrDeleteNote(n) && (
+                                                                                            <Stack direction="row" spacing={0.5}>
+                                                                                                <Tooltip title="Edit">
+                                                                                                    <IconButton size="small" onClick={() => startEditNote(n)} aria-label="Edit note">
+                                                                                                        <EditIcon fontSize="small" />
+                                                                                                    </IconButton>
+                                                                                                </Tooltip>
+                                                                                                <Tooltip title="Delete">
+                                                                                                    <IconButton size="small" onClick={() => requestDeleteNote(n)} aria-label="Delete note">
+                                                                                                        <DeleteIcon fontSize="small" />
+                                                                                                    </IconButton>
+                                                                                                </Tooltip>
+                                                                                            </Stack>
+                                                                                        )}
+                                                                                    </Stack>
+                                                                                    <Typography variant="caption" color="text.secondary" display="block" mt={0.5}>
+                                                                                        {n.role ?? "unknown"}{" "}
+                                                                                        {n.createdAt?.seconds
+                                                                                            ? "– " + new Date(n.createdAt.seconds * 1000).toLocaleString()
+                                                                                            : ""}
+                                                                                    </Typography>
+                                                                                </>
+                                                                            ) : (
+                                                                                <>
+                                                                                    <TextField fullWidth multiline minRows={2} value={editingText} onChange={(e) => setEditingText(e.target.value)} size="small" />
+                                                                                    <Stack direction="row" spacing={1} mt={1} justifyContent="flex-end">
+                                                                                        <Button startIcon={<ClearIcon />} onClick={cancelEditNote} variant="outlined" color="inherit">Cancel</Button>
+                                                                                        <Button startIcon={<SaveIcon />} onClick={saveEditNote} variant="contained" disabled={!editingText.trim()}>Save</Button>
+                                                                                    </Stack>
+                                                                                </>
+                                                                            )}
+                                                                        </CardContent>
+                                                                    </Card>
+                                                                </motion.div>
+                                                            );
+                                                        })}
+                                                    </AnimatePresence>
+                                                </Stack>
+                                            </Box>
+
+                                            {/* Notes pagination controls */}
+                                            {notes.length > NOTES_PAGE_SIZE && (
+                                                <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end" mt={1.5}>
+                                                    <Typography variant="caption">
+                                                        Page {notesPage + 1} / {notesTotalPages}
+                                                    </Typography>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => setNotesPage((p) => Math.max(0, p - 1))}
+                                                        disabled={notesPage === 0}
+                                                        aria-label="Previous notes page"
+                                                    >
+                                                        <KeyboardArrowLeft />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => setNotesPage((p) => Math.min(notesTotalPages - 1, p + 1))}
+                                                        disabled={notesPage >= notesTotalPages - 1}
+                                                        aria-label="Next notes page"
+                                                    >
+                                                        <KeyboardArrowRight />
+                                                    </IconButton>
+                                                </Stack>
+                                            )}
+
+                                            {canWriteNotes && (
+                                                <Stack direction="row" spacing={1} mt={2}>
+                                                    <TextField size="small" fullWidth placeholder="Add note…" value={newNote} onChange={(e) => setNewNote(e.target.value)} multiline minRows={1} maxRows={6} />
+                                                    <Button variant="contained" onClick={handleAddNote} disabled={!newNote.trim()}>Add</Button>
+                                                </Stack>
+                                            )}
+                                        </Box>
+                                    )}
+                                </CardContent>
                             </Card>
                         </motion.div>
                     )}
                 </AnimatePresence>
             </Stack>
 
-            {/* Delete dialog */}
+            {/* Delete NOTE dialog */}
             <Dialog open={Boolean(deleteDialogNoteId)} onClose={() => setDeleteDialogNoteId(null)}>
                 <DialogTitle>Delete note?</DialogTitle>
                 <DialogContent>
@@ -643,6 +861,18 @@ const CasesPage: React.FC = () => {
                 <DialogActions>
                     <Button onClick={() => setDeleteDialogNoteId(null)}>Cancel</Button>
                     <Button color="error" variant="contained" onClick={confirmDeleteNote}>Delete</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Delete PROPERTY dialog */}
+            <Dialog open={Boolean(deleteDialogPropId)} onClose={() => setDeleteDialogPropId(null)}>
+                <DialogTitle>Delete property?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>This action can’t be undone. Do you really want to delete this property?</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteDialogPropId(null)}>Cancel</Button>
+                    <Button color="error" variant="contained" onClick={confirmDeleteProperty}>Delete</Button>
                 </DialogActions>
             </Dialog>
 
