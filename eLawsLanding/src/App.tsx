@@ -11,6 +11,7 @@ import ManageAccount from "./pages/ManageAccount.tsx";
 import DashboardView from "./pages/DashboardView.tsx";
 import CasesPage from "./pages/CasesPage.tsx";
 import AiChatPage from "./pages/AiChatPage.tsx";
+import ProceduresView from "./pages/ProceduresPage.tsx";
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
               <Route path="/dashboard" element={<DashboardView/>}/>
               <Route path="/dashboard/cases" element={<CasesPage/>}/>
               <Route path="/ai/chat" element={<AiChatPage/>}/>
+              <Route path="/procedures" element={<ProceduresView />} />
           </Route>
       </Routes>
   )

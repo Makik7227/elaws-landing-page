@@ -39,6 +39,7 @@ import {
 } from "firebase/firestore";
 import type { DocumentData } from "firebase/firestore";
 import { auth, db } from "../../firebase";
+import PanicButtonWeb from "../components/PanicButton.tsx";
 
 type Tier = "free" | "plus" | "premium";
 type Role = "client" | "lawyer";
@@ -48,6 +49,7 @@ type UserDoc = {
     lastName?: string;
     username?: string;
     country?: string;
+    countryCode?: string;
     tokenLimit?: number;
     monthlyTokensUsed?: number;
     role?: Role;
@@ -347,15 +349,12 @@ const Dashboard: React.FC = () => {
                                         </Typography>
                                     </Box>
                                 </Stack>
-                                <Button
-                                    component={RouterLink}
-                                    to="/panic"
-                                    variant="contained"
-                                    startIcon={<LocalPoliceRoundedIcon />}
-                                    sx={{ borderRadius: 2, fontWeight: 800, minWidth: 180 }}
-                                >
-                                    Open Panic
-                                </Button>
+                                <PanicButtonWeb
+                                tokenLimit={user.tokenLimit || 0}
+                                defaultCode={user.countryCode || ""}
+                                tokensUsed={user.monthlyTokensUsed || 0}
+                                defaultCountry={user.country || ""}
+                                />
                             </Stack>
                         </CardContent>
                     </Card>
