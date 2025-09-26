@@ -12,6 +12,8 @@ import DashboardView from "./pages/DashboardView.tsx";
 import CasesPage from "./pages/CasesPage.tsx";
 import AiChatPage from "./pages/AiChatPage.tsx";
 import ProceduresView from "./pages/ProceduresPage.tsx";
+import UserChatsWeb from "./pages/UserChats/UserChatsPage.tsx";
+import UserChatWeb from "./pages/UserChats/UserChatPage.tsx";
 
 function App() {
 
@@ -29,6 +31,8 @@ function App() {
               <Route path="/dashboard/cases" element={<CasesPage/>}/>
               <Route path="/ai/chat" element={<AiChatPage/>}/>
               <Route path="/procedures" element={<ProceduresView />} />
+              <Route path="/userChats" element={<UserChatsWeb />} />
+              <Route path="/userChats/:id" element={<UserChatWeb />} />
           </Route>
       </Routes>
   )

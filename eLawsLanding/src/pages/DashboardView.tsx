@@ -39,6 +39,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import PanicButtonWeb from "../components/PanicButton.tsx";
+import AiChatWidget from "../components/AiChatWidget.tsx";
 
 type Tier = "free" | "plus" | "premium";
 type Role = "client" | "lawyer";
@@ -357,13 +358,11 @@ const Dashboard: React.FC = () => {
                             </Stack>
                         </CardContent>
                     </Card>
-
-                    {/* QUICK ACTIONS (tier-gated) */}
                     {subscriptionTier !== "free" && (
                         <Card elevation={2} sx={{ borderRadius: 3 }}>
                             <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                                 <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-                                    <QuickAction to="/chat" icon={<ChatBubbleOutlineRoundedIcon />} title="Ask Legal Q" />
+                                    <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
                                     <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
                                     {role === "lawyer" && (
                                         <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
@@ -414,12 +413,9 @@ const Dashboard: React.FC = () => {
                             disabled={!lastChat}
                         />
                     </Stack>
-
-                    {/* MENU GRID */}
                     <Card elevation={2} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                            <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap justifyContent="flex-start">
-                                <MenuTile to="/ai/chat" icon={<ChatBubbleOutlineRoundedIcon />} title="AI Chat" />
+                            <Stack direction="row" justifyContent="space-between">
                                 <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title="Account" />
                                 {subscriptionTier !== "free" && (
                                     <>
@@ -463,13 +459,12 @@ const Dashboard: React.FC = () => {
                     )}
                 </Stack>
             </Container>
+            <AiChatWidget/>
         </>
     );
 };
 
 export default Dashboard;
-
-/* ------------------- small subcomponents ------------------- */
 
 function QuickAction({
                          to,
