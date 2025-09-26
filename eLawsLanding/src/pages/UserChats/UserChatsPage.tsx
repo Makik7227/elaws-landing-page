@@ -231,7 +231,7 @@ export default function UserChatsWeb() {
                         fullWidth
                         placeholder="Search friends..."
                         margin="normal"
-                        InputProps={{ startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> }}
+                        slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> }}}
                     />
                     <List>
                         {filtered.map((f) => (

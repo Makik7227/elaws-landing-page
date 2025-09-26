@@ -81,14 +81,10 @@ const Dashboard: React.FC = () => {
 
     const [uid, setUid] = useState<string | null>(null);
     const [user, setUser] = useState<UserDoc | null>(null);
-
     const [unreadCount, setUnreadCount] = useState<number>(0);
-    const [lastChat, setLastChat] = useState<ChatMeta | null>(null);
-
     const [lastCase, setLastCase] = useState<CaseDoc | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    // ----- auth hook -----
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
             if (!firebaseUser) {
@@ -100,7 +96,6 @@ const Dashboard: React.FC = () => {
         return () => unsub();
     }, [navigate]);
 
-    // ----- user doc + cases + chats -----
     useEffect(() => {
         if (!uid) return;
         let unsubChats: (() => void) | null = null;
@@ -108,8 +103,6 @@ const Dashboard: React.FC = () => {
         (async () => {
             try {
                 setLoading(true);
-
-                // Load user profile
                 const snap = await getDoc(doc(db, "users", uid));
                 const u = (snap.exists() ? (snap.data() as UserDoc) : {}) || {};
                 const merged: UserDoc = {
@@ -122,8 +115,6 @@ const Dashboard: React.FC = () => {
                     ...u,
                 };
                 setUser(merged);
-
-                // Live unread count + last chat
                 const qChats = query(
                     collection(db, "userChats"),
                     where("users", "array-contains", uid),
@@ -157,19 +148,13 @@ const Dashboard: React.FC = () => {
                                 (raw.lastMessageTimestamp as Timestamp | string | number | null | undefined) ?? null,
                         };
                     });
-
-                    setLastChat(list[0] ?? null);
-
                     const unread = list.filter(
                         (c) => c.lastMessage && c.lastMessageSenderId !== uid && !c.lastMessageWasRead
                     ).length;
                     setUnreadCount(unread);
                 });
 
-                // Best-effort "last case"
                 let last: CaseDoc | null = null;
-
-                // Try owner/userId
                 try {
                     const q1 = query(
                         collection(db, "cases"),
@@ -193,7 +178,6 @@ const Dashboard: React.FC = () => {
                     // ignore; not all projects index this way
                 }
 
-                // Fallback: participants array
                 if (!last) {
                     try {
                         const q2 = query(
@@ -358,6 +342,7 @@ const Dashboard: React.FC = () => {
                             </Stack>
                         </CardContent>
                     </Card>
+
                     {subscriptionTier !== "free" && (
                         <Card elevation={2} sx={{ borderRadius: 3 }}>
                             <CardContent sx={{ p: { xs: 3, md: 4 } }}>
@@ -399,19 +384,6 @@ const Dashboard: React.FC = () => {
                             }
                             disabled={!lastCase}
                         />
-                        <InfoCard
-                            to={lastChat ? `/userChats/${lastChat.id}` : "/userChats"}
-                            icon={<PersonOutlineRoundedIcon />}
-                            title="Last chat"
-                            text={
-                                loading
-                                    ? "Finding chats…"
-                                    : lastChat
-                                        ? lastChat.lastMessage?.slice(0, 60) ?? "No messages yet…"
-                                        : "No chats yet."
-                            }
-                            disabled={!lastChat}
-                        />
                     </Stack>
                     <Card elevation={2} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
@@ -426,8 +398,6 @@ const Dashboard: React.FC = () => {
                             </Stack>
                         </CardContent>
                     </Card>
-
-                    {/* FREE TIER UPSELL */}
                     {subscriptionTier === "free" && (
                         <Card elevation={0} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.default }}>
                             <CardContent>
