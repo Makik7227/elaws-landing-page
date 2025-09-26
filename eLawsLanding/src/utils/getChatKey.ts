@@ -9,5 +9,5 @@ export async function getChatKey(chatId: string): Promise<Uint8Array | null> {
     const chatData = chatSnapshot.data();
     if (!chatData.secureKey) return null;
 
-    return Buffer.from(chatData.secureKey, "base64");
+    return Uint8Array.from(atob(chatData.secureKey), c => c.charCodeAt(0));
 }
