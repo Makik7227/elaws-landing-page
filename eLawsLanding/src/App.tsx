@@ -33,6 +33,7 @@ function App() {
               <Route path="/procedures" element={<ProceduresView />} />
               <Route path="/userChats" element={<UserChatsWeb />} />
               <Route path="/userChats/:id" element={<UserChatWeb />} />
+              <Route path="/cases/:id" element={<CasesPage/>}/>
           </Route>
       </Routes>
   )

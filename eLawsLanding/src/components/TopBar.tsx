@@ -12,7 +12,8 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
 import MotionTypography from "./MotionTypography";
 import MotionButton from "./MotionButton";
-import { auth } from "../../firebase.ts"; // keep your existing path
+import { auth } from "../../firebase.ts";
+import ThemeToggleButton from "./ThemeToggleButton.tsx"; // keep your existing path
 
 const TopBar = () => {
     const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 10 });
@@ -147,6 +148,7 @@ const TopBar = () => {
                                 >
                                     Account
                                 </MotionButton>
+                                <ThemeToggleButton/>
                 <MotionButton
                   onClick={handleLogout}
                   variant="text"

@@ -51,7 +51,7 @@ import {
     type QuerySnapshot,
     type QueryDocumentSnapshot,
 } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
@@ -59,11 +59,9 @@ import caseProperties from "../utils/caseProperties.json";
 
 const popularProperties = caseProperties as { key: string; label: string }[];
 
-// ---- Config ----
 const PROPS_PAGE_SIZE = 5;
 const NOTES_PAGE_SIZE = 5;
 
-// ---- Types ----
 type CaseDoc = {
     id: string;
     title?: string;
@@ -94,53 +92,48 @@ type CasePropertyDoc = {
 
 const CasesPage: React.FC = () => {
     const [cases, setCases] = useState<CaseDoc[]>([]);
+    const { id } = useParams<{ id: string }>();
     const [loading, setLoading] = useState(true);
-
+    const location = useLocation();
+    const navigate = useNavigate();
     const [filter, setFilter] = useState<"all" | "open" | "closed">("all");
     const [search, setSearch] = useState("");
-
     const [selectedCase, setSelectedCase] = useState<CaseDoc | null>(null);
-
-    // Notes
     const [notes, setNotes] = useState<NoteDoc[]>([]);
     const [notesLoading, setNotesLoading] = useState(false);
     const [newNote, setNewNote] = useState("");
     const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
     const [editingText, setEditingText] = useState<string>("");
     const [deleteDialogNoteId, setDeleteDialogNoteId] = useState<string | null>(null);
-
-    // Properties
     const [properties, setProperties] = useState<CasePropertyDoc[]>([]);
     const [propertiesLoading, setPropertiesLoading] = useState(false);
     const [newPropName, setNewPropName] = useState("");
     const [newPropValue, setNewPropValue] = useState("");
     const [showAddProperty, setShowAddProperty] = useState(false);
     const [selectedProp, setSelectedProp] = useState<{ key: string; label: string } | null>(null);
-
-    // Property edit/delete state
     const [editingPropId, setEditingPropId] = useState<string | null>(null);
     const [editPropName, setEditPropName] = useState<string>("");
     const [editPropValue, setEditPropValue] = useState<string>("");
     const [deleteDialogPropId, setDeleteDialogPropId] = useState<string | null>(null);
-
-    // Carousel state (0 = Properties, 1 = Notes)
     const [slide, setSlide] = useState<number>(0);
-
-    // Pagination state
     const [propsPage, setPropsPage] = useState<number>(0);
     const [notesPage, setNotesPage] = useState<number>(0);
-
-    // Auth / Role
     const [userRole, setUserRole] = useState<"lawyer" | "client" | null>(null);
     const [user, setUser] = useState<User | null>(null);
-
-    // UX
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        if (id && cases.length > 0) {
+            const target = cases.find((c) => c.id === id);
+            if (target) {
+                setSelectedCase(target);
+                setSlide(0);
+                navigate("/dashboard/cases", { replace: true });
+            }
+        }
+    }, [location.search, cases, navigate, id]);
 
-    // ----- Auth + Role + Cases -----
     useEffect(() => {
         const unsubAuth = onAuthStateChanged(auth, (u) => {
             setUser(u ?? null);
@@ -188,7 +181,6 @@ const CasesPage: React.FC = () => {
         return () => unsubAuth();
     }, []);
 
-    // ----- Load notes -----
     useEffect(() => {
         if (!selectedCase) {
             setNotes([]);
@@ -205,7 +197,7 @@ const CasesPage: React.FC = () => {
             (ss) => {
                 setNotes(ss.docs.map((d) => ({ id: d.id, ...(d.data() as Partial<NoteDoc>) })));
                 setNotesLoading(false);
-                setNotesPage(0); // reset page when case changes
+                setNotesPage(0);
             },
             (err) => {
                 console.error(err);
@@ -217,7 +209,6 @@ const CasesPage: React.FC = () => {
         return () => unsub();
     }, [selectedCase]);
 
-    // ----- Load properties -----
     useEffect(() => {
         if (!selectedCase) {
             setProperties([]);
@@ -237,7 +228,7 @@ const CasesPage: React.FC = () => {
                     ss.docs.map((d) => ({ id: d.id, ...(d.data() as Partial<CasePropertyDoc>) }))
                 );
                 setPropertiesLoading(false);
-                setPropsPage(0); // reset page when case changes
+                setPropsPage(0);
             },
             (err) => {
                 console.error(err);
@@ -249,7 +240,6 @@ const CasesPage: React.FC = () => {
         return () => unsub();
     }, [selectedCase]);
 
-    // Derived
     const filteredCases = useMemo(() => {
         const q = search.trim().toLowerCase();
         return cases.filter((c) => {
@@ -264,7 +254,6 @@ const CasesPage: React.FC = () => {
 
     const isLawyer = userRole === "lawyer";
 
-    // Pagination slices
     const propsTotalPages = Math.max(1, Math.ceil(properties.length / PROPS_PAGE_SIZE));
     const notesTotalPages = Math.max(1, Math.ceil(notes.length / NOTES_PAGE_SIZE));
     const pagedProperties = properties.slice(
@@ -276,7 +265,6 @@ const CasesPage: React.FC = () => {
         notesPage * NOTES_PAGE_SIZE + NOTES_PAGE_SIZE
     );
 
-    // ----- Note handlers -----
     const handleAddNote = async () => {
         if (!selectedCase || !newNote.trim() || !user || userRole !== "lawyer") return;
         try {
@@ -288,10 +276,9 @@ const CasesPage: React.FC = () => {
             });
             setNewNote("");
             setSuccessMsg("Note added.");
-            // jump to last page so the user sees their newly added note
             const nextCount = notes.length + 1;
             setNotesPage(Math.floor((nextCount - 1) / NOTES_PAGE_SIZE));
-            setSlide(1); // switch to Notes slide to show it
+            setSlide(1);
         } catch (err) {
             console.error(err);
             setErrorMsg("Failed to add note.");
@@ -339,7 +326,6 @@ const CasesPage: React.FC = () => {
         }
     };
 
-    // ----- Property handlers -----
     const handleAddProperty = async () => {
         if (!selectedCase || !user || !isLawyer || !newPropName.trim()) return;
         try {
@@ -352,10 +338,9 @@ const CasesPage: React.FC = () => {
             setNewPropName("");
             setNewPropValue("");
             setSuccessMsg("Property added.");
-            // jump to last page to reveal the new property
             const nextCount = properties.length + 1;
             setPropsPage(Math.floor((nextCount - 1) / PROPS_PAGE_SIZE));
-            setSlide(0); // ensure properties slide is visible
+            setSlide(0);
         } catch (err) {
             console.error(err);
             setErrorMsg("Failed to add property.");
@@ -482,7 +467,6 @@ const CasesPage: React.FC = () => {
             </Stack>
 
             <Stack direction={{ xs: "column", md: "row" }} spacing={3} alignItems="stretch" sx={{ flex: 1, minHeight: 0 }}>
-                {/* Case list */}
                 <Stack flex={1} spacing={2} sx={{ minWidth: 0 }}>
                     {loading && <CircularProgress />}
                     {!loading && filteredCases.length === 0 && (
@@ -495,7 +479,7 @@ const CasesPage: React.FC = () => {
                                     <Card
                                         onClick={() => {
                                             setSelectedCase(c);
-                                            setSlide(0); // default to Properties when selecting a case
+                                            setSlide(0);
                                         }}
                                         sx={{
                                             cursor: "pointer",
@@ -657,8 +641,6 @@ const CasesPage: React.FC = () => {
                                                     </IconButton>
                                                 </Stack>
                                             )}
-
-                                            {/* Add property */}
                                             {isLawyer && (
                                                 <>
                                                     {!showAddProperty ? (
@@ -741,8 +723,6 @@ const CasesPage: React.FC = () => {
                                             )}
                                         </Box>
                                     )}
-
-                                    {/* ---- Slide: Notes ---- */}
                                     {slide === 1 && (
                                         <Box>
                                             <Typography fontWeight={700} mb={1}>Notes</Typography>
@@ -811,8 +791,6 @@ const CasesPage: React.FC = () => {
                                                     </AnimatePresence>
                                                 </Stack>
                                             </Box>
-
-                                            {/* Notes pagination controls */}
                                             {notes.length > NOTES_PAGE_SIZE && (
                                                 <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end" mt={1.5}>
                                                     <Typography variant="caption">
@@ -851,8 +829,6 @@ const CasesPage: React.FC = () => {
                     )}
                 </AnimatePresence>
             </Stack>
-
-            {/* Delete NOTE dialog */}
             <Dialog open={Boolean(deleteDialogNoteId)} onClose={() => setDeleteDialogNoteId(null)}>
                 <DialogTitle>Delete note?</DialogTitle>
                 <DialogContent>
@@ -863,8 +839,6 @@ const CasesPage: React.FC = () => {
                     <Button color="error" variant="contained" onClick={confirmDeleteNote}>Delete</Button>
                 </DialogActions>
             </Dialog>
-
-            {/* Delete PROPERTY dialog */}
             <Dialog open={Boolean(deleteDialogPropId)} onClose={() => setDeleteDialogPropId(null)}>
                 <DialogTitle>Delete property?</DialogTitle>
                 <DialogContent>
@@ -875,8 +849,6 @@ const CasesPage: React.FC = () => {
                     <Button color="error" variant="contained" onClick={confirmDeleteProperty}>Delete</Button>
                 </DialogActions>
             </Dialog>
-
-            {/* Snackbars */}
             <Snackbar open={Boolean(errorMsg)} autoHideDuration={4000} onClose={() => setErrorMsg(null)} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
                 <Alert severity="error" onClose={() => setErrorMsg(null)} variant="filled">{errorMsg}</Alert>
             </Snackbar>

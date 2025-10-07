@@ -5,14 +5,14 @@ import App from './App.tsx'
 import {Provider} from "react-redux";
 import {store} from "./store.ts";
 import {BrowserRouter} from "react-router-dom";
-import {CssBaseline, ThemeProvider} from "@mui/material";
-import {lightTheme} from "./theme.ts";
+import {CssBaseline} from "@mui/material";
+import {ThemeProvider} from "./theme/ThemeProvider.tsx";
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <Provider store={store}>
             <BrowserRouter>
-                <ThemeProvider theme={lightTheme}>
+                <ThemeProvider>
                     <CssBaseline />
                     <App />
                 </ThemeProvider>
