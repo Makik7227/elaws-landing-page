@@ -11,9 +11,10 @@ import ManageAccount from "./pages/ManageAccount.tsx";
 import DashboardView from "./pages/DashboardView.tsx";
 import CasesPage from "./pages/CasesPage.tsx";
 import AiChatPage from "./pages/AiChatPage.tsx";
-import ProceduresView from "./pages/ProceduresPage.tsx";
 import UserChatsWeb from "./pages/UserChats/UserChatsPage.tsx";
 import UserChatWeb from "./pages/UserChats/UserChatPage.tsx";
+import SavedProceduresPage from "./pages/SavedProceduresPage.tsx";
+import ProceduresView from "./pages/ProceduresPage.tsx";
 
 function App() {
 
@@ -30,10 +31,11 @@ function App() {
               <Route path="/dashboard" element={<DashboardView/>}/>
               <Route path="/dashboard/cases" element={<CasesPage/>}/>
               <Route path="/ai/chat" element={<AiChatPage/>}/>
-              <Route path="/procedures" element={<ProceduresView />} />
               <Route path="/userChats" element={<UserChatsWeb />} />
               <Route path="/userChats/:id" element={<UserChatWeb />} />
               <Route path="/cases/:id" element={<CasesPage/>}/>
+              <Route path="/procedures" element={<ProceduresView />} />
+              <Route path="/dashboard/procedures/saved" element={<SavedProceduresPage />} />
           </Route>
       </Routes>
   )

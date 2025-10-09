@@ -242,7 +242,6 @@ const Dashboard: React.FC = () => {
 
     return (
         <>
-            {/* HERO / WELCOME */}
             <Box
                 sx={{
                     background: gradient,
@@ -296,7 +295,6 @@ const Dashboard: React.FC = () => {
 
             <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
                 <Stack spacing={3}>
-                    {/* TOKENS + PANIC */}
                     <Card elevation={3} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                             <Stack
@@ -342,49 +340,6 @@ const Dashboard: React.FC = () => {
                             </Stack>
                         </CardContent>
                     </Card>
-
-                    {subscriptionTier !== "free" && (
-                        <Card elevation={2} sx={{ borderRadius: 3 }}>
-                            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                                <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-                                    <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
-                                    <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
-                                    {role === "lawyer" && (
-                                        <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
-                                    )}
-                                </Stack>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* WHAT'S UP / INFO ROW */}
-                    <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-                        <InfoCard
-                            to="/userChats"
-                            icon={<ForumRoundedIcon />}
-                            title="Unread chats"
-                            text={
-                                loading
-                                    ? "Checking chats…"
-                                    : unreadCount > 0
-                                        ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
-                                        : "No unread chats."
-                            }
-                        />
-                        <InfoCard
-                            to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
-                            icon={<AssignmentTurnedInRoundedIcon />}
-                            title="Last case"
-                            text={
-                                loading
-                                    ? "Loading your last case…"
-                                    : lastCase
-                                        ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
-                                        : "No cases found."
-                            }
-                            disabled={!lastCase}
-                        />
-                    </Stack>
                     <Card elevation={2} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                             <Stack direction="row" justifyContent="space-between">
@@ -398,6 +353,47 @@ const Dashboard: React.FC = () => {
                             </Stack>
                         </CardContent>
                     </Card>
+                    {subscriptionTier !== "free" && (
+                        <Card elevation={2} sx={{ borderRadius: 3 }}>
+                            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                                <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
+                                    <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
+                                    <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
+                                    {role === "lawyer" && (
+                                        <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
+                                    )}
+                                    <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title="Stop Procedures" />
+                                </Stack>
+                            </CardContent>
+                            <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
+                                <InfoCard
+                                    to="/userChats"
+                                    icon={<ForumRoundedIcon />}
+                                    title="Unread chats"
+                                    text={
+                                        loading
+                                            ? "Checking chats…"
+                                            : unreadCount > 0
+                                                ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
+                                                : "No unread chats."
+                                    }
+                                />
+                                <InfoCard
+                                    to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
+                                    icon={<AssignmentTurnedInRoundedIcon />}
+                                    title="Last case"
+                                    text={
+                                        loading
+                                            ? "Loading your last case…"
+                                            : lastCase
+                                                ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
+                                                : "No cases found."
+                                    }
+                                    disabled={!lastCase}
+                                />
+                            </Stack>
+                        </Card>
+                    )}
                     {subscriptionTier === "free" && (
                         <Card elevation={0} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.default }}>
                             <CardContent>
@@ -496,12 +492,14 @@ function InfoCard({
                     </Box>
                     <Typography fontWeight={800}>{title}</Typography>
                 </Stack>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {text}
-                </Typography>
-                <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
-                    Open
-                </Button>
+                <Stack justifyContent="space-between" direction="row">
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        {text}
+                    </Typography>
+                    <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
+                        Open
+                    </Button>
+                </Stack>
             </CardContent>
         </Card>
     );

@@ -42,6 +42,7 @@ const TopBar = () => {
             { label: "Features", to: "/features" },
             { label: "Pricing", to: "/pricing" },
             { label: "About", to: "/about" },
+            { label: "Dashboard", to: "/dashboard" },
         ],
         []
     );
@@ -64,7 +65,6 @@ const TopBar = () => {
         >
             <Container maxWidth="lg">
                 <Toolbar sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>
-                    {/* Logo */}
                     <MotionTypography
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
