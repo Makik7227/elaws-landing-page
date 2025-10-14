@@ -18,6 +18,9 @@ import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
+import {useEffect, useState} from "react";
+import {onAuthStateChanged, type User} from "firebase/auth";
+import {auth} from "../../firebase.ts";
 
 const FeatureCard: React.FC<{
     icon: React.ReactNode;
@@ -95,6 +98,12 @@ const StepCard: React.FC<{
 
 const HomePage: React.FC = () => {
     const theme = useTheme();
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+        return () => unsub();
+    }, []);
 
     const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${
         theme.palette.secondary.main
@@ -159,7 +168,7 @@ const HomePage: React.FC = () => {
                         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mt={1}>
                             <Button
                                 component={RouterLink}
-                                to="/signup"
+                                to={user ? "/dashboard" : "/signup"}
                                 variant="contained"
                                 size="large"
                                 sx={{
@@ -170,9 +179,10 @@ const HomePage: React.FC = () => {
                                     boxShadow: "0 10px 24px rgba(0,0,0,.18)",
                                 }}
                             >
-                                Get Started
+                                {user ? "Dashboard" :"Get Started"}
                             </Button>
-                            <Button
+                            {!user &&
+                                <Button
                                 component={RouterLink}
                                 to="/chat"
                                 variant="outlined"
@@ -190,7 +200,7 @@ const HomePage: React.FC = () => {
                                 }}
                             >
                                 Try the Demo
-                            </Button>
+                            </Button>}
                         </Stack>
 
                         <Stack
@@ -309,7 +319,8 @@ const HomePage: React.FC = () => {
             </Box>
 
             {/* CTA BAND */}
-            <Box component="section" sx={{ py: { xs: 6, md: 8 } }}>
+            {!user &&
+                <Box component="section" sx={{py: {xs: 6, md: 8}}}>
                 <Container>
                     <Card
                         sx={{
@@ -323,8 +334,8 @@ const HomePage: React.FC = () => {
                     >
                         <CardContent>
                             <Stack
-                                direction={{ xs: "column", md: "row" }}
-                                alignItems={{ xs: "flex-start", md: "center" }}
+                                direction={{xs: "column", md: "row"}}
+                                alignItems={{xs: "flex-start", md: "center"}}
                                 justifyContent="space-between"
                                 spacing={2}
                             >
@@ -332,17 +343,17 @@ const HomePage: React.FC = () => {
                                     <Typography variant="h5" fontWeight={800}>
                                         Start your first case in minutes
                                     </Typography>
-                                    <Typography sx={{ opacity: 0.9 }}>
+                                    <Typography sx={{opacity: 0.9}}>
                                         Free plan available. Upgrade anytime.
                                     </Typography>
                                 </Box>
-                                <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                                <Stack direction={{xs: "column", sm: "row"}} spacing={1.5}>
                                     <Button
                                         component={RouterLink}
                                         to="/signup"
                                         variant="contained"
                                         size="large"
-                                        sx={{ borderRadius: 3, fontWeight: 800 }}
+                                        sx={{borderRadius: 3, fontWeight: 800}}
                                     >
                                         Create account
                                     </Button>
@@ -355,7 +366,7 @@ const HomePage: React.FC = () => {
                                             borderRadius: 3,
                                             color: "inherit",
                                             borderColor: "currentColor",
-                                            "&:hover": { borderColor: "currentColor" },
+                                            "&:hover": {borderColor: "currentColor"},
                                         }}
                                     >
                                         See pricing
@@ -365,7 +376,7 @@ const HomePage: React.FC = () => {
                         </CardContent>
                     </Card>
                 </Container>
-            </Box>
+            </Box>}
 
             {/* FOOTER */}
             <Box
