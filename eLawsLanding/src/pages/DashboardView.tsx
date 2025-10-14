@@ -263,32 +263,6 @@ const Dashboard: React.FC = () => {
                                 {country ? ` • ${country}` : ""}
                             </Typography>
                         </Box>
-
-                        <Box sx={{ flex: 1 }} />
-
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.25}>
-                            <Button
-                                component={RouterLink}
-                                to="/manage"
-                                variant="outlined"
-                                sx={{
-                                    borderRadius: 3,
-                                    color: "inherit",
-                                    borderColor: "currentColor",
-                                    "&:hover": { borderColor: "currentColor" },
-                                }}
-                            >
-                                Manage Account
-                            </Button>
-                            <Button
-                                component={RouterLink}
-                                to={subscriptionTier === "free" ? "/pricing" : "/subscribe"}
-                                variant="contained"
-                                sx={{ borderRadius: 3, fontWeight: 800 }}
-                            >
-                                {subscriptionTier === "free" ? "Upgrade" : "Manage Plan"}
-                            </Button>
-                        </Stack>
                     </Stack>
                 </Container>
             </Box>
