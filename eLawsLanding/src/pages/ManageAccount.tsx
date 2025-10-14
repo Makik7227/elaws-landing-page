@@ -403,7 +403,7 @@ const ManageAccount: React.FC = () => {
                                 Shortcuts
                             </Typography>
                             <Stack direction={{xs: "column", sm: "row"}} spacing={1.5} useFlexGap flexWrap="wrap">
-                                <Button component={RouterLink} to="/cases" variant="outlined" sx={{borderRadius: 3}}>
+                                <Button component={RouterLink} to="/dashboard/cases" variant="outlined" sx={{borderRadius: 3}}>
                                     Go to My Cases
                                 </Button>
                                 <Button component={RouterLink} to="/notes" variant="outlined" sx={{borderRadius: 3}}>

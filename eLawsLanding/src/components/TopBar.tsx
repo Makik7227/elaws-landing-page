@@ -70,7 +70,7 @@ const TopBar = () => {
                         whileTap={{ scale: 0.95 }}
                         variant="h5"
                         component={RouterLink}
-                        to="/"
+                        to={user ? "/dashboard" : "/"}
                         sx={{
                             textDecoration: "none",
                             color: "primary.main",
@@ -128,8 +128,8 @@ const TopBar = () => {
                             <>
                                 <MotionButton
                                     component={RouterLink}
-                                    to="/dashboard" // Dashboard route
-                                    variant={isActive("/cases") ? "contained" : "outlined"}
+                                    to="/dashboard"
+                                    variant={isActive("/dashboard") ? "contained" : "outlined"}
                                     color="primary"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
