@@ -42,7 +42,6 @@ const TopBar = () => {
             { label: "Features", to: "/features" },
             { label: "Pricing", to: "/pricing" },
             { label: "About", to: "/about" },
-            { label: "Dashboard", to: "/dashboard" },
         ],
         []
     );
@@ -121,8 +120,6 @@ const TopBar = () => {
                             })}
                         </Box>
                     )}
-
-                    {/* Right: Auth-aware */}
                     <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
                         {user ? (
                             <>
@@ -162,6 +159,7 @@ const TopBar = () => {
                             </>
                         ) : (
                             <>
+                                <ThemeToggleButton/>
                                 <MotionButton
                                     component={RouterLink}
                                     to="/login"

@@ -15,22 +15,12 @@ import UserChatsWeb from "./pages/UserChats/UserChatsPage.tsx";
 import UserChatWeb from "./pages/UserChats/UserChatPage.tsx";
 import SavedProceduresPage from "./pages/SavedProceduresPage.tsx";
 import ProceduresView from "./pages/ProceduresPage.tsx";
-import {useEffect, useState} from "react";
-import {onAuthStateChanged, type User} from "firebase/auth";
-import {auth} from "../firebase.ts";
 
 function App() {
-    const [user, setUser] = useState<User | null>(null);
-
-    useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (u) => setUser(u));
-        return () => unsub();
-    }, []);
-
   return (
       <Routes>
           <Route element={<Layout />}>
-              <Route path={user ? "/dashboard" : "/"} element={user ? <DashboardView/> : <HomePage />} />
+              <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage/>} />
               <Route path="/signup" element={<SingUp/>}/>
               <Route path="/features" element={<FeaturesPage/>}/>

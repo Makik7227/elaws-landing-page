@@ -25,7 +25,7 @@ const LoginPage = () => {
     const handleSignIn = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            navigate("/"); // go home after login
+            navigate("/dashboard");
         } catch (err: any) {
             setError("Invalid email or password");
         }
