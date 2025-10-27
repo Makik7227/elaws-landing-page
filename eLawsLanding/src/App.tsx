@@ -15,6 +15,7 @@ import UserChatsWeb from "./pages/UserChats/UserChatsPage.tsx";
 import UserChatWeb from "./pages/UserChats/UserChatPage.tsx";
 import SavedProceduresPage from "./pages/SavedProceduresPage.tsx";
 import ProceduresView from "./pages/ProceduresPage.tsx";
+import NotesPage from "./pages/NotesPage.tsx";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path="/cases/:id" element={<CasesPage/>}/>
               <Route path="/procedures" element={<ProceduresView />} />
               <Route path="/dashboard/procedures/saved" element={<SavedProceduresPage />} />
+              <Route path="/dashboard/notes" element={<NotesPage/>}/>
           </Route>
       </Routes>
   )

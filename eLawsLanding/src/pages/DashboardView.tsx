@@ -22,6 +22,7 @@ import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -324,6 +325,7 @@ const Dashboard: React.FC = () => {
                                         <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
                                     )}
                                     <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title="Stop Procedures" />
+                                    <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon/>} title="Notes" />
                                 </Stack>
                                 <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
                                     <InfoCard
