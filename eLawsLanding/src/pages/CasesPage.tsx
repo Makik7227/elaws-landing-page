@@ -641,7 +641,7 @@ const CasesPage: React.FC = () => {
                                                     </IconButton>
                                                 </Stack>
                                             )}
-                                            {isLawyer && (
+                                            {isLawyer && selectedCase.status !== "closed" && (
                                                 <>
                                                     {!showAddProperty ? (
                                                         <Box width="100%" display="flex" justifyContent="center">

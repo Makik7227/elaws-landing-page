@@ -22,7 +22,7 @@ import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -116,6 +116,7 @@ const Dashboard: React.FC = () => {
                     ...u,
                 };
                 setUser(merged);
+
                 const qChats = query(
                     collection(db, "userChats"),
                     where("users", "array-contains", uid),
@@ -243,6 +244,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <>
+            {/* Hero */}
             <Box
                 sx={{
                     background: gradient,
@@ -270,94 +272,126 @@ const Dashboard: React.FC = () => {
 
             <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
                 <Stack spacing={3}>
-                    <Card elevation={3} sx={{ borderRadius: 3 }}>
+                    {/* Usage + Panic */}
+                    <Card elevation={4} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                             <Stack
                                 direction={{ xs: "column", md: "row" }}
-                                gap={2.5}
                                 alignItems={{ xs: "stretch", md: "center" }}
+                                justifyContent="space-between"
+                                spacing={3}
                             >
-                                <Box sx={{ flex: 1, minWidth: 240 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" mb={1}>
-                                        <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
-                                        <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                                            {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
-                                        </Typography>
+                                <Box sx={{ flex: 1, minWidth: 260 }}>
+                                    <Stack spacing={1}>
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
+                                            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                                                {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
+                                            </Typography>
+                                        </Stack>
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={Math.round(tokenPct * 100)}
+                                            sx={{
+                                                height: 10,
+                                                borderRadius: 10,
+                                                "& .MuiLinearProgress-bar": { borderRadius: 10 },
+                                            }}
+                                        />
                                     </Stack>
-                                    <LinearProgress
-                                        variant="determinate"
-                                        value={Math.round(tokenPct * 100)}
-                                        sx={{
-                                            height: 10,
-                                            borderRadius: 10,
-                                            "& .MuiLinearProgress-bar": { borderRadius: 10 },
-                                        }}
-                                    />
                                 </Box>
 
-                                <Divider flexItem orientation="vertical" sx={{ display: { xs: "none", md: "block" } }} />
+                                <Divider flexItem orientation="vertical" sx={{ display: { xs: "none", md: "block" }, mx: 1 }} />
 
-                                <Stack direction="row" spacing={1.25} alignItems="center">
-                                    <LocalPoliceRoundedIcon />
+                                <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
                                     <Box>
-                                        <Typography fontWeight={800}>Stopped by the Police</Typography>
+                                        <Typography fontWeight={800} display="flex" alignItems="center" gap={1}>
+                                            <LocalPoliceRoundedIcon /> Stopped by the Police
+                                        </Typography>
                                         <Typography variant="body2" color="text.secondary">
                                             Quick access to local guidance
                                         </Typography>
                                     </Box>
+                                    <PanicButtonWeb
+                                        tokenLimit={user.tokenLimit || 0}
+                                        defaultCode={user.countryCode || ""}
+                                        tokensUsed={user.monthlyTokensUsed || 0}
+                                        defaultCountry={user.country || ""}
+                                    />
                                 </Stack>
-                                <PanicButtonWeb
-                                tokenLimit={user.tokenLimit || 0}
-                                defaultCode={user.countryCode || ""}
-                                tokensUsed={user.monthlyTokensUsed || 0}
-                                defaultCountry={user.country || ""}
-                                />
                             </Stack>
                         </CardContent>
                     </Card>
-                    <Card elevation={2} sx={{ borderRadius: 3 }}>
+
+                    {/* Quick actions + Info */}
+                    <Card elevation={3} sx={{ borderRadius: 3 }}>
                         {subscriptionTier !== "free" && (
                             <>
-                                <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-                                    <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
-                                    <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
-                                    {role === "lawyer" && (
-                                        <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
-                                    )}
-                                    <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title="Stop Procedures" />
-                                    <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon/>} title="Notes" />
-                                </Stack>
-                                <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-                                    <InfoCard
-                                        to="/userChats"
-                                        icon={<ForumRoundedIcon />}
-                                        title="Unread chats"
-                                        text={
-                                            loading
-                                                ? "Checking chats…"
-                                                : unreadCount > 0
-                                                    ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
-                                                    : "No unread chats."
-                                        }
-                                    />
-                                    <InfoCard
-                                        to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
-                                        icon={<AssignmentTurnedInRoundedIcon />}
-                                        title="Last case"
-                                        text={
-                                            loading
-                                                ? "Loading your last case…"
-                                                : lastCase
-                                                    ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
-                                                    : "No cases found."
-                                        }
-                                        disabled={!lastCase}
-                                    />
-                                </Stack>
+                                <CardContent sx={{ pb: 1, pt: { xs: 2.5, md: 3 } }}>
+                                    <Stack
+                                        direction="row"
+                                        spacing={1.5}
+                                        flexWrap="wrap"
+                                        useFlexGap
+                                        alignItems="center"
+                                    >
+                                        <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
+                                        <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
+                                        {role === "lawyer" && (
+                                            <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
+                                        )}
+                                        <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title="Stop Procedures" />
+                                        <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon />} title="Notes" />
+                                    </Stack>
+                                </CardContent>
+
+                                <CardContent sx={{ pt: 1 }}>
+                                    <Stack
+                                        direction="row"
+                                        spacing={2}
+                                        flexWrap="wrap"
+                                        useFlexGap
+                                        alignItems="stretch"
+                                    >
+                                        <InfoCard
+                                            to="/userChats"
+                                            icon={<ForumRoundedIcon />}
+                                            title="Unread chats"
+                                            text={
+                                                loading
+                                                    ? "Checking chats…"
+                                                    : unreadCount > 0
+                                                        ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
+                                                        : "No unread chats."
+                                            }
+                                        />
+                                        <InfoCard
+                                            to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
+                                            icon={<AssignmentTurnedInRoundedIcon />}
+                                            title="Last case"
+                                            text={
+                                                loading
+                                                    ? "Loading your last case…"
+                                                    : lastCase
+                                                        ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
+                                                        : "No cases found."
+                                            }
+                                            disabled={!lastCase}
+                                        />
+                                    </Stack>
+                                </CardContent>
                             </>
                         )}
-                        <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                            <Stack direction="row" justifyContent="space-between">
+
+                        <CardContent sx={{ pt: subscriptionTier !== "free" ? 1 : 3 }}>
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                flexWrap="wrap"
+                                useFlexGap
+                                alignItems="stretch"
+                                justifyContent="space-between"
+                            >
                                 <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title="Account" />
                                 {subscriptionTier !== "free" && (
                                     <>
@@ -368,12 +402,20 @@ const Dashboard: React.FC = () => {
                             </Stack>
                         </CardContent>
                     </Card>
+
+                    {/* Upgrade */}
                     {subscriptionTier === "free" && (
-                        <Card elevation={0} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.default }}>
+                        <Card
+                            elevation={0}
+                            sx={{
+                                borderRadius: 3,
+                                backgroundColor: theme.palette.background.default,
+                            }}
+                        >
                             <CardContent>
                                 <Stack
                                     direction={{ xs: "column", md: "row" }}
-                                    gap={2}
+                                    spacing={2}
                                     alignItems={{ xs: "flex-start", md: "center" }}
                                     justifyContent="space-between"
                                 >
@@ -385,7 +427,7 @@ const Dashboard: React.FC = () => {
                                             Upgrade to Plus or Premium for end-to-end features.
                                         </Typography>
                                     </Box>
-                                    <Stack direction="row" gap={1.25}>
+                                    <Stack direction="row" spacing={1.25} flexWrap="wrap">
                                         <Button component={RouterLink} to="/pricing" variant="outlined" sx={{ borderRadius: 2 }}>
                                             See Pricing
                                         </Button>
@@ -399,12 +441,15 @@ const Dashboard: React.FC = () => {
                     )}
                 </Stack>
             </Container>
-            <AiChatWidget/>
+
+            <AiChatWidget />
         </>
     );
 };
 
 export default Dashboard;
+
+/* ---------- Subcomponents (unchanged logic, refined styles) ---------- */
 
 function QuickAction({
                          to,
@@ -425,7 +470,6 @@ function QuickAction({
                 borderRadius: 2,
                 px: 2.5,
                 py: 1.25,
-                margin: 1,
                 fontWeight: 700,
                 textTransform: "none",
             }}
@@ -449,7 +493,15 @@ function InfoCard({
     disabled?: boolean;
 }) {
     return (
-        <Card elevation={2} sx={{ borderRadius: 3, flex: "1 1 280px", minWidth: 280, maxWidth: 520, marginLeft: 2 }}>
+        <Card
+            elevation={2}
+            sx={{
+                borderRadius: 3,
+                flex: "1 1 320px",
+                minWidth: 280,
+                maxWidth: 520,
+            }}
+        >
             <CardContent>
                 <Stack direction="row" spacing={1.25} alignItems="center" mb={1}>
                     <Box
@@ -460,15 +512,17 @@ function InfoCard({
                             placeItems: "center",
                             borderRadius: 2,
                             bgcolor: (t) =>
-                                t.palette.mode === "light" ? t.palette.primary.main + "20" : t.palette.primary.main + "30",
+                                t.palette.mode === "light"
+                                    ? t.palette.primary.main + "20"
+                                    : t.palette.primary.main + "30",
                         }}
                     >
                         {icon}
                     </Box>
                     <Typography fontWeight={800}>{title}</Typography>
                 </Stack>
-                <Stack justifyContent="space-between" direction="row">
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                <Stack justifyContent="space-between" direction="row" alignItems="flex-end">
+                    <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
                         {text}
                     </Typography>
                     <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
@@ -494,9 +548,9 @@ function MenuTile({
             elevation={2}
             sx={{
                 borderRadius: 3,
-                width: "100%",
-                maxWidth: 320,
                 flex: "1 1 260px",
+                minWidth: 220,
+                maxWidth: 320,
             }}
             component="div"
         >
@@ -510,7 +564,9 @@ function MenuTile({
                             placeItems: "center",
                             borderRadius: 2,
                             bgcolor: (t) =>
-                                t.palette.mode === "light" ? t.palette.primary.main + "20" : t.palette.primary.main + "30",
+                                t.palette.mode === "light"
+                                    ? t.palette.primary.main + "20"
+                                    : t.palette.primary.main + "30",
                             mb: 1,
                         }}
                     >
