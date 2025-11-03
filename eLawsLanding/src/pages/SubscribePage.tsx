@@ -48,7 +48,6 @@ const SubscribePage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // 🔥 Real-time Firestore listener
     useEffect(() => {
         const unsubAuth = auth.onAuthStateChanged((user) => {
             if (!user) {
@@ -69,7 +68,6 @@ const SubscribePage: React.FC = () => {
         return () => unsubAuth();
     }, [navigate]);
 
-    // 🔹 Compute banner message
     const downgradeBanner = useMemo(() => {
         if (!pendingDowngradeTier || !pendingDowngradeDate) return null;
         const date = new Date(pendingDowngradeDate);

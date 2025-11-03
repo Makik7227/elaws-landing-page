@@ -41,6 +41,7 @@ import {
 import { auth, db } from "../../firebase";
 import PanicButtonWeb from "../components/PanicButton.tsx";
 import AiChatWidget from "../components/AiChatWidget.tsx";
+import SubscriptionButton from "../components/SubscriptionButton.tsx";
 
 type Tier = "free" | "plus" | "premium";
 type Role = "client" | "lawyer";
@@ -253,19 +254,29 @@ const Dashboard: React.FC = () => {
                 }}
             >
                 <Container maxWidth="lg">
-                    <Stack direction="row" spacing={2} alignItems="center">
-                        <Avatar sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}>
-                            {initials}
-                        </Avatar>
-                        <Box>
-                            <Typography variant="h5" fontWeight={900} lineHeight={1.2}>
-                                Welcome, {firstName || "there"}
-                            </Typography>
-                            <Typography sx={{ opacity: 0.9 }}>
-                                {subscriptionTier?.toUpperCase()} • {role === "lawyer" ? "Lawyer" : "Client"}
-                                {country ? ` • ${country}` : ""}
-                            </Typography>
-                        </Box>
+                    <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={2}
+                        alignItems={{ xs: "flex-start", sm: "center" }}
+                        justifyContent="space-between"
+                    >
+                        <Stack direction="row" spacing={2} alignItems="center">
+                            <Avatar sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}>
+                                {initials}
+                            </Avatar>
+                            <Box>
+                                <Typography variant="h5" fontWeight={900} lineHeight={1.2}>
+                                    Welcome, {firstName || "there"}
+                                </Typography>
+                                <Typography sx={{ opacity: 0.9 }}>
+                                    {subscriptionTier?.toUpperCase()} • {role === "lawyer" ? "Lawyer" : "Client"}
+                                    {country ? ` • ${country}` : ""}
+                                </Typography>
+                            </Box>
+                        </Stack>
+
+                        {/* 💎 Subscription Button */}
+                        <SubscriptionButton subscriptionTier={subscriptionTier} />
                     </Stack>
                 </Container>
             </Box>
