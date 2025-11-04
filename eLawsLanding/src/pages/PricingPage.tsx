@@ -440,7 +440,7 @@ const PricingPage: React.FC = () => {
                     <Stack alignItems="center" mt={6}>
                         <Button
                             component={RouterLink}
-                            to={uid ? "/subscribe" : "/signup"}
+                            to={uid ? "/dashboard/subscribe" : "/signup"}
                             variant="contained"
                             sx={{ borderRadius: 3, fontWeight: 800 }}
                         >
