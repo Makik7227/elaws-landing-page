@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
     Avatar,
+    Box,
     Button,
     Card,
     CardContent,
     CardHeader,
+    Chip,
     Collapse,
     Container,
     Dialog,
@@ -18,8 +20,10 @@ import {
     OutlinedInput,
     Stack,
     Typography,
+    alpha,
     useTheme,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { auth, db } from "../../firebase";
 import {
     collection,
@@ -36,7 +40,7 @@ import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
 import NoteOutlinedIcon from "@mui/icons-material/NoteOutlined";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 type Note = {
     id: string;
@@ -96,35 +100,52 @@ const NotesPage: React.FC = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-            {/* Header */}
-            <Stack direction="row" alignItems="center" spacing={1.5} mb={4}>
-                <IconButton onClick={() => navigate('/dashboard')}>
-                    <ArrowBackRoundedIcon />
-                </IconButton>
-                <NoteOutlinedIcon
-                    fontSize="large"
-                    sx={{ color: theme.palette.primary.main }}
+            <Card
+                sx={{
+                    mb: 4,
+                    borderRadius: 4,
+                    background: alpha(theme.palette.primary.main, 0.08),
+                }}
+            >
+                <CardContent>
+                    <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" spacing={2}>
+                        <Stack direction="row" alignItems="center" spacing={1.5}>
+                            <IconButton onClick={() => navigate('/dashboard')}>
+                                <ArrowBackRoundedIcon />
+                            </IconButton>
+                            <NoteOutlinedIcon fontSize="large" sx={{ color: theme.palette.primary.main }} />
+                            <Box>
+                                <Typography variant="h5" fontWeight={900}>
+                                    My Notes
+                                </Typography>
+                                <Typography color="text.secondary">
+                                    Save, search, and organize every answer from the AI.
+                                </Typography>
+                            </Box>
+                        </Stack>
+                        <Chip label={`${filteredNotes.length} notes`} color="primary" variant="outlined" />
+                    </Stack>
+                </CardContent>
+            </Card>
+
+            <Stack direction={{ xs: "column", md: "row" }} spacing={2} mb={4}>
+                <OutlinedInput
+                    fullWidth
+                    placeholder="Search notes..."
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <SearchRoundedIcon color="action" />
+                        </InputAdornment>
+                    }
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    sx={{ borderRadius: 3 }}
                 />
-                <Typography variant="h5" fontWeight={900}>
-                    My Notes
-                </Typography>
+                <Button variant="contained" component={RouterLink} to="/ai/chat" sx={{ minWidth: 200 }}>
+                    Create from chat
+                </Button>
             </Stack>
 
-            {/* Search */}
-            <OutlinedInput
-                fullWidth
-                placeholder="Search notes..."
-                startAdornment={
-                    <InputAdornment position="start">
-                        <SearchRoundedIcon color="action" />
-                    </InputAdornment>
-                }
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                sx={{ mb: 4, borderRadius: 3 }}
-            />
-
-            {/* Notes */}
             {loading ? (
                 <Typography>Loading notes...</Typography>
             ) : filteredNotes.length === 0 ? (
@@ -135,7 +156,7 @@ const NotesPage: React.FC = () => {
                     </Typography>
                 </Stack>
             ) : (
-                <Stack spacing={2.5}>
+                <Grid container spacing={3}>
                     {filteredNotes.map((note) => {
                         const expanded = expandedId === note.id;
                         const initials = note.title
@@ -151,71 +172,66 @@ const NotesPage: React.FC = () => {
                             .join(" • ");
 
                         return (
-                            <Card
-                                key={note.id}
-                                elevation={3}
-                                sx={{
-                                    borderRadius: 3,
-                                    bgcolor: theme.palette.background.paper,
-                                }}
-                            >
-                                <CardHeader
-                                    avatar={
-                                        <Avatar
-                                            sx={{
-                                                bgcolor: theme.palette.primary.main,
-                                                color: theme.palette.getContrastText(
-                                                    theme.palette.primary.main
-                                                ),
-                                            }}
-                                        >
-                                            {initials}
-                                        </Avatar>
-                                    }
-                                    action={
-                                        <Stack direction="row">
-                                            <IconButton
-                                                onClick={() =>
-                                                    setExpandedId(expanded ? null : note.id)
-                                                }
+                            <Grid size={{ xs: 12, md: 6 }} key={note.id}>
+                                <Card sx={{ borderRadius: 4 }}>
+                                    <CardHeader
+                                        avatar={
+                                            <Avatar
+                                                sx={{
+                                                    bgcolor: theme.palette.primary.main,
+                                                    color: theme.palette.getContrastText(
+                                                        theme.palette.primary.main
+                                                    ),
+                                                }}
                                             >
-                                                {expanded ? (
-                                                    <ExpandLessRoundedIcon />
-                                                ) : (
-                                                    <ExpandMoreRoundedIcon />
-                                                )}
-                                            </IconButton>
-                                            <IconButton
-                                                color="error"
-                                                onClick={() => setDeleteId(note.id)}
+                                                {initials}
+                                            </Avatar>
+                                        }
+                                        action={
+                                            <Stack direction="row">
+                                                <IconButton
+                                                    onClick={() =>
+                                                        setExpandedId(expanded ? null : note.id)
+                                                    }
+                                                >
+                                                    {expanded ? (
+                                                        <ExpandLessRoundedIcon />
+                                                    ) : (
+                                                        <ExpandMoreRoundedIcon />
+                                                    )}
+                                                </IconButton>
+                                                <IconButton
+                                                    color="error"
+                                                    onClick={() => setDeleteId(note.id)}
+                                                >
+                                                    <DeleteOutlineRoundedIcon />
+                                                </IconButton>
+                                            </Stack>
+                                        }
+                                        title={
+                                            <Typography fontWeight={800} fontSize={17}>
+                                                {note.title ?? "Untitled Note"}
+                                            </Typography>
+                                        }
+                                        subheader={subtitle}
+                                    />
+                                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                                        <Divider />
+                                        <CardContent>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}
                                             >
-                                                <DeleteOutlineRoundedIcon />
-                                            </IconButton>
-                                        </Stack>
-                                    }
-                                    title={
-                                        <Typography fontWeight={800} fontSize={17}>
-                                            {note.title ?? "Untitled Note"}
-                                        </Typography>
-                                    }
-                                    subheader={subtitle}
-                                />
-                                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                                    <Divider />
-                                    <CardContent>
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            sx={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}
-                                        >
-                                            {note.content}
-                                        </Typography>
-                                    </CardContent>
-                                </Collapse>
-                            </Card>
+                                                {note.content}
+                                            </Typography>
+                                        </CardContent>
+                                    </Collapse>
+                                </Card>
+                            </Grid>
                         );
                     })}
-                </Stack>
+                </Grid>
             )}
 
             {/* Delete Dialog */}

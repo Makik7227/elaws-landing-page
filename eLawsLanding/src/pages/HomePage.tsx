@@ -9,8 +9,10 @@ import {
     Divider,
     Stack,
     Typography,
+    alpha,
     useTheme,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { Link as RouterLink } from "react-router-dom";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
@@ -72,29 +74,108 @@ const StepCard: React.FC<{
     const theme = useTheme();
     return (
         <Stack
-            direction="row"
-            spacing={2}
+            spacing={1.5}
             sx={{
-                p: 2.5,
-                borderRadius: 2.5,
-                margin: 10,
-                alignItems: "flex-start",
+                p: 3,
+                borderRadius: 3,
+                flex: 1,
+                minWidth: 240,
+                position: "relative",
+                overflow: "hidden",
                 bgcolor: theme.palette.background.paper,
-                border: `1px solid ${theme.palette.divider}`,
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+                boxShadow:
+                    theme.palette.mode === "light"
+                        ? "0 18px 40px rgba(18,10,40,0.08)"
+                        : "0 18px 45px rgba(0,0,0,0.55)",
             }}
         >
-            <Chip label={step} color="primary" sx={{ fontWeight: 700, borderRadius: 2 }} />
-            <Box>
-                <Typography variant="subtitle1" fontWeight={700}>
-                    {title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {desc}
-                </Typography>
-            </Box>
+            <Chip
+                label={`0${step}`}
+                color="primary"
+                sx={{ fontWeight: 700, width: "fit-content", borderRadius: 999 }}
+            />
+            <Typography variant="subtitle1" fontWeight={800}>
+                {title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+                {desc}
+            </Typography>
+            <Box
+                sx={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    background: `radial-gradient(circle at top, ${alpha(
+                        theme.palette.primary.main,
+                        0.08
+                    )}, transparent 55%)`,
+                }}
+            />
         </Stack>
     );
 };
+
+const HERO_METRICS = [
+    { label: "Questions answered", value: "2.3M+" },
+    { label: "Docs drafted", value: "640K" },
+    { label: "Avg. response time", value: "6.4s" },
+];
+
+const TRUSTED_LOGOS = ["LexisLink", "NovaLegal", "Atlas Law", "CivicTech"];
+
+const HOW_IT_WORKS = [
+    { step: 1, title: "Pick country & topic", desc: "We tailor the AI context to local legislation and practice." },
+    { step: 2, title: "Chat, draft, or plan", desc: "Ask follow ups, generate filings, or spin up guided procedures." },
+    { step: 3, title: "Save & collaborate", desc: "Store insights, export docs, and loop in lawyers when needed." },
+];
+
+const HERO_HIGHLIGHTS = [
+    { icon: <LockRoundedIcon fontSize="small" />, label: "End-to-end security" },
+    { icon: <LanguageRoundedIcon fontSize="small" />, label: "Country-aware guidance" },
+    { icon: <AssessmentRoundedIcon fontSize="small" />, label: "Cited answers" },
+];
+
+const FEATURE_LIST = [
+    {
+        icon: <GavelRoundedIcon />,
+        title: "Country-specific chat",
+        desc: "Ask in natural language and get answers tuned to your jurisdiction.",
+    },
+    {
+        icon: <ChatRoundedIcon />,
+        title: "Topic presets",
+        desc: "Civil, criminal, business, labor, tax… jump in with curated prompts.",
+    },
+    {
+        icon: <LockRoundedIcon />,
+        title: "Privacy by default",
+        desc: "Secure storage, strict access controls, and audit trails built in.",
+    },
+    {
+        icon: <BoltRoundedIcon />,
+        title: "Lightning fast",
+        desc: "Optimized pipeline and caching. Answers in seconds, not minutes.",
+    },
+];
+
+const WORKFLOW_POINTS = [
+    {
+        icon: <ChatRoundedIcon />,
+        title: "Unified workspace",
+        desc: "Chat, notes, cases, and procedures share the same context so nothing gets lost.",
+    },
+    {
+        icon: <BoltRoundedIcon />,
+        title: "Real-time AI",
+        desc: "We stream responses, highlight citations, and let you branch threads instantly.",
+    },
+    {
+        icon: <GavelRoundedIcon />,
+        title: "Local expertise",
+        desc: "Country packs bake in regulations, forms, and deadlines unique to your region.",
+    },
+];
 
 const HomePage: React.FC = () => {
     const theme = useTheme();
@@ -120,52 +201,58 @@ const HomePage: React.FC = () => {
                     background: gradient,
                     position: "relative",
                     color: theme.palette.getContrastText(theme.palette.primary.main),
+                    overflow: "hidden",
+                    "&:before": {
+                        content: '""',
+                        position: "absolute",
+                        width: 420,
+                        height: 420,
+                        top: -120,
+                        right: -80,
+                        borderRadius: "50%",
+                        background: alpha(theme.palette.common.white, 0.1),
+                        filter: "blur(40px)",
+                    },
                 }}
             >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        opacity: theme.palette.mode === "light" ? 0.04 : 0.08,
-                        background: "#000",
-                    }}
-                />
                 <Container sx={{ position: "relative" }}>
-                    <Stack spacing={3} alignItems="center" textAlign="center">
+                    <Stack spacing={4} alignItems="center" textAlign="center">
                         <Chip
                             label="AI legal copilot"
                             variant="outlined"
                             sx={{
                                 color: "inherit",
-                                borderColor: "currentColor",
+                                borderColor: alpha(theme.palette.common.white, 0.4),
                                 bgcolor: "transparent",
                                 fontWeight: 600,
+                                px: 2,
                             }}
                         />
                         <Typography
                             component="h1"
                             sx={{
                                 fontSize: { xs: 40, sm: 56, md: 64 },
-                                fontWeight: 800,
-                                letterSpacing: -0.5,
-                                lineHeight: 1.05,
+                                fontWeight: 900,
+                                letterSpacing: -0.8,
+                                lineHeight: 1.02,
+                                maxWidth: 900,
                             }}
                         >
-                            E-Laws — legal help, on demand.
+                            E-Laws — legal help, on-demand.
                         </Typography>
                         <Typography
                             sx={{
-                                maxWidth: 820,
+                                maxWidth: 780,
                                 opacity: 0.9,
                                 fontSize: { xs: 16, md: 18 },
                             }}
                         >
                             Ask questions, generate documents, and chat with a legal assistant
-                            tailored to your country — all in one place. Privacy-first. Fast
-                            as hell.
+                            tuned to your jurisdiction. Privacy-first. Built for legal teams and
+                            solo founders alike.
                         </Typography>
 
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mt={1}>
+                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                             <Button
                                 component={RouterLink}
                                 to={user ? "/dashboard" : "/signup"}
@@ -174,54 +261,104 @@ const HomePage: React.FC = () => {
                                 sx={{
                                     px: 4,
                                     py: 1.2,
-                                    fontWeight: 700,
-                                    borderRadius: 3,
-                                    boxShadow: "0 10px 24px rgba(0,0,0,.18)",
+                                    fontWeight: 800,
                                 }}
                             >
-                                {user ? "Dashboard" :"Get Started"}
+                                {user ? "Go to dashboard" : "Create free account"}
                             </Button>
-                            {!user &&
+                            {!user && (
                                 <Button
-                                component={RouterLink}
-                                to="/chat"
-                                variant="outlined"
-                                size="large"
-                                sx={{
-                                    px: 4,
-                                    py: 1.2,
-                                    fontWeight: 700,
-                                    borderRadius: 3,
-                                    bgcolor:
-                                        theme.palette.mode === "light"
-                                            ? "rgba(255,255,255,.12)"
-                                            : "rgba(0,0,0,.18)",
-                                    borderColor: "currentColor",
-                                }}
-                            >
-                                Try the Demo
-                            </Button>}
+                                    component={RouterLink}
+                                    to="/chat"
+                                    variant="outlined"
+                                    size="large"
+                                    sx={{
+                                        px: 4,
+                                        py: 1.2,
+                                        fontWeight: 700,
+                                        color: "inherit",
+                                        borderColor: alpha(theme.palette.common.white, 0.4),
+                                        bgcolor: alpha(theme.palette.common.white, 0.06),
+                                        "&:hover": { borderColor: "inherit" },
+                                    }}
+                                >
+                                    Try the Demo
+                                </Button>
+                            )}
                         </Stack>
 
                         <Stack
-                            direction="row"
-                            spacing={2}
-                            mt={4}
-                            sx={{ opacity: 0.9, flexWrap: "wrap", justifyContent: "center" }}
+                            direction={{ xs: "column", md: "row" }}
+                            spacing={3}
+                            justifyContent="center"
+                            alignItems="stretch"
+                            sx={{ width: "100%", maxWidth: 900 }}
                         >
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <LockRoundedIcon fontSize="small" />
-                                <Typography variant="body2">End-to-end security</Typography>
-                            </Stack>
-                            <Divider orientation="vertical" flexItem />
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <LanguageRoundedIcon fontSize="small" />
-                                <Typography variant="body2">Country-aware guidance</Typography>
-                            </Stack>
-                            <Divider orientation="vertical" flexItem />
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <AssessmentRoundedIcon fontSize="small" />
-                                <Typography variant="body2">Clear, cited answers</Typography>
+                            <Card
+                                sx={{
+                                    flex: 1,
+                                    bgcolor: alpha(theme.palette.common.white, 0.08),
+                                    borderColor: alpha(theme.palette.common.white, 0.12),
+                                }}
+                            >
+                                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                                    <Stack
+                                        direction={{ xs: "column", sm: "row" }}
+                                        spacing={{ xs: 2, sm: 3 }}
+                                        justifyContent="space-between"
+                                        alignItems={{ xs: "flex-start", sm: "center" }}
+                                    >
+                                        {HERO_METRICS.map((metric) => (
+                                            <Stack key={metric.label} spacing={0.5} alignItems={{ xs: "flex-start", sm: "center" }}>
+                                                <Typography variant="h4" fontWeight={900}>
+                                                    {metric.value}
+                                                </Typography>
+                                                <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                                                    {metric.label}
+                                                </Typography>
+                                            </Stack>
+                                        ))}
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Stack>
+
+                        <Stack
+                            direction={{ xs: "column", sm: "row" }}
+                            spacing={1.5}
+                            justifyContent="center"
+                            flexWrap="wrap"
+                        >
+                            {HERO_HIGHLIGHTS.map((item) => (
+                                <Chip
+                                    key={item.label}
+                                    icon={item.icon}
+                                    label={item.label}
+                                    variant="outlined"
+                                    sx={{
+                                        color: "inherit",
+                                        borderColor: alpha(theme.palette.common.white, 0.4),
+                                        bgcolor: alpha(theme.palette.common.white, 0.06),
+                                    }}
+                                />
+                            ))}
+                        </Stack>
+
+                        <Stack
+                            direction={{ xs: "column", sm: "row" }}
+                            spacing={2}
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ opacity: 0.8 }}
+                        >
+                            <Typography variant="body2">Trusted by modern legal teams:</Typography>
+                            <Divider flexItem orientation={"vertical"} sx={{ display: { xs: "none", sm: "block" } }} />
+                            <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, sm: 3 }} alignItems="center">
+                                {TRUSTED_LOGOS.map((logo) => (
+                                    <Typography key={logo} variant="body2" sx={{ letterSpacing: 2 }}>
+                                        {logo}
+                                    </Typography>
+                                ))}
                             </Stack>
                         </Stack>
                     </Stack>
@@ -231,45 +368,138 @@ const HomePage: React.FC = () => {
             {/* FEATURES */}
             <Box component="section" sx={{ py: { xs: 8, md: 10 } }}>
                 <Container>
-                    <Stack spacing={1.5} mb={4} textAlign="center">
+                    <Stack spacing={1} mb={4} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
                             What you get
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
                             Built for real-world legal tasks
                         </Typography>
+                        <Typography color="text.secondary">
+                            Designed for SaaS simplicity: clear modules, instant context, and beautiful defaults.
+                        </Typography>
                     </Stack>
-                    <Stack
-                        direction={{ xs: "column", md: "row" }}
-                        spacing={3}
-                        justifyContent="center"
-                        flexWrap="wrap"
-                    >
-                        <Stack direction='row' sx={{ paddingBottom: 4}} spacing={2}>
-                        <FeatureCard
-                            icon={<GavelRoundedIcon />}
-                            title="Country-specific chat"
-                            desc="Ask in plain language and get answers tuned to your jurisdiction."
-                        />
-                        <FeatureCard
-                            icon={<ChatRoundedIcon />}
-                            title="Topic presets"
-                            desc="Civil, criminal, business, labor, tax… jump in with one tap."
-                        />
+                    <Grid container spacing={3}>
+                        {FEATURE_LIST.map((feature) => (
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={feature.title}>
+                                <FeatureCard {...feature} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </Box>
+
+            {/* PLATFORM SNAPSHOT */}
+            <Box component="section" sx={{ py: { xs: 6, md: 9 } }}>
+                <Container>
+                    <Grid container spacing={{ xs: 4, md: 6 }} alignItems="center">
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <Stack spacing={2}>
+                                <Chip label="Workflow" color="primary" variant="outlined" sx={{ width: "fit-content" }} />
+                                <Typography variant="h4" fontWeight={800}>
+                                    Everything teams need—without the clunky UI.
+                                </Typography>
+                                <Typography color="text.secondary">
+                                    We borrowed the best SaaS patterns: left-hand navigation, delightful cards, progressive disclosure, and optional dark mode. It feels like your favorite productivity suite, not old-school legal tech.
+                                </Typography>
+                                <Stack spacing={2}>
+                                    {WORKFLOW_POINTS.map((point) => (
+                                        <Stack direction="row" spacing={2} key={point.title} alignItems="flex-start">
+                                            <Box
+                                                sx={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: 2,
+                                                    display: "grid",
+                                                    placeItems: "center",
+                                                    bgcolor: alpha(theme.palette.primary.main, 0.12),
+                                                    color: theme.palette.primary.main,
+                                                }}
+                                            >
+                                                {point.icon}
+                                            </Box>
+                                            <Box>
+                                                <Typography fontWeight={700}>{point.title}</Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {point.desc}
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                    ))}
+                                </Stack>
+                                <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                                    <Button component={RouterLink} to="/features" variant="contained">
+                                        Explore the product
+                                    </Button>
+                                    <Button component={RouterLink} to="/pricing" variant="text">
+                                        View pricing →
+                                    </Button>
+                                </Stack>
                             </Stack>
-                        <Stack direction='row' spacing={2}>
-                            <FeatureCard
-                                icon={<LockRoundedIcon />}
-                                title="Privacy by default"
-                                desc="Secure storage and strict access. Your data stays yours."
-                            />
-                            <FeatureCard
-                                icon={<BoltRoundedIcon />}
-                                title="Lightning fast"
-                                desc="Optimized pipeline and caching. Answers in seconds."
-                            />
-                        </Stack>
-                    </Stack>
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <Box
+                                sx={{
+                                    borderRadius: 5,
+                                    p: { xs: 3, md: 4 },
+                                    bgcolor: theme.palette.background.paper,
+                                    position: "relative",
+                                    overflow: "hidden",
+                                    border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+                                    boxShadow: theme.palette.mode === "light"
+                                        ? "0 30px 80px rgba(18,10,40,0.12)"
+                                        : "0 30px 90px rgba(0,0,0,0.65)",
+                                }}
+                            >
+                                <Typography variant="subtitle2" fontWeight={700} mb={2}>
+                                    Live preview
+                                </Typography>
+                                <Stack spacing={2}>
+                                    {["Draft NDA", "Labor dispute chat", "Immigration checklist"].map((title, idx) => (
+                                        <Card key={title} sx={{ borderRadius: 4, borderColor: alpha(theme.palette.primary.main, 0.08) }}>
+                                            <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                                                <Box
+                                                    sx={{
+                                                        width: 42,
+                                                        height: 42,
+                                                        borderRadius: 999,
+                                                        bgcolor: alpha(theme.palette.primary.main, 0.15),
+                                                        display: "grid",
+                                                        placeItems: "center",
+                                                        fontWeight: 700,
+                                                    }}
+                                                >
+                                                    {idx + 1}
+                                                </Box>
+                                                <Box>
+                                                    <Typography fontWeight={700}>{title}</Typography>
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        {idx === 0 && "AI-built in 35 seconds."}
+                                                        {idx === 1 && "Summaries + citations ready to share."}
+                                                        {idx === 2 && "Checklist auto-adjusts to your country."}
+                                                    </Typography>
+                                                </Box>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </Stack>
+                                <Box
+                                    sx={{
+                                        mt: 3,
+                                        borderRadius: 3,
+                                        border: `1px dashed ${alpha(theme.palette.primary.main, 0.3)}`,
+                                        p: 3,
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    <Typography fontWeight={700}>Dark mode ready</Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Toggle it anytime from the nav.
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Container>
             </Box>
 
@@ -281,40 +511,26 @@ const HomePage: React.FC = () => {
                     bgcolor: theme.palette.background.default,
                 }}
             >
-                <Container sx={{ maxWidth: '60%' }}>
-                    <Stack spacing={1.5} mb={4} textAlign="center">
+                <Container>
+                    <Stack spacing={1.5} mb={5} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
                             How it works
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
-                            Three steps. Simple as that.
+                            Three steps. Zero confusion.
+                        </Typography>
+                        <Typography color="text.secondary">
+                            Guided flows keep complex procedures approachable. Every workspace feels familiar.
                         </Typography>
                     </Stack>
 
-                    <Stack
-                        direction={{ xs: "column", md: "row" }}
-                        justifyContent="center"
-                        flexWrap="wrap"
-                        spacing={2}
-                    >
-                        <Stack direction="row">
-                            <StepCard
-                                step={1}
-                                title="Pick country & topic"
-                                desc="We tailor context to your jurisdiction and area of law."
-                            />
-                            <StepCard
-                                step={2}
-                                title="Ask or generate"
-                                desc="Chat with AI, draft documents, or create procedures."
-                            />
-                        </Stack>
-                        <StepCard
-                            step={3}
-                            title="Save & share"
-                            desc="Store notes, export docs, or loop in a lawyer when needed."
-                        />
-                    </Stack>
+                    <Grid container spacing={3} justifyContent="center">
+                        {HOW_IT_WORKS.map((step) => (
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={step.step}>
+                                <StepCard {...step} />
+                            </Grid>
+                        ))}
+                    </Grid>
                 </Container>
             </Box>
 
