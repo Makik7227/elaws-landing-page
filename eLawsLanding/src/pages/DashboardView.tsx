@@ -22,6 +22,7 @@ import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -40,6 +41,7 @@ import {
 import { auth, db } from "../../firebase";
 import PanicButtonWeb from "../components/PanicButton.tsx";
 import AiChatWidget from "../components/AiChatWidget.tsx";
+import SubscriptionButton from "../components/SubscriptionButton.tsx";
 
 type Tier = "free" | "plus" | "premium";
 type Role = "client" | "lawyer";
@@ -54,6 +56,10 @@ type UserDoc = {
     monthlyTokensUsed?: number;
     role?: Role;
     subscriptionTier?: Tier;
+    pendingDowngradeTier?: Tier | null;
+    pendingDowngradeDate?: number | null;
+    subscriptionCancelAtPeriodEnd?: boolean | null;
+    subscriptionCancelDate?: number | null;
 };
 
 type CaseDoc = {
@@ -112,9 +118,14 @@ const Dashboard: React.FC = () => {
                     monthlyTokensUsed: 0,
                     role: "client",
                     subscriptionTier: "free",
+                    pendingDowngradeTier: null,
+                    pendingDowngradeDate: null,
+                    subscriptionCancelAtPeriodEnd: null,
+                    subscriptionCancelDate: null,
                     ...u,
                 };
                 setUser(merged);
+
                 const qChats = query(
                     collection(db, "userChats"),
                     where("users", "array-contains", uid),
@@ -234,7 +245,25 @@ const Dashboard: React.FC = () => {
         monthlyTokensUsed = 0,
         role = "client",
         subscriptionTier = "free",
+        pendingDowngradeTier = null,
+        pendingDowngradeDate = null,
+        subscriptionCancelAtPeriodEnd = null,
+        subscriptionCancelDate = null,
     } = user;
+
+    const formatTierLabel = (tier: Tier | "free") => tier.charAt(0).toUpperCase() + tier.slice(1);
+
+    const pendingDowngradeTarget = pendingDowngradeTier ?? (subscriptionCancelAtPeriodEnd ? "free" : null);
+    const pendingDowngradeLabel = pendingDowngradeTarget ? formatTierLabel(pendingDowngradeTarget) : null;
+    const pendingDowngradeEffectiveDate =
+        pendingDowngradeTarget === "free" ? subscriptionCancelDate : pendingDowngradeDate;
+    const pendingDowngradeDateLabel = pendingDowngradeEffectiveDate
+        ? new Date(pendingDowngradeEffectiveDate).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+          })
+        : null;
 
     const initials = ((firstName?.[0] || "") + (lastName?.[0] || "") || "U").toUpperCase();
     const tokenPct = clamp(tokenLimit ? monthlyTokensUsed / tokenLimit : 0);
@@ -242,7 +271,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <>
-            {/* HERO / WELCOME */}
+            {/* Hero */}
             <Box
                 sx={{
                     background: gradient,
@@ -251,143 +280,195 @@ const Dashboard: React.FC = () => {
                 }}
             >
                 <Container maxWidth="lg">
-                    <Stack direction="row" spacing={2} alignItems="center">
-                        <Avatar sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}>
-                            {initials}
-                        </Avatar>
-                        <Box>
-                            <Typography variant="h5" fontWeight={900} lineHeight={1.2}>
-                                Welcome, {firstName || "there"}
-                            </Typography>
-                            <Typography sx={{ opacity: 0.9 }}>
-                                {subscriptionTier?.toUpperCase()} • {role === "lawyer" ? "Lawyer" : "Client"}
-                                {country ? ` • ${country}` : ""}
-                            </Typography>
-                        </Box>
-
-                        <Box sx={{ flex: 1 }} />
-
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.25}>
-                            <Button
-                                component={RouterLink}
-                                to="/manage"
-                                variant="outlined"
-                                sx={{
-                                    borderRadius: 3,
-                                    color: "inherit",
-                                    borderColor: "currentColor",
-                                    "&:hover": { borderColor: "currentColor" },
-                                }}
-                            >
-                                Manage Account
-                            </Button>
-                            <Button
-                                component={RouterLink}
-                                to={subscriptionTier === "free" ? "/pricing" : "/subscribe"}
-                                variant="contained"
-                                sx={{ borderRadius: 3, fontWeight: 800 }}
-                            >
-                                {subscriptionTier === "free" ? "Upgrade" : "Manage Plan"}
-                            </Button>
+                    <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={2}
+                        alignItems={{ xs: "flex-start", sm: "center" }}
+                        justifyContent="space-between"
+                    >
+                        <Stack direction="row" spacing={2} alignItems="center">
+                            <Avatar sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}>
+                                {initials}
+                            </Avatar>
+                            <Box>
+                                <Typography variant="h5" fontWeight={900} lineHeight={1.2}>
+                                    Welcome, {firstName || "there"}
+                                </Typography>
+                                <Typography sx={{ opacity: 0.9 }}>
+                                    {subscriptionTier?.toUpperCase()} • {role === "lawyer" ? "Lawyer" : "Client"}
+                                    {country ? ` • ${country}` : ""}
+                                </Typography>
+                            </Box>
                         </Stack>
+
+                        {/* 💎 Subscription Button */}
+                        <SubscriptionButton subscriptionTier={subscriptionTier} />
                     </Stack>
                 </Container>
             </Box>
 
             <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
+                {pendingDowngradeTarget && (
+                    <Box
+                        sx={{
+                            mb: 3,
+                            p: 2.5,
+                            borderRadius: 2,
+                            border: `1px solid ${theme.palette.warning.main}`,
+                            backgroundColor: theme.palette.warning.main + "15",
+                        }}
+                    >
+                        <Stack
+                            direction={{ xs: "column", sm: "row" }}
+                            spacing={2}
+                            alignItems={{ xs: "flex-start", sm: "center" }}
+                            justifyContent="space-between"
+                        >
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ textTransform: "uppercase", fontWeight: 700 }}>
+                                    Downgrade scheduled
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                                    You’ll move to {pendingDowngradeLabel}{" "}
+                                    {pendingDowngradeDateLabel ? `on ${pendingDowngradeDateLabel}` : "at period end"}.
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Use “Manage subscription” if you want to undo or change your plan.
+                                </Typography>
+                            </Box>
+                            <Button
+                                component={RouterLink}
+                                to="/subscribe"
+                                variant="outlined"
+                                color="warning"
+                                sx={{ fontWeight: 700, borderRadius: 2 }}
+                            >
+                                Review plan
+                            </Button>
+                        </Stack>
+                    </Box>
+                )}
                 <Stack spacing={3}>
-                    {/* TOKENS + PANIC */}
-                    <Card elevation={3} sx={{ borderRadius: 3 }}>
+                    {/* Usage + Panic */}
+                    <Card elevation={4} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                             <Stack
                                 direction={{ xs: "column", md: "row" }}
-                                gap={2.5}
                                 alignItems={{ xs: "stretch", md: "center" }}
+                                justifyContent="space-between"
+                                spacing={3}
                             >
-                                <Box sx={{ flex: 1, minWidth: 240 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" mb={1}>
-                                        <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
-                                        <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                                            {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
-                                        </Typography>
+                                <Box sx={{ flex: 1, minWidth: 260 }}>
+                                    <Stack spacing={1}>
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
+                                            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                                                {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
+                                            </Typography>
+                                        </Stack>
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={Math.round(tokenPct * 100)}
+                                            sx={{
+                                                height: 10,
+                                                borderRadius: 10,
+                                                "& .MuiLinearProgress-bar": { borderRadius: 10 },
+                                            }}
+                                        />
                                     </Stack>
-                                    <LinearProgress
-                                        variant="determinate"
-                                        value={Math.round(tokenPct * 100)}
-                                        sx={{
-                                            height: 10,
-                                            borderRadius: 10,
-                                            "& .MuiLinearProgress-bar": { borderRadius: 10 },
-                                        }}
-                                    />
                                 </Box>
 
-                                <Divider flexItem orientation="vertical" sx={{ display: { xs: "none", md: "block" } }} />
+                                <Divider flexItem orientation="vertical" sx={{ display: { xs: "none", md: "block" }, mx: 1 }} />
 
-                                <Stack direction="row" spacing={1.25} alignItems="center">
-                                    <LocalPoliceRoundedIcon />
+                                <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
                                     <Box>
-                                        <Typography fontWeight={800}>Stopped by the Police</Typography>
+                                        <Typography fontWeight={800} display="flex" alignItems="center" gap={1}>
+                                            <LocalPoliceRoundedIcon /> Stopped by the Police
+                                        </Typography>
                                         <Typography variant="body2" color="text.secondary">
                                             Quick access to local guidance
                                         </Typography>
                                     </Box>
+                                    <PanicButtonWeb
+                                        tokenLimit={user.tokenLimit || 0}
+                                        defaultCode={user.countryCode || ""}
+                                        tokensUsed={user.monthlyTokensUsed || 0}
+                                        defaultCountry={user.country || ""}
+                                    />
                                 </Stack>
-                                <PanicButtonWeb
-                                tokenLimit={user.tokenLimit || 0}
-                                defaultCode={user.countryCode || ""}
-                                tokensUsed={user.monthlyTokensUsed || 0}
-                                defaultCountry={user.country || ""}
-                                />
                             </Stack>
                         </CardContent>
                     </Card>
 
-                    {subscriptionTier !== "free" && (
-                        <Card elevation={2} sx={{ borderRadius: 3 }}>
-                            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                                <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-                                    <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
-                                    <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
-                                    {role === "lawyer" && (
-                                        <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
-                                    )}
-                                </Stack>
-                            </CardContent>
-                        </Card>
-                    )}
+                    {/* Quick actions + Info */}
+                    <Card elevation={3} sx={{ borderRadius: 3 }}>
+                        {subscriptionTier !== "free" && (
+                            <>
+                                <CardContent sx={{ pb: 1, pt: { xs: 2.5, md: 3 } }}>
+                                    <Stack
+                                        direction="row"
+                                        spacing={1.5}
+                                        flexWrap="wrap"
+                                        useFlexGap
+                                        alignItems="center"
+                                    >
+                                        <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
+                                        <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
+                                        {role === "lawyer" && (
+                                            <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
+                                        )}
+                                        <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title="Stop Procedures" />
+                                        <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon />} title="Notes" />
+                                    </Stack>
+                                </CardContent>
 
-                    {/* WHAT'S UP / INFO ROW */}
-                    <Stack direction="row" gap={2} flexWrap="wrap" useFlexGap>
-                        <InfoCard
-                            to="/userChats"
-                            icon={<ForumRoundedIcon />}
-                            title="Unread chats"
-                            text={
-                                loading
-                                    ? "Checking chats…"
-                                    : unreadCount > 0
-                                        ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
-                                        : "No unread chats."
-                            }
-                        />
-                        <InfoCard
-                            to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
-                            icon={<AssignmentTurnedInRoundedIcon />}
-                            title="Last case"
-                            text={
-                                loading
-                                    ? "Loading your last case…"
-                                    : lastCase
-                                        ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
-                                        : "No cases found."
-                            }
-                            disabled={!lastCase}
-                        />
-                    </Stack>
-                    <Card elevation={2} sx={{ borderRadius: 3 }}>
-                        <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                            <Stack direction="row" justifyContent="space-between">
+                                <CardContent sx={{ pt: 1 }}>
+                                    <Stack
+                                        direction="row"
+                                        spacing={2}
+                                        flexWrap="wrap"
+                                        useFlexGap
+                                        alignItems="stretch"
+                                    >
+                                        <InfoCard
+                                            to="/userChats"
+                                            icon={<ForumRoundedIcon />}
+                                            title="Unread chats"
+                                            text={
+                                                loading
+                                                    ? "Checking chats…"
+                                                    : unreadCount > 0
+                                                        ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
+                                                        : "No unread chats."
+                                            }
+                                        />
+                                        <InfoCard
+                                            to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
+                                            icon={<AssignmentTurnedInRoundedIcon />}
+                                            title="Last case"
+                                            text={
+                                                loading
+                                                    ? "Loading your last case…"
+                                                    : lastCase
+                                                        ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
+                                                        : "No cases found."
+                                            }
+                                            disabled={!lastCase}
+                                        />
+                                    </Stack>
+                                </CardContent>
+                            </>
+                        )}
+
+                        <CardContent sx={{ pt: subscriptionTier !== "free" ? 1 : 3 }}>
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                flexWrap="wrap"
+                                useFlexGap
+                                alignItems="stretch"
+                                justifyContent="space-between"
+                            >
                                 <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title="Account" />
                                 {subscriptionTier !== "free" && (
                                     <>
@@ -398,12 +479,20 @@ const Dashboard: React.FC = () => {
                             </Stack>
                         </CardContent>
                     </Card>
+
+                    {/* Upgrade */}
                     {subscriptionTier === "free" && (
-                        <Card elevation={0} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.default }}>
+                        <Card
+                            elevation={0}
+                            sx={{
+                                borderRadius: 3,
+                                backgroundColor: theme.palette.background.default,
+                            }}
+                        >
                             <CardContent>
                                 <Stack
                                     direction={{ xs: "column", md: "row" }}
-                                    gap={2}
+                                    spacing={2}
                                     alignItems={{ xs: "flex-start", md: "center" }}
                                     justifyContent="space-between"
                                 >
@@ -415,7 +504,7 @@ const Dashboard: React.FC = () => {
                                             Upgrade to Plus or Premium for end-to-end features.
                                         </Typography>
                                     </Box>
-                                    <Stack direction="row" gap={1.25}>
+                                    <Stack direction="row" spacing={1.25} flexWrap="wrap">
                                         <Button component={RouterLink} to="/pricing" variant="outlined" sx={{ borderRadius: 2 }}>
                                             See Pricing
                                         </Button>
@@ -429,12 +518,15 @@ const Dashboard: React.FC = () => {
                     )}
                 </Stack>
             </Container>
-            <AiChatWidget/>
+
+            <AiChatWidget />
         </>
     );
 };
 
 export default Dashboard;
+
+/* ---------- Subcomponents (unchanged logic, refined styles) ---------- */
 
 function QuickAction({
                          to,
@@ -478,7 +570,15 @@ function InfoCard({
     disabled?: boolean;
 }) {
     return (
-        <Card elevation={2} sx={{ borderRadius: 3, flex: "1 1 280px", minWidth: 280, maxWidth: 520 }}>
+        <Card
+            elevation={2}
+            sx={{
+                borderRadius: 3,
+                flex: "1 1 320px",
+                minWidth: 280,
+                maxWidth: 520,
+            }}
+        >
             <CardContent>
                 <Stack direction="row" spacing={1.25} alignItems="center" mb={1}>
                     <Box
@@ -489,19 +589,23 @@ function InfoCard({
                             placeItems: "center",
                             borderRadius: 2,
                             bgcolor: (t) =>
-                                t.palette.mode === "light" ? t.palette.primary.main + "20" : t.palette.primary.main + "30",
+                                t.palette.mode === "light"
+                                    ? t.palette.primary.main + "20"
+                                    : t.palette.primary.main + "30",
                         }}
                     >
                         {icon}
                     </Box>
                     <Typography fontWeight={800}>{title}</Typography>
                 </Stack>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {text}
-                </Typography>
-                <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
-                    Open
-                </Button>
+                <Stack justifyContent="space-between" direction="row" alignItems="flex-end">
+                    <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
+                        {text}
+                    </Typography>
+                    <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
+                        Open
+                    </Button>
+                </Stack>
             </CardContent>
         </Card>
     );
@@ -521,9 +625,9 @@ function MenuTile({
             elevation={2}
             sx={{
                 borderRadius: 3,
-                width: "100%",
-                maxWidth: 320,
                 flex: "1 1 260px",
+                minWidth: 220,
+                maxWidth: 320,
             }}
             component="div"
         >
@@ -537,7 +641,9 @@ function MenuTile({
                             placeItems: "center",
                             borderRadius: 2,
                             bgcolor: (t) =>
-                                t.palette.mode === "light" ? t.palette.primary.main + "20" : t.palette.primary.main + "30",
+                                t.palette.mode === "light"
+                                    ? t.palette.primary.main + "20"
+                                    : t.palette.primary.main + "30",
                             mb: 1,
                         }}
                     >

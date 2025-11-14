@@ -23,6 +23,7 @@ import {onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, upd
 import {doc, getDoc, updateDoc} from "firebase/firestore";
 import {auth, db} from "../../firebase.ts";
 import {COUNTRIES, type CountryOption} from "../utils/CountryOption.ts";
+import SubscriptionButton from "../components/SubscriptionButton.tsx";
 
 type Role = "client" | "lawyer";
 
@@ -205,29 +206,7 @@ const ManageAccount: React.FC = () => {
                             </Typography>
                         </Box>
                         <Box sx={{flex: 1}}/>
-                        <Stack direction={{xs: "column", sm: "row"}} spacing={1.5}>
-                            <Button
-                                component={RouterLink}
-                                to="/pricing"
-                                variant="outlined"
-                                sx={{
-                                    borderRadius: 3,
-                                    color: "inherit",
-                                    borderColor: "currentColor",
-                                    "&:hover": {borderColor: "currentColor"},
-                                }}
-                            >
-                                Change Plan
-                            </Button>
-                            <Button
-                                component={RouterLink}
-                                to="/cases"
-                                variant="contained"
-                                sx={{borderRadius: 3, fontWeight: 800}}
-                            >
-                                Open App
-                            </Button>
-                        </Stack>
+                       <SubscriptionButton subscriptionTier={subscriptionTier}/>
                     </Stack>
                 </Container>
             </Box>
@@ -403,7 +382,7 @@ const ManageAccount: React.FC = () => {
                                 Shortcuts
                             </Typography>
                             <Stack direction={{xs: "column", sm: "row"}} spacing={1.5} useFlexGap flexWrap="wrap">
-                                <Button component={RouterLink} to="/cases" variant="outlined" sx={{borderRadius: 3}}>
+                                <Button component={RouterLink} to="/dashboard/cases" variant="outlined" sx={{borderRadius: 3}}>
                                     Go to My Cases
                                 </Button>
                                 <Button component={RouterLink} to="/notes" variant="outlined" sx={{borderRadius: 3}}>

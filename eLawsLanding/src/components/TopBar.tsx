@@ -12,7 +12,8 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
 import MotionTypography from "./MotionTypography";
 import MotionButton from "./MotionButton";
-import { auth } from "../../firebase.ts"; // keep your existing path
+import { auth } from "../../firebase.ts";
+import ThemeToggleButton from "./ThemeToggleButton.tsx"; // keep your existing path
 
 const TopBar = () => {
     const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 10 });
@@ -63,13 +64,12 @@ const TopBar = () => {
         >
             <Container maxWidth="lg">
                 <Toolbar sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>
-                    {/* Logo */}
                     <MotionTypography
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         variant="h5"
                         component={RouterLink}
-                        to="/"
+                        to={user ? "/dashboard" : "/"}
                         sx={{
                             textDecoration: "none",
                             color: "primary.main",
@@ -120,15 +120,13 @@ const TopBar = () => {
                             })}
                         </Box>
                     )}
-
-                    {/* Right: Auth-aware */}
                     <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
                         {user ? (
                             <>
                                 <MotionButton
                                     component={RouterLink}
-                                    to="/dashboard" // Dashboard route
-                                    variant={isActive("/cases") ? "contained" : "outlined"}
+                                    to="/dashboard"
+                                    variant={isActive("/dashboard") ? "contained" : "outlined"}
                                     color="primary"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
@@ -147,6 +145,7 @@ const TopBar = () => {
                                 >
                                     Account
                                 </MotionButton>
+                                <ThemeToggleButton/>
                 <MotionButton
                   onClick={handleLogout}
                   variant="text"
@@ -160,6 +159,7 @@ const TopBar = () => {
                             </>
                         ) : (
                             <>
+                                <ThemeToggleButton/>
                                 <MotionButton
                                     component={RouterLink}
                                     to="/login"

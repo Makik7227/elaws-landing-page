@@ -1,5 +1,15 @@
 # React + TypeScript + Vite
 
+## Environment variables
+
+Create an `.env` file in the project root before running the app and provide your Stripe publishable key:
+
+```bash
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+```
+
+Use the same publishable key that powers the React Native client so both apps talk to Stripe with the same credentials. The web app will fail fast at startup if the variable is missing so configuration problems surface immediately.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
