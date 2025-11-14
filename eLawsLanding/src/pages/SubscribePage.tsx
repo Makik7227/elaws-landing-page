@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
+    Alert,
     Box,
     Button,
     Card,
@@ -16,6 +17,8 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { auth, db } from "../../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { SubscriptionPaymentDialog } from "../components/SubscriptionPaymentDialog.tsx";
+import type { PaymentDialogState } from "../components/SubscriptionPaymentDialog.tsx";
 
 type PlanId = "free" | "plus" | "premium";
 
@@ -37,6 +40,16 @@ const priceIds: Record<Exclude<PlanId, "free">, string> = {
     premium: "price_1RuXXWDKm7GEuUIUHVmfrGUX",
 };
 
+const FUNCTIONS_BASE_URL = "https://europe-central2-e-lawyer-a3055.cloudfunctions.net";
+const ENDPOINTS = {
+    createSubscription: `${FUNCTIONS_BASE_URL}/createSubscription`,
+    cancelSubscription: `${FUNCTIONS_BASE_URL}/cancelSubscription`,
+    undoCancel: `${FUNCTIONS_BASE_URL}/undoCancelSubscription`,
+    premiumUpgrade: `${FUNCTIONS_BASE_URL}/createPremiumUpgradePayment`,
+};
+
+type CloudResponse<T> = T & { error?: string };
+
 const SubscribePage: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
@@ -45,8 +58,11 @@ const SubscribePage: React.FC = () => {
     const [pendingDowngradeTier, setPendingDowngradeTier] = useState<PlanId | null>(null);
     const [pendingDowngradeDate, setPendingDowngradeDate] = useState<number | null>(null);
     const [subscriptionCancelAtPeriodEnd, setCancelAtPeriodEnd] = useState<boolean>(false);
+    const [subscriptionCancelDate, setSubscriptionCancelDate] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [paymentDialog, setPaymentDialog] = useState<PaymentDialogState | null>(null);
 
     useEffect(() => {
         const unsubAuth = auth.onAuthStateChanged((user) => {
@@ -62,6 +78,7 @@ const SubscribePage: React.FC = () => {
                 setPendingDowngradeTier((data.pendingDowngradeTier as PlanId) || null);
                 setPendingDowngradeDate(data.pendingDowngradeDate || null);
                 setCancelAtPeriodEnd(!!data.subscriptionCancelAtPeriodEnd);
+                setSubscriptionCancelDate(data.subscriptionCancelDate || null);
             });
             return () => unsubUser();
         });
@@ -69,15 +86,27 @@ const SubscribePage: React.FC = () => {
     }, [navigate]);
 
     const downgradeBanner = useMemo(() => {
-        if (!pendingDowngradeTier || !pendingDowngradeDate) return null;
-        const date = new Date(pendingDowngradeDate);
-        const formatted = date.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-        return `You've scheduled a downgrade to ${pendingDowngradeTier.charAt(0).toUpperCase() + pendingDowngradeTier.slice(1)}. It will take effect on ${formatted}.`;
-    }, [pendingDowngradeTier, pendingDowngradeDate]);
+        const formatDate = (timestamp: number | null) => {
+            if (!timestamp) return "at the end of your billing cycle";
+            const date = new Date(timestamp);
+            return `on ${date.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            })}`;
+        };
+
+        if (pendingDowngradeTier) {
+            const planName = pendingDowngradeTier.charAt(0).toUpperCase() + pendingDowngradeTier.slice(1);
+            return `You've scheduled a downgrade to ${planName}. It will take effect ${formatDate(pendingDowngradeDate)}.`;
+        }
+
+        if (subscriptionCancelAtPeriodEnd) {
+            return `You've scheduled a downgrade to Free. It will take effect ${formatDate(subscriptionCancelDate)}.`;
+        }
+
+        return null;
+    }, [pendingDowngradeTier, pendingDowngradeDate, subscriptionCancelAtPeriodEnd, subscriptionCancelDate]);
 
     const plans: Plan[] = useMemo(() => {
         return [
@@ -148,59 +177,82 @@ const SubscribePage: React.FC = () => {
         if (!userId) return;
         setLoading(true);
         setError(null);
+        setSuccessMessage(null);
 
         try {
-            if (pendingDowngradeTier && subscriptionCancelAtPeriodEnd) {
-                setError("You already have a pending downgrade.");
+            if (pendingDowngradeTier || subscriptionCancelAtPeriodEnd) {
+                setError("You already have a pending downgrade. Undo it before making more changes.");
                 return;
             }
 
-            // 🔹 Downgrade / cancel
+            if (targetPlan === activePlan) {
+                setError("You’re already on this plan.");
+                return;
+            }
+
             if (targetPlan === "free" && activePlan !== "free") {
-                await fetch("https://europe-central2-e-lawyer-a3055.cloudfunctions.net/cancelSubscription", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ uid: userId }),
-                });
-                console.log("✅ Downgrade scheduled to Free");
+                const data = await postJson<{ message?: string; subscription?: { current_period_end?: number | null } }>(
+                    ENDPOINTS.cancelSubscription,
+                    { uid: userId }
+                );
+                setCancelAtPeriodEnd(true);
+                const cancelAt = data.subscription?.current_period_end
+                    ? data.subscription.current_period_end * 1000
+                    : null;
+                setSubscriptionCancelDate(cancelAt);
+                setPendingDowngradeTier(null);
+                setPendingDowngradeDate(null);
+                setSuccessMessage(
+                    data.message ||
+                        "Downgrade scheduled. You’ll keep your current benefits until the billing cycle ends."
+                );
                 return;
             }
 
-            // 🔹 Premium → Plus downgrade
-            if (activePlan === "premium" && targetPlan === "plus") {
-                await fetch("https://europe-central2-e-lawyer-a3055.cloudfunctions.net/cancelSubscription", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ uid: userId }),
+            if (activePlan === "plus" && targetPlan === "premium") {
+                const data = await postJson<{ clientSecret?: string }>(ENDPOINTS.premiumUpgrade, { uid: userId });
+                if (!data.clientSecret) {
+                    throw new Error("No client secret returned for the Premium upgrade.");
+                }
+                setPaymentDialog({
+                    clientSecret: data.clientSecret,
+                    planName: "Premium upgrade",
+                    amountLabel: "$10.99 upgrade fee",
+                    helperText: "We’ll upgrade you to Premium automatically after the payment succeeds.",
+                    completionMessage: "Upgrade paid. We’ll switch you to Premium as soon as Stripe confirms the charge.",
                 });
-                console.log("✅ Downgrade scheduled to Plus");
                 return;
             }
 
-            // 🔹 Upgrades
             const plan = plans.find((p) => p.id === targetPlan);
             if (!plan?.priceId) {
-                setError("Missing Stripe price ID for selected plan.");
+                setError("Missing Stripe price ID for the selected plan.");
                 return;
             }
 
-            await fetch("https://europe-central2-e-lawyer-a3055.cloudfunctions.net/createSubscription", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ uid: userId, priceId: plan.priceId }),
-            });
+            const data = await postJson<{ clientSecret?: string; message?: string }>(
+                ENDPOINTS.createSubscription,
+                {
+                    uid: userId,
+                    priceId: plan.priceId,
+                }
+            );
 
-            console.log("✅ Subscription upgraded");
-        } catch (err: unknown) {
-            let message = "Something went wrong.";
-
-            if (err instanceof Error) {
-                message = err.message;
-            } else if (typeof err === "string") {
-                message = err;
+            if (data.clientSecret) {
+                setPaymentDialog({
+                    clientSecret: data.clientSecret,
+                    planName: `${plan.name} plan`,
+                    amountLabel: plan.id === "free" ? plan.priceLabel : `${plan.priceLabel}/mo`,
+                    helperText: "Complete payment to finish updating your subscription.",
+                    completionMessage: "Payment confirmed. Your subscription will update shortly.",
+                });
+                return;
             }
 
-            console.error("❌ Subscription error:", message);
+            setSuccessMessage(data.message || "Subscription updated.");
+        } catch (err: unknown) {
+            const message =
+                err instanceof Error ? err.message : typeof err === "string" ? err : "Something went wrong.";
             setError(message);
         } finally {
             setLoading(false);
@@ -211,23 +263,17 @@ const SubscribePage: React.FC = () => {
         if (!userId) return;
         setLoading(true);
         setError(null);
+        setSuccessMessage(null);
         try {
-            await fetch("https://europe-central2-e-lawyer-a3055.cloudfunctions.net/undoCancelSubscription", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ uid: userId }),
-            });
-            console.log("✅ Downgrade undone");
+            const data = await postJson<{ message?: string }>(ENDPOINTS.undoCancel, { uid: userId });
+            setPendingDowngradeTier(null);
+            setPendingDowngradeDate(null);
+            setCancelAtPeriodEnd(false);
+            setSubscriptionCancelDate(null);
+            setSuccessMessage(data.message || "Downgrade cancelled. You’ll stay on your current plan.");
         } catch (err: unknown) {
-            let message = "An unexpected error occurred.";
-
-            if (err instanceof Error) {
-                message = err.message;
-            } else if (typeof err === "string") {
-                message = err;
-            }
-
-            console.error("❌ Undo error:", message);
+            const message =
+                err instanceof Error ? err.message : typeof err === "string" ? err : "An unexpected error occurred.";
             setError(message);
         } finally {
             setLoading(false);
@@ -278,19 +324,16 @@ const SubscribePage: React.FC = () => {
                     </Box>
                 )}
 
+                {successMessage && (
+                    <Alert severity="success" sx={{ mb: 3 }}>
+                        {successMessage}
+                    </Alert>
+                )}
+
                 {error && (
-                    <Box
-                        sx={{
-                            p: 2,
-                            mb: 3,
-                            borderRadius: 2,
-                            bgcolor: theme.palette.error.main + "15",
-                            color: theme.palette.error.main,
-                            textAlign: "center",
-                        }}
-                    >
+                    <Alert severity="error" sx={{ mb: 3 }}>
                         {error}
-                    </Box>
+                    </Alert>
                 )}
 
                 {/* Plans */}
@@ -303,9 +346,9 @@ const SubscribePage: React.FC = () => {
                 >
                     {plans.map((plan) => {
                         const isActive = plan.id === activePlan;
-                        const isPending =
-                            pendingDowngradeTier && pendingDowngradeTier === plan.id;
-                        const disabled = loading || (pendingDowngradeTier && !isPending);
+                        const pendingPlanId = pendingDowngradeTier ?? (subscriptionCancelAtPeriodEnd ? "free" : null);
+                        const isPending = pendingPlanId === plan.id;
+                        const disabled = loading || !!pendingPlanId;
 
                         return (
                             <Card
@@ -394,8 +437,52 @@ const SubscribePage: React.FC = () => {
                     })}
                 </Stack>
             </Container>
+            {paymentDialog && (
+                <SubscriptionPaymentDialog
+                    open
+                    clientSecret={paymentDialog.clientSecret}
+                    planName={paymentDialog.planName}
+                    amountLabel={paymentDialog.amountLabel}
+                    helperText={paymentDialog.helperText}
+                    completionMessage={paymentDialog.completionMessage}
+                    onClose={() => setPaymentDialog(null)}
+                    onSuccess={async (message) => {
+                        setSuccessMessage(message);
+                    }}
+                />
+            )}
         </Box>
     );
 };
 
 export default SubscribePage;
+
+async function postJson<T>(url: string, payload: Record<string, unknown>) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+
+    const raw = await response.text();
+    let data: CloudResponse<T> = {} as CloudResponse<T>;
+
+    if (raw) {
+        try {
+            data = JSON.parse(raw);
+        } catch {
+            throw new Error(`Unexpected response format from ${url}`);
+        }
+    }
+
+    if (!response.ok) {
+        const message = data.error || raw || `Request failed with status ${response.status}`;
+        throw new Error(message);
+    }
+
+    if (data.error) {
+        throw new Error(data.error);
+    }
+
+    return data;
+}

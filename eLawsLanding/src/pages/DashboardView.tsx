@@ -56,6 +56,10 @@ type UserDoc = {
     monthlyTokensUsed?: number;
     role?: Role;
     subscriptionTier?: Tier;
+    pendingDowngradeTier?: Tier | null;
+    pendingDowngradeDate?: number | null;
+    subscriptionCancelAtPeriodEnd?: boolean | null;
+    subscriptionCancelDate?: number | null;
 };
 
 type CaseDoc = {
@@ -114,6 +118,10 @@ const Dashboard: React.FC = () => {
                     monthlyTokensUsed: 0,
                     role: "client",
                     subscriptionTier: "free",
+                    pendingDowngradeTier: null,
+                    pendingDowngradeDate: null,
+                    subscriptionCancelAtPeriodEnd: null,
+                    subscriptionCancelDate: null,
                     ...u,
                 };
                 setUser(merged);
@@ -237,7 +245,25 @@ const Dashboard: React.FC = () => {
         monthlyTokensUsed = 0,
         role = "client",
         subscriptionTier = "free",
+        pendingDowngradeTier = null,
+        pendingDowngradeDate = null,
+        subscriptionCancelAtPeriodEnd = null,
+        subscriptionCancelDate = null,
     } = user;
+
+    const formatTierLabel = (tier: Tier | "free") => tier.charAt(0).toUpperCase() + tier.slice(1);
+
+    const pendingDowngradeTarget = pendingDowngradeTier ?? (subscriptionCancelAtPeriodEnd ? "free" : null);
+    const pendingDowngradeLabel = pendingDowngradeTarget ? formatTierLabel(pendingDowngradeTarget) : null;
+    const pendingDowngradeEffectiveDate =
+        pendingDowngradeTarget === "free" ? subscriptionCancelDate : pendingDowngradeDate;
+    const pendingDowngradeDateLabel = pendingDowngradeEffectiveDate
+        ? new Date(pendingDowngradeEffectiveDate).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+          })
+        : null;
 
     const initials = ((firstName?.[0] || "") + (lastName?.[0] || "") || "U").toUpperCase();
     const tokenPct = clamp(tokenLimit ? monthlyTokensUsed / tokenLimit : 0);
@@ -282,6 +308,46 @@ const Dashboard: React.FC = () => {
             </Box>
 
             <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
+                {pendingDowngradeTarget && (
+                    <Box
+                        sx={{
+                            mb: 3,
+                            p: 2.5,
+                            borderRadius: 2,
+                            border: `1px solid ${theme.palette.warning.main}`,
+                            backgroundColor: theme.palette.warning.main + "15",
+                        }}
+                    >
+                        <Stack
+                            direction={{ xs: "column", sm: "row" }}
+                            spacing={2}
+                            alignItems={{ xs: "flex-start", sm: "center" }}
+                            justifyContent="space-between"
+                        >
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ textTransform: "uppercase", fontWeight: 700 }}>
+                                    Downgrade scheduled
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                                    You’ll move to {pendingDowngradeLabel}{" "}
+                                    {pendingDowngradeDateLabel ? `on ${pendingDowngradeDateLabel}` : "at period end"}.
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Use “Manage subscription” if you want to undo or change your plan.
+                                </Typography>
+                            </Box>
+                            <Button
+                                component={RouterLink}
+                                to="/subscribe"
+                                variant="outlined"
+                                color="warning"
+                                sx={{ fontWeight: 700, borderRadius: 2 }}
+                            >
+                                Review plan
+                            </Button>
+                        </Stack>
+                    </Box>
+                )}
                 <Stack spacing={3}>
                     {/* Usage + Panic */}
                     <Card elevation={4} sx={{ borderRadius: 3 }}>
