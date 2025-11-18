@@ -42,12 +42,6 @@ interface ChatMessage {
 }
 
 const topics = ["Civil Law", "Criminal Law", "Business Law", "Labor Law", "Tax Law", "Other"];
-const promptSuggestions = [
-    "Summarize the applicable regulation",
-    "Draft a demand letter",
-    "Outline procedural steps",
-];
-
 const AiChatPage: React.FC = () => {
     const theme = useTheme();
     const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
@@ -233,210 +227,218 @@ Instructions:
         }
     };
 
-    if (!selectedTopic) {
-        return (
-            <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
-                <Grid container spacing={{ xs: 4, md: 6 }} alignItems="stretch">
-                    <Grid size={{ xs: 12, md: 5 }}>
-                        <Card sx={{ height: "100%", borderRadius: 4 }}>
-                            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                                <Typography variant="h5" fontWeight={900} gutterBottom>
-                                    Choose your jurisdiction
-                                </Typography>
-                                <Typography color="text.secondary" sx={{ mb: 3 }}>
-                                    We preload relevant regulations and forms the moment you confirm the country.
-                                </Typography>
-                                <Box display="flex" justifyContent="center">
-                                    <CustomCountryPickerWeb
-                                        country={country}
-                                        countryCode={countryCode}
-                                        onSelect={(c) => {
-                                            if (c) {
-                                                setCountry(c.name);
-                                                setCountryCode(c.code);
-                                            }
-                                        }}
-                                    />
-                                </Box>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 7 }}>
-                        <Card sx={{ borderRadius: 4 }}>
-                            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                                <Typography variant="h5" fontWeight={900} gutterBottom>
-                                    What do you need help with?
-                                </Typography>
-                                <Typography color="text.secondary" sx={{ mb: 3 }}>
-                                    Pick a preset to tailor the AI prompt. You can always switch later.
-                                </Typography>
-                                <Grid container spacing={2}>
-                                    {topics.map((t) => (
-                                        <Grid size={{ xs: 12, sm: 6 }} key={t}>
-                                            <Button
-                                                fullWidth
-                                                variant="outlined"
-                                                onClick={() => setSelectedTopic(t)}
-                                                sx={{ borderRadius: 3, py: 1.5, fontWeight: 700 }}
-                                            >
-                                                {t}
-                                            </Button>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                </Grid>
-            </Container>
-        );
-    }
-
-    return (
-        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-            <Grid container spacing={{ xs: 4, md: 5 }} alignItems="stretch">
-                <Grid size={{ xs: 12, md: 4 }}>
-                    <Card sx={{ height: "100%", borderRadius: 4 }}>
-                        <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                            <Typography variant="h6" fontWeight={800}>
-                                Context
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                Country-aware AI with topic presets and quick prompt suggestions.
-                            </Typography>
-                            <CustomCountryPickerWeb
-                                country={country}
-                                countryCode={countryCode}
-                                onSelect={(c) => {
-                                    if (c) {
-                                        setCountry(c.name);
-                                        setCountryCode(c.code);
-                                    }
-                                }}
-                            />
-                            <Divider sx={{ my: 3 }} />
-                            <Typography variant="subtitle2" gutterBottom>
-                                Topic
-                            </Typography>
-                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                                <Chip label={selectedTopic ?? "Choose"} color="primary" />
-                                <Chip label="Change" variant="outlined" onClick={() => setSelectedTopic(null)} />
-                            </Stack>
-                            <Divider sx={{ my: 3 }} />
-                            <Typography variant="subtitle2" gutterBottom>
-                                Suggested prompts
-                            </Typography>
-                            <Stack spacing={1.5}>
-                                {promptSuggestions.map((prompt) => (
-                                    <Button
-                                        key={prompt}
-                                        variant="text"
-                                        onClick={() => setInput(prompt)}
-                                        sx={{ justifyContent: "flex-start", textTransform: "none" }}
-                                    >
-                                        {prompt}
-                                    </Button>
-                                ))}
-                            </Stack>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 8 }}>
-                    <Card sx={{ borderRadius: 4, height: { md: "80vh" } }}>
-                        <CardContent sx={{ p: { xs: 3, md: 4 }, height: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
-                            <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" spacing={1}>
-                                <Typography variant="h6" fontWeight={800}>
-                                    {selectedTopic}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {country || "Any country"}
-                                </Typography>
-                            </Stack>
-
-                            <Box flex={1} overflow="auto" pr={1}>
-                                <AnimatePresence>
-                                    {messages.map((m) => (
-                                        <motion.div
-                                            key={m.id}
-                                            initial={{ opacity: 0, y: 15 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -15 }}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    justifyContent: m.role === "user" ? "flex-end" : "flex-start",
-                                                    mb: 1.5,
-                                                }}
-                                            >
-                                                <Box
-                                                    sx={{
-                                                        maxWidth: "80%",
-                                                        borderRadius: 3,
-                                                        p: 2,
-                                                        bgcolor:
-                                                            m.role === "user"
-                                                                ? theme.palette.primary.main
-                                                                : alpha(
-                                                                      theme.palette.mode === "light"
-                                                                          ? theme.palette.primary.main
-                                                                          : theme.palette.common.white,
-                                                                      theme.palette.mode === "light" ? 0.08 : 0.15
-                                                                  ),
-                                                        color:
-                                                            m.role === "user"
-                                                                ? theme.palette.primary.contrastText
-                                                                : theme.palette.text.primary,
-                                                        boxShadow: m.role === "user"
-                                                            ? "0 18px 40px rgba(126,87,194,0.35)"
-                                                            : "0 12px 32px rgba(15,10,40,0.12)",
-                                                    }}
-                                                >
-                                                    <Typography sx={{ whiteSpace: "pre-wrap" }}>{m.content}</Typography>
-                                                    {m.role === "bot" && m.id !== "0" && (
-                                                        <Button
-                                                            startIcon={<SaveIcon />}
-                                                            onClick={() => openNoteDialog(m)}
-                                                            size="small"
-                                                            sx={{ mt: 1 }}
-                                                        >
-                                                            Save to Notes
-                                                        </Button>
-                                                    )}
-                                                </Box>
-                                            </Box>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                                <div ref={messagesEndRef} />
-                            </Box>
-
-                            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
-                                <TextField
-                                    fullWidth
-                                    placeholder="Type your legal question…"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    multiline
-                                    maxRows={4}
+    const renderContextPanel = (compact: boolean) => (
+        <Card
+            sx={{
+                height: compact ? "auto" : "100%",
+                borderRadius: compact ? 3 : 4,
+                border: compact ? `1px solid ${alpha(theme.palette.divider, 0.6)}` : undefined,
+                boxShadow: compact ? "none" : undefined,
+                bgcolor: compact
+                    ? alpha(theme.palette.background.paper, theme.palette.mode === "light" ? 0.95 : 0.35)
+                    : undefined,
+                backdropFilter: compact ? "blur(12px)" : undefined,
+            }}
+        >
+            <CardContent
+                sx={{
+                    p: compact ? 2.5 : { xs: 3, md: 4 },
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: compact ? 2 : 2.5,
+                }}
+            >
+                <Typography variant={compact ? "subtitle1" : "h6"} fontWeight={800}>
+                    Context
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Country-aware AI with topic presets and quick prompt suggestions.
+                </Typography>
+                <Box display="flex" justifyContent={compact ? "flex-start" : "center"}>
+                    <CustomCountryPickerWeb
+                        country={country}
+                        countryCode={countryCode}
+                        onSelect={(c) => {
+                            if (c) {
+                                setCountry(c.name);
+                                setCountryCode(c.code);
+                            }
+                        }}
+                    />
+                </Box>
+                <Divider sx={{ my: compact ? 1 : 2 }} />
+                <Typography variant="subtitle2" gutterBottom>
+                    Topic
+                </Typography>
+                {compact ? (
+                    <Stack direction="row" spacing={1.2} flexWrap="wrap">
+                        {topics.map((topic) => {
+                            const active = topic === selectedTopic;
+                            return (
+                                <Chip
+                                    key={topic}
+                                    label={topic}
+                                    size="small"
+                                    color={active ? "primary" : "default"}
+                                    variant={active ? "filled" : "outlined"}
+                                    onClick={() => setSelectedTopic(topic)}
                                 />
-                                <Button
-                                    variant="contained"
-                                    endIcon={<SendIcon />}
-                                    onClick={sendMessage}
-                                    disabled={sendingMessage || !input.trim()}
-                                    sx={{ minWidth: { sm: 140 } }}
-                                >
-                                    Send
-                                </Button>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+                            );
+                        })}
+                    </Stack>
+                ) : (
+                    <Stack direction="row" spacing={1.5} flexWrap="wrap">
+                        <Chip label={selectedTopic ?? "Choose"} color="primary" sx={{ fontWeight: 700 }} />
+                        <Chip label="Change" variant="outlined" onClick={() => setSelectedTopic(null)} />
+                    </Stack>
+                )}
+            </CardContent>
+        </Card>
+    );
 
-            {/* Note Save Dialog */}
+    const renderChatPanel = (compact: boolean) => (
+        <Card
+            sx={{
+                borderRadius: compact ? 3 : 4,
+                height: compact ? "100%" : { md: "80vh" },
+                display: "flex",
+                flexDirection: "column",
+                boxShadow: compact ? "none" : undefined,
+                border: compact ? `1px solid ${alpha(theme.palette.divider, 0.5)}` : undefined,
+                bgcolor: compact
+                    ? alpha(theme.palette.background.paper, theme.palette.mode === "light" ? 0.98 : 0.25)
+                    : undefined,
+                flex: compact ? 1 : undefined,
+            }}
+        >
+            <CardContent
+                sx={{
+                    p: compact ? 2.5 : { xs: 3, md: 4 },
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: compact ? 2.5 : 3.5,
+                    minHeight: 0,
+                }}
+            >
+                <Stack
+                    direction={{ xs: "column", sm: compact ? "column" : "row" }}
+                    justifyContent="space-between"
+                    spacing={compact ? 1.5 : 2}
+                    sx={{ pb: 1, borderBottom: compact ? `1px solid ${alpha(theme.palette.divider, 0.5)}` : "none" }}
+                >
+                    <Box>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Topic
+                        </Typography>
+                        <Typography variant={compact ? "body1" : "h6"} fontWeight={800}>
+                            {selectedTopic}
+                        </Typography>
+                    </Box>
+                    <Box textAlign={{ xs: "left", sm: "right" }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Country
+                        </Typography>
+                        <Typography variant="body2">{country || "Any country"}</Typography>
+                    </Box>
+                </Stack>
+
+                <Box
+                    flex={1}
+                    minHeight={0}
+                    overflow="auto"
+                    pr={compact ? 0 : 1}
+                    sx={{ py: compact ? 1 : 2, px: compact ? 0.5 : 0 }}
+                >
+                    <AnimatePresence>
+                        {messages.map((m) => (
+                            <motion.div
+                                key={m.id}
+                                initial={{ opacity: 0, y: 15 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -15 }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: m.role === "user" ? "flex-end" : "flex-start",
+                                        mb: compact ? 2.5 : 2,
+                                    }}
+                                >
+                                        <Box
+                                            sx={{
+                                                maxWidth: compact ? "92%" : "80%",
+                                                borderRadius: 3,
+                                                p: 2,
+                                                bgcolor:
+                                                    m.role === "user"
+                                                        ? theme.palette.primary.main
+                                                        : alpha(
+                                                          theme.palette.mode === "light"
+                                                              ? theme.palette.primary.main
+                                                              : theme.palette.common.white,
+                                                          theme.palette.mode === "light" ? 0.08 : 0.15
+                                                      ),
+                                                color:
+                                                    m.role === "user"
+                                                        ? theme.palette.primary.contrastText
+                                                        : theme.palette.text.primary,
+                                                boxShadow: m.role === "user"
+                                                    ? "0 18px 40px rgba(126,87,194,0.35)"
+                                                    : "0 12px 32px rgba(15,10,40,0.12)",
+                                                px: compact ? 2 : 3,
+                                            }}
+                                        >
+                                        <Typography sx={{ whiteSpace: "pre-wrap" }}>{m.content}</Typography>
+                                        {m.role === "bot" && m.id !== "0" && (
+                                            <Button
+                                                startIcon={<SaveIcon />}
+                                                onClick={() => openNoteDialog(m)}
+                                                size="small"
+                                                sx={{ mt: 1 }}
+                                            >
+                                                Save to Notes
+                                            </Button>
+                                        )}
+                                    </Box>
+                                </Box>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                    <div ref={messagesEndRef} />
+                </Box>
+
+                <Stack
+                    direction={compact ? "column" : { xs: "column", sm: "row" }}
+                    spacing={compact ? 1 : 1.5}
+                    sx={{ flexShrink: 0 }}
+                >
+                    <TextField
+                        fullWidth
+                        size={compact ? "small" : "medium"}
+                        placeholder="Type your legal question…"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        multiline
+                        maxRows={compact ? 3 : 4}
+                    />
+                    <Button
+                        variant="contained"
+                        endIcon={<SendIcon />}
+                        onClick={sendMessage}
+                        disabled={sendingMessage || !input.trim()}
+                        sx={{ minWidth: compact ? undefined : { sm: 140 } }}
+                        fullWidth={compact}
+                    >
+                        Send
+                    </Button>
+                </Stack>
+            </CardContent>
+        </Card>
+    );
+
+    const overlayElements = (
+        <>
             <Dialog open={noteDialog.open} onClose={() => setNoteDialog({ ...noteDialog, open: false })} fullWidth maxWidth="sm">
                 <DialogTitle>Title your note</DialogTitle>
                 <DialogContent>
@@ -495,7 +497,85 @@ Instructions:
             >
                 <Alert severity="info">{snackbar.text}</Alert>
             </Snackbar>
+        </>
+    );
+
+    if (!selectedTopic) {
+        return (
+            <>
+                <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
+                    <Grid container spacing={{ xs: 4, md: 6 }} alignItems="stretch">
+                        <Grid size={{ xs: 12, md: 5 }}>
+                            <Card sx={{ height: "100%", borderRadius: 4 }}>
+                                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                                    <Typography variant="h5" fontWeight={900} gutterBottom>
+                                        Choose your jurisdiction
+                                    </Typography>
+                                    <Typography color="text.secondary" sx={{ mb: 3 }}>
+                                        We preload relevant regulations and forms the moment you confirm the country.
+                                    </Typography>
+                                    <Box display="flex" justifyContent="center">
+                                        <CustomCountryPickerWeb
+                                            country={country}
+                                            countryCode={countryCode}
+                                            onSelect={(c) => {
+                                                if (c) {
+                                                    setCountry(c.name);
+                                                    setCountryCode(c.code);
+                                                }
+                                            }}
+                                        />
+                                    </Box>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 7 }}>
+                            <Card sx={{ borderRadius: 4 }}>
+                                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                                    <Typography variant="h5" fontWeight={900} gutterBottom>
+                                        What do you need help with?
+                                    </Typography>
+                                    <Typography color="text.secondary" sx={{ mb: 3 }}>
+                                        Pick a preset to tailor the AI prompt. You can always switch later.
+                                    </Typography>
+                                    <Grid container spacing={2}>
+                                        {topics.map((t) => (
+                                            <Grid size={{ xs: 12, sm: 6 }} key={t}>
+                                                <Button
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    onClick={() => setSelectedTopic(t)}
+                                                    sx={{ borderRadius: 3, py: 1.5, fontWeight: 700 }}
+                                                >
+                                                    {t}
+                                                </Button>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </Container>
+                {overlayElements}
+            </>
+        );
+    }
+
+    const layout = (
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+            <Grid container spacing={{ xs: 4, md: 5 }} alignItems="stretch">
+                <Grid size={{ xs: 12, md: 4 }}>{renderContextPanel(false)}</Grid>
+                <Grid size={{ xs: 12, md: 8 }}>{renderChatPanel(false)}</Grid>
+            </Grid>
         </Container>
+    );
+
+    return (
+        <>
+            {layout}
+            {overlayElements}
+        </>
     );
 };
 

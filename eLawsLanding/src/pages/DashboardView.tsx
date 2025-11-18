@@ -40,7 +40,6 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import PanicButtonWeb from "../components/PanicButton.tsx";
-import AiChatWidget from "../components/AiChatWidget.tsx";
 import SubscriptionButton from "../components/SubscriptionButton.tsx";
 
 type Tier = "free" | "plus" | "premium";
@@ -413,6 +412,7 @@ const Dashboard: React.FC = () => {
                                         alignItems="center"
                                     >
                                         <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
+                                        <QuickAction to="/ai/chat" icon={<GavelRoundedIcon />} title="AI Legal Chat" />
                                         <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
                                         {role === "lawyer" && (
                                             <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
@@ -518,8 +518,6 @@ const Dashboard: React.FC = () => {
                     )}
                 </Stack>
             </Container>
-
-            <AiChatWidget />
         </>
     );
 };
