@@ -35,6 +35,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "../../firebase";
 import generateDocumentHTML from "../utils/generateDocumentHTML";
 import { sendMessageToGPT } from "../api/chat";
+import CustomDatePicker from "../components/CustomDatePicker";
 
 type SchemaParamType = "text" | "textarea" | "number" | "date" | "email" | "list" | "dropdown";
 
@@ -467,20 +468,28 @@ const GenerateDocumentPage: React.FC = () => {
                                                         <TextField key={param.key} {...commonProps} multiline minRows={4} />
                                                     );
                                                 }
+                                                if (param.type === "date") {
+                                                    return (
+                                                        <CustomDatePicker
+                                                            key={param.key}
+                                                            label={`${param.label}${param.required ? " *" : ""}`}
+                                                            value={(formValues[param.key] as string) ?? ""}
+                                                            onChange={(val) => setValue(param.key, val)}
+                                                            required={param.required}
+                                                        />
+                                                    );
+                                                }
                                                 const inputType =
                                                     param.type === "number"
                                                         ? "number"
-                                                        : param.type === "date"
-                                                            ? "date"
-                                                            : param.type === "email"
-                                                                ? "email"
-                                                                : "text";
+                                                        : param.type === "email"
+                                                            ? "email"
+                                                            : "text";
                                                 return (
                                                     <TextField
                                                         key={param.key}
                                                         {...commonProps}
                                                         type={inputType}
-                                                        InputLabelProps={param.type === "date" ? { shrink: true } : undefined}
                                                     />
                                                 );
                                             })}
