@@ -10,6 +10,7 @@ import {
     Container,
     Divider,
     LinearProgress,
+    Skeleton,
     Stack,
     Typography,
     useTheme,
@@ -358,23 +359,30 @@ const Dashboard: React.FC = () => {
                                 spacing={3}
                             >
                                 <Box sx={{ flex: 1, minWidth: 260 }}>
-                                    <Stack spacing={1}>
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
-                                            <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                                                {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
-                                            </Typography>
+                                    {loading ? (
+                                        <Stack spacing={1.5}>
+                                            <Skeleton variant="text" width="70%" />
+                                            <Skeleton variant="rounded" height={14} />
                                         </Stack>
-                                        <LinearProgress
-                                            variant="determinate"
-                                            value={Math.round(tokenPct * 100)}
-                                            sx={{
-                                                height: 10,
-                                                borderRadius: 10,
-                                                "& .MuiLinearProgress-bar": { borderRadius: 10 },
-                                            }}
-                                        />
-                                    </Stack>
+                                    ) : (
+                                        <Stack spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
+                                                <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                                                    {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
+                                                </Typography>
+                                            </Stack>
+                                            <LinearProgress
+                                                variant="determinate"
+                                                value={Math.round(tokenPct * 100)}
+                                                sx={{
+                                                    height: 10,
+                                                    borderRadius: 10,
+                                                    "& .MuiLinearProgress-bar": { borderRadius: 10 },
+                                                }}
+                                            />
+                                        </Stack>
+                                    )}
                                 </Box>
 
                                 <Divider flexItem orientation="vertical" sx={{ display: { xs: "none", md: "block" }, mx: 1 }} />
@@ -388,12 +396,16 @@ const Dashboard: React.FC = () => {
                                             Quick access to local guidance
                                         </Typography>
                                     </Box>
-                                    <PanicButtonWeb
-                                        tokenLimit={user.tokenLimit || 0}
-                                        defaultCode={user.countryCode || ""}
-                                        tokensUsed={user.monthlyTokensUsed || 0}
-                                        defaultCountry={user.country || ""}
-                                    />
+                                    {loading ? (
+                                        <Skeleton variant="rounded" width={220} height={48} />
+                                    ) : (
+                                        <PanicButtonWeb
+                                            tokenLimit={user.tokenLimit || 0}
+                                            defaultCode={user.countryCode || ""}
+                                            tokensUsed={user.monthlyTokensUsed || 0}
+                                            defaultCountry={user.country || ""}
+                                        />
+                                    )}
                                 </Stack>
                             </Stack>
                         </CardContent>

@@ -17,6 +17,9 @@ import SavedProceduresPage from "./pages/SavedProceduresPage.tsx";
 import ProceduresView from "./pages/ProceduresPage.tsx";
 import NotesPage from "./pages/NotesPage.tsx";
 import SubscribePage from "./pages/SubscribePage.tsx";
+import DocumentsLandingPage from "./pages/DocumentsLandingPage.tsx";
+import MyDocumentsPage from "./pages/MyDocumentsPage.tsx";
+import GenerateDocumentPage from "./pages/GenerateDocumentPage.tsx";
 
 function App() {
     return (
@@ -39,6 +42,9 @@ function App() {
                 <Route path="/dashboard/procedures/saved" element={<SavedProceduresPage/>}/>
                 <Route path="/dashboard/notes" element={<NotesPage/>}/>
                 <Route path="/dashboard/subscribe" element={<SubscribePage/>}/>
+                <Route path="/documents" element={<DocumentsLandingPage/>}/>
+                <Route path="/documents/my" element={<MyDocumentsPage/>}/>
+                <Route path="/documents/generate" element={<GenerateDocumentPage/>}/>
             </Route>
         </Routes>
     )

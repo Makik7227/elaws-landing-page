@@ -29,6 +29,7 @@ import { auth, db } from "../../firebase";
 import { sendMessageToGPT } from "../api/chat";
 import CustomCountryPickerWeb from "../components/CustomCountryPicker";
 import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
     id: string;
@@ -42,8 +43,19 @@ interface ChatMessage {
 }
 
 const topics = ["Civil Law", "Criminal Law", "Business Law", "Labor Law", "Tax Law", "Other"];
+
+interface PersistedChatState {
+    topic: string | null;
+    messages: Message[];
+    country: string;
+    countryCode: string;
+}
+
+const STORAGE_KEY = "elaws_ai_chat_v1";
+
 const AiChatPage: React.FC = () => {
     const theme = useTheme();
+    const navigate = useNavigate();
     const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
@@ -54,6 +66,9 @@ const AiChatPage: React.FC = () => {
         visible: false,
         text: "",
     });
+    const [authChecked, setAuthChecked] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(true);
+    const [persistHydrated, setPersistHydrated] = useState(false);
 
     const [noteDialog, setNoteDialog] = useState<{
         open: boolean;
@@ -71,19 +86,63 @@ const AiChatPage: React.FC = () => {
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-    // Fetch user country on mount
+    useEffect(() => {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw) as PersistedChatState;
+                if (parsed.topic) setSelectedTopic(parsed.topic);
+                if (Array.isArray(parsed.messages)) setMessages(parsed.messages);
+                if (parsed.country) setCountry(parsed.country);
+                if (parsed.countryCode) setCountryCode(parsed.countryCode);
+            } catch (error) {
+                console.error("Failed to hydrate AI chat state", error);
+            }
+        }
+        setPersistHydrated(true);
+    }, []);
+
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (u) => {
-            if (!u) return;
-            const snap = await getDoc(doc(db, "users", u.uid));
-            if (snap.exists()) {
-                const data = snap.data();
-                if (data.country) setCountry(data.country);
-                if (data.countryCode) setCountryCode(data.countryCode);
+            if (!u) {
+                setAuthChecked(true);
+                setProfileLoading(false);
+                navigate("/login");
+                return;
+            }
+            setAuthChecked(true);
+            setProfileLoading(true);
+            try {
+                const snap = await getDoc(doc(db, "users", u.uid));
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.country) setCountry((prev) => prev || data.country);
+                    if (data.countryCode) setCountryCode((prev) => prev || data.countryCode);
+                }
+            } catch (error) {
+                console.error("Failed to load profile", error);
+                setSnackbar({ visible: true, text: "Could not load your profile. Refresh and try again." });
+            } finally {
+                setProfileLoading(false);
             }
         });
         return () => unsub();
-    }, []);
+    }, [navigate]);
+
+    useEffect(() => {
+        if (!persistHydrated) return;
+        const sanitized: PersistedChatState = {
+            topic: selectedTopic,
+            messages: messages.filter((m) => m.id !== "typing").slice(-20),
+            country,
+            countryCode,
+        };
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
+        } catch (error) {
+            console.error("Failed to persist AI chat state", error);
+        }
+    }, [persistHydrated, selectedTopic, messages, country, countryCode]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -499,6 +558,17 @@ Instructions:
             </Snackbar>
         </>
     );
+
+    if (!authChecked || profileLoading || !persistHydrated) {
+        return (
+            <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
+                <CircularProgress />
+                <Typography mt={3} color="text.secondary">
+                    Preparing your workspace…
+                </Typography>
+            </Container>
+        );
+    }
 
     if (!selectedTopic) {
         return (
