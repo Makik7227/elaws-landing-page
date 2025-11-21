@@ -31,7 +31,8 @@ const LoginPage = () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             navigate("/dashboard");
-        } catch (err: any) {
+        } catch (error) {
+            console.error("Failed to sign in", error);
             setError("Invalid email or password");
         }
     };

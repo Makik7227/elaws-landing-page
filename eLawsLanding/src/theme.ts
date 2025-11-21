@@ -55,6 +55,8 @@ const typography: NonNullable<ThemeOptions["typography"]> = {
     },
 };
 
+const toNumeric = (value: number | string) => (typeof value === "number" ? value : Number.parseFloat(value));
+
 const components: ThemeOptions["components"] = {
     MuiCssBaseline: {
         styleOverrides: (theme) => ({
@@ -80,12 +82,15 @@ const components: ThemeOptions["components"] = {
             disableElevation: true,
         },
         styleOverrides: {
-            root: {
-                borderRadius: 999,
-                paddingInline: 24,
-                paddingBlock: 12,
-                fontWeight: 700,
-                letterSpacing: 0.2,
+            root: ({ theme }) => {
+                const baseRadius = toNumeric(theme.shape.borderRadius);
+                return {
+                    borderRadius: baseRadius * 1.5,
+                    paddingInline: 24,
+                    paddingBlock: 12,
+                    fontWeight: 700,
+                    letterSpacing: 0.2,
+                };
             },
             contained: {
                 boxShadow: "0 15px 35px rgba(0,0,0,0.15)",
@@ -95,7 +100,7 @@ const components: ThemeOptions["components"] = {
     MuiCard: {
         styleOverrides: {
             root: ({ theme }) => ({
-                borderRadius: 28,
+                borderRadius: 14,
                 border: `1px solid ${theme.palette.divider}`,
                 backgroundImage:
                     theme.palette.mode === "light"
@@ -120,25 +125,25 @@ const components: ThemeOptions["components"] = {
     MuiPaper: {
         styleOverrides: {
             root: ({ theme }) => ({
-                borderRadius: 24,
+                borderRadius: 12,
                 border: `1px solid ${theme.palette.divider}`,
             }),
         },
     },
     MuiChip: {
         styleOverrides: {
-            root: {
-                borderRadius: 999,
+            root: ({ theme }) => ({
+                borderRadius: theme.shape.borderRadius,
                 fontWeight: 600,
                 letterSpacing: 0.2,
                 paddingInline: 8,
-            },
+            }),
         },
     },
     MuiOutlinedInput: {
         styleOverrides: {
             root: ({ theme }) => ({
-                borderRadius: 18,
+                borderRadius: 9,
                 backgroundColor:
                     theme.palette.mode === "light"
                         ? "rgba(255,255,255,0.9)"
@@ -173,7 +178,7 @@ const components: ThemeOptions["components"] = {
     MuiDialog: {
         styleOverrides: {
             paper: ({ theme }) => ({
-                borderRadius: 32,
+                borderRadius: 16,
                 border: `1px solid ${theme.palette.divider}`,
                 paddingBlock: 8,
                 boxShadow:
@@ -186,7 +191,7 @@ const components: ThemeOptions["components"] = {
     MuiTooltip: {
         styleOverrides: {
             tooltip: {
-                borderRadius: 12,
+                borderRadius: 6,
                 fontSize: "0.85rem",
                 backgroundColor: "rgba(28,22,38,0.9)",
             },
@@ -205,7 +210,7 @@ const components: ThemeOptions["components"] = {
 };
 
 const shape: ThemeOptions["shape"] = {
-    borderRadius: 24,
+    borderRadius: 12,
 };
 
 const buildPalette = (mode: PaletteMode) => {

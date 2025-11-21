@@ -57,6 +57,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
             <Button
                 onClick={() => setOpen(true)}
                 variant="outlined"
+                fullWidth
                 sx={{
                     borderRadius: 3,
                     textTransform: "none",
