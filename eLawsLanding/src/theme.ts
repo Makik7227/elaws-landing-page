@@ -55,6 +55,8 @@ const typography: NonNullable<ThemeOptions["typography"]> = {
     },
 };
 
+const toNumeric = (value: number | string) => (typeof value === "number" ? value : Number.parseFloat(value));
+
 const components: ThemeOptions["components"] = {
     MuiCssBaseline: {
         styleOverrides: (theme) => ({
@@ -80,13 +82,16 @@ const components: ThemeOptions["components"] = {
             disableElevation: true,
         },
         styleOverrides: {
-            root: ({ theme }) => ({
-                borderRadius: theme.shape.borderRadius * 1.5,
-                paddingInline: 24,
-                paddingBlock: 12,
-                fontWeight: 700,
-                letterSpacing: 0.2,
-            }),
+            root: ({ theme }) => {
+                const baseRadius = toNumeric(theme.shape.borderRadius);
+                return {
+                    borderRadius: baseRadius * 1.5,
+                    paddingInline: 24,
+                    paddingBlock: 12,
+                    fontWeight: 700,
+                    letterSpacing: 0.2,
+                };
+            },
             contained: {
                 boxShadow: "0 15px 35px rgba(0,0,0,0.15)",
             },

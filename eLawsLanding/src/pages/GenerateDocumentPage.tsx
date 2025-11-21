@@ -329,7 +329,7 @@ const GenerateDocumentPage: React.FC = () => {
                 </Stack>
 
                 <Grid container spacing={{ xs: 4, md: 5 }}>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <Card sx={{ borderRadius: 4, position: "sticky", top: 32 }}>
                             <CardContent>
                                 <Stack spacing={2}>
@@ -377,7 +377,7 @@ const GenerateDocumentPage: React.FC = () => {
                         </Card>
                     </Grid>
 
-                    <Grid item xs={12} md={8}>
+                    <Grid size={{ xs: 12, md: 8 }}>
                         <Stack spacing={3}>
                             {selectedSchema ? (
                                 <Card sx={{ borderRadius: 4 }}>

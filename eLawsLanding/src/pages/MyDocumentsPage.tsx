@@ -274,7 +274,7 @@ const MyDocumentsPage: React.FC = () => {
                 ) : (
                     <Grid container spacing={{ xs: 3, md: 4 }}>
                         {filteredDocs.map((item) => (
-                            <Grid item xs={12} md={6} key={item.id}>
+                            <Grid size={{ xs: 12, md: 6 }} key={item.id}>
                                 <Card sx={{ borderRadius: 4, height: "100%", display: "flex", flexDirection: "column" }}>
                                     <CardContent>
                                         <Stack spacing={1.5}>

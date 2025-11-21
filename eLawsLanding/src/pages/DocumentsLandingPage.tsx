@@ -19,7 +19,7 @@ const DocumentsLandingPage: React.FC = () => {
                     </Typography>
                 </Box>
                 <Grid container spacing={{ xs: 3, md: 4 }}>
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <Card sx={{ borderRadius: 4, height: "100%" }}>
                             <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                                 <Stack spacing={2}>
@@ -50,7 +50,7 @@ const DocumentsLandingPage: React.FC = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <Card sx={{ borderRadius: 4, height: "100%" }}>
                             <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                                 <Stack spacing={2}>
