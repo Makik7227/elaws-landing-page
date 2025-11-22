@@ -415,22 +415,33 @@ const CasesPage: React.FC = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 5, display: "flex", flexDirection: "column", minHeight: "50dvh" }}>
-            <Stack direction="row" alignItems="center" spacing={2} mb={3}>
+            <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={{ xs: 1.5, sm: 2 }}
+                alignItems={{ xs: "flex-start", sm: "center" }}
+                justifyContent="space-between"
+                mb={3}
+            >
                 <Typography variant="h4" fontWeight={800}>Cases</Typography>
-                <Box flex={1} />
                 {isLawyer && (
-                    <Button variant="contained" startIcon={<Add />} onClick={() => navigate("/cases/create")}>
+                    <Button
+                        variant="contained"
+                        startIcon={<Add />}
+                        onClick={() => navigate("/cases/create")}
+                        sx={{ width: { xs: "100%", sm: "auto" } }}
+                    >
                         New Case
                     </Button>
                 )}
             </Stack>
 
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3}>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                     <Button
                         variant={filter === "all" ? "contained" : "outlined"}
                         onClick={() => setFilter("all")}
                         size="small"
+                        sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
                     >
                         All
                     </Button>
@@ -438,6 +449,7 @@ const CasesPage: React.FC = () => {
                         variant={filter === "open" ? "contained" : "outlined"}
                         onClick={() => setFilter("open")}
                         size="small"
+                        sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
                     >
                         Open
                     </Button>
@@ -445,6 +457,7 @@ const CasesPage: React.FC = () => {
                         variant={filter === "closed" ? "contained" : "outlined"}
                         onClick={() => setFilter("closed")}
                         size="small"
+                        sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
                     >
                         Closed
                     </Button>
@@ -490,7 +503,12 @@ const CasesPage: React.FC = () => {
                                         }}
                                     >
                                         <CardContent>
-                                            <Stack direction="row" alignItems="center" spacing={2} minWidth={0}>
+                                            <Stack
+                                                direction={{ xs: "column", sm: "row" }}
+                                                alignItems={{ xs: "flex-start", sm: "center" }}
+                                                spacing={2}
+                                                minWidth={0}
+                                            >
                                                 <Avatar>{c.title?.[0] ?? "C"}</Avatar>
                                                 <Box sx={{ minWidth: 0 }}>
                                                     <Typography fontWeight={700} noWrap>{c.title}</Typography>
@@ -498,11 +516,15 @@ const CasesPage: React.FC = () => {
                                                         {c.description || "No description"}
                                                     </Typography>
                                                 </Box>
-                                                <Box flex={1} />
                                                 <Chip
                                                     label={c.status && c.status.toUpperCase()}
                                                     color={c.status === "open" ? "success" : "default"}
                                                     size="small"
+                                                    sx={{
+                                                        ml: { sm: "auto" },
+                                                        mt: { xs: 1, sm: 0 },
+                                                        alignSelf: { xs: "flex-start", sm: "center" },
+                                                    }}
                                                 />
                                             </Stack>
                                         </CardContent>
@@ -543,14 +565,19 @@ const CasesPage: React.FC = () => {
                                         </Stack>
                                     )}
                                     <Divider sx={{ my: 2 }} />
-                                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Stack
+                                        direction={{ xs: "column", sm: "row" }}
+                                        alignItems={{ xs: "flex-start", sm: "center" }}
+                                        justifyContent="space-between"
+                                        spacing={1}
+                                    >
                                         <IconButton size="small" onClick={() => setSlide(Math.max(0, slide - 1))} disabled={slide === 0} aria-label="Back">
                                             <KeyboardArrowLeft />
                                         </IconButton>
-                                                <IconButton size="small" onClick={() => setSlide(Math.min(1, slide + 1))} disabled={slide === 1} aria-label="Next">
-                                                    <KeyboardArrowRight />
-                                                </IconButton>
-                                        </Stack>
+                                        <IconButton size="small" onClick={() => setSlide(Math.min(1, slide + 1))} disabled={slide === 1} aria-label="Next">
+                                            <KeyboardArrowRight />
+                                        </IconButton>
+                                    </Stack>
                                     {slide === 0 && (
                                         <Box>
                                             <Typography fontWeight={700} mb={1}>Case Properties</Typography>
@@ -568,7 +595,11 @@ const CasesPage: React.FC = () => {
                                                     return (
                                                         <Card key={p.id} sx={{ borderRadius: 2, p: 1, border: "1px solid", borderColor: "divider" }}>
                                                             {!isEditing ? (
-                                                                <Stack direction="row" spacing={1} alignItems="flex-start">
+                                                                <Stack
+                                                                    direction={{ xs: "column", sm: "row" }}
+                                                                    spacing={1}
+                                                                    alignItems={{ xs: "flex-start", sm: "center" }}
+                                                                >
                                                                     <Box flex={1} minWidth={0}>
                                                                         <Typography variant="body2" fontWeight={600} noWrap>{p.name}</Typography>
                                                                         <Typography variant="body2" color="text.secondary" sx={{ wordBreak: "break-word" }}>

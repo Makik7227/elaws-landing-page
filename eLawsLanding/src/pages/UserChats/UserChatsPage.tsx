@@ -18,6 +18,7 @@ import {
     ListItem,
     ListItemAvatar, ListItemButton,
     ListItemText,
+    Stack,
     TextField,
     Typography,
 } from "@mui/material";
@@ -180,12 +181,25 @@ export default function UserChatsWeb() {
 
     return (
         <Container maxWidth="md" sx={{ py: 5 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h5" fontWeight={900}>Your Chats</Typography>
-                <Button startIcon={<AddRoundedIcon />} variant="contained" onClick={() => setOpenModal(true)}>
+            <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={{ xs: 1.5, sm: 0 }}
+                alignItems={{ xs: "flex-start", sm: "center" }}
+                justifyContent="space-between"
+                mb={3}
+            >
+                <Typography variant="h5" fontWeight={900}>
+                    Your Chats
+                </Typography>
+                <Button
+                    startIcon={<AddRoundedIcon />}
+                    variant="contained"
+                    onClick={() => setOpenModal(true)}
+                    sx={{ width: { xs: "100%", sm: "auto" } }}
+                >
                     Start New
                 </Button>
-            </Box>
+            </Stack>
 
             {loading ? (
                 <Box textAlign="center"><CircularProgress /></Box>
@@ -200,16 +214,26 @@ export default function UserChatsWeb() {
                         return (
                             <Card key={c.id} sx={{ mb: 2, borderRadius: 3 }}>
                                 <CardActionArea onClick={() => navigate(`/userChats/${c.id}`)}>
-                                    <CardContent sx={{ display: "flex", alignItems: "center" }}>
-                                        <ListItemAvatar>
+                                    <CardContent
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: { xs: "flex-start", sm: "center" },
+                                            gap: { xs: 1.25, sm: 2 },
+                                            flexWrap: { xs: "wrap", sm: "nowrap" },
+                                        }}
+                                    >
+                                        <ListItemAvatar sx={{ minWidth: "auto" }}>
                                             <Avatar>{friend ? getInitials(friend.firstName, friend.lastName) : "?"}</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
                                             primary={<Typography fontWeight={700}>{friend ? `${friend.firstName} ${friend.lastName}` : "Unknown"}</Typography>}
                                             secondary={decrypted[c.id]?.slice(0, 60) ?? "No messages yet…"}
+                                            sx={{ flex: 1, minWidth: 0 }}
                                         />
-                                        {isUnread && <Badge color="primary" variant="dot" />}
-                                        <ChevronRightRoundedIcon color="action" />
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            {isUnread && <Badge color="primary" variant="dot" />}
+                                            <ChevronRightRoundedIcon color="action" />
+                                        </Stack>
                                     </CardContent>
                                 </CardActionArea>
                                 <Box display="flex" justifyContent="flex-end" px={1} pb={1}>

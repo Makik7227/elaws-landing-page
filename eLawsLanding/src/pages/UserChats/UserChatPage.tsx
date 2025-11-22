@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import {
     Avatar,
-    Box,
     Button,
     CircularProgress,
     Container,
@@ -10,6 +9,7 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
+    Stack,
     TextField,
     Typography,
     useTheme,
@@ -99,17 +99,35 @@ export default function UserChatWeb() {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Box display="flex" alignItems="center" mb={2}>
-                <IconButton onClick={() => navigate("/userChats")}><ArrowBackRoundedIcon /></IconButton>
-                <Typography variant="h6" fontWeight={800} ml={1}>Chat</Typography>
-            </Box>
+            <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+                <IconButton onClick={() => navigate("/userChats")}>
+                    <ArrowBackRoundedIcon />
+                </IconButton>
+                <Typography variant="h6" fontWeight={800}>
+                    Chat
+                </Typography>
+            </Stack>
 
-            <List ref={listRef} sx={{ maxHeight: "60vh", overflowY: "auto", display: "flex", flexDirection: "column-reverse" }}>
+            <List
+                ref={listRef}
+                sx={{
+                    maxHeight: { xs: "55vh", sm: "60vh" },
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column-reverse",
+                }}
+            >
                 {messages.length === 0 ? (
                     <Typography align="center" color="text.secondary" sx={{ py: 4 }}>No messages yet…</Typography>
                 ) : (
                     messages.map((m) => (
-                        <ListItem key={m.id} sx={{ alignSelf: m.senderId === user?.uid ? "flex-end" : "flex-start", maxWidth: "75%" }}>
+                        <ListItem
+                            key={m.id}
+                            sx={{
+                                alignSelf: m.senderId === user?.uid ? "flex-end" : "flex-start",
+                                maxWidth: { xs: "90%", sm: "75%" },
+                            }}
+                        >
                             {m.senderId !== user?.uid && (
                                 <ListItemAvatar><Avatar>{m.senderId[0]}</Avatar></ListItemAvatar>
                             )}
@@ -129,7 +147,16 @@ export default function UserChatWeb() {
                 )}
             </List>
 
-            <Box display="flex" mt={2}>
+            <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={1.25}
+                mt={2}
+                component="form"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    sendMessage();
+                }}
+            >
                 <TextField
                     fullWidth
                     placeholder="Type your message…"
@@ -138,10 +165,16 @@ export default function UserChatWeb() {
                     multiline
                     maxRows={4}
                 />
-                <Button variant="contained" onClick={sendMessage} disabled={sending || !input.trim()} sx={{ ml: 1, borderRadius: 2 }}>
+                <Button
+                    variant="contained"
+                    onClick={sendMessage}
+                    disabled={sending || !input.trim()}
+                    sx={{ borderRadius: 2, minWidth: { sm: 120 }, width: { xs: "100%", sm: "auto" } }}
+                    type="submit"
+                >
                     {sending ? <CircularProgress size={20} /> : "Send"}
                 </Button>
-            </Box>
+            </Stack>
         </Container>
     );
 }

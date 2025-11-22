@@ -202,36 +202,59 @@ const MyDocumentsPage: React.FC = () => {
     return (
         <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
             <Stack spacing={3}>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <IconButton component={RouterLink} to="/documents">
-                        <ArrowBackIcon />
-                    </IconButton>
-                    <Box>
-                        <Typography variant="h4" fontWeight={900}>
-                            My Documents
-                        </Typography>
-                        <Typography color="text.secondary">Download, copy, or delete any generated files.</Typography>
-                    </Box>
-                    <Box flex={1} />
-                    <Button component={RouterLink} to="/documents/generate" variant="contained" sx={{ borderRadius: 3 }}>
+                <Stack
+                    direction={{ xs: "column", md: "row" }}
+                    spacing={{ xs: 1.5, md: 1 }}
+                    alignItems={{ xs: "flex-start", md: "center" }}
+                    justifyContent="space-between"
+                >
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <IconButton component={RouterLink} to="/documents">
+                            <ArrowBackIcon />
+                        </IconButton>
+                        <Box>
+                            <Typography variant="h4" fontWeight={900}>
+                                My Documents
+                            </Typography>
+                            <Typography color="text.secondary">
+                                Download, copy, or delete any generated files.
+                            </Typography>
+                        </Box>
+                    </Stack>
+                    <Button
+                        component={RouterLink}
+                        to="/documents/generate"
+                        variant="contained"
+                        sx={{ borderRadius: 3, width: { xs: "100%", sm: "auto" } }}
+                    >
                         New document
                     </Button>
                 </Stack>
 
                 <Card sx={{ borderRadius: 4 }}>
                     <CardContent>
-                        <Stack spacing={2} direction={{ xs: "column", md: "row" }} alignItems={{ md: "center" }}>
+                        <Stack
+                            spacing={2}
+                            direction={{ xs: "column", md: "row" }}
+                            alignItems={{ xs: "stretch", md: "center" }}
+                        >
                             <TextField
                                 label="Search"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 sx={{ flex: 1 }}
+                                fullWidth
                             />
                             <ToggleButtonGroup
                                 value={filter}
                                 exclusive
                                 onChange={(_, val) => val && setFilter(val)}
                                 size="small"
+                                sx={{
+                                    flexWrap: { xs: "wrap", sm: "nowrap" },
+                                    width: { xs: "100%", sm: "auto" },
+                                    justifyContent: { xs: "space-between", sm: "flex-start" },
+                                }}
                             >
                                 <ToggleButton value="all">All</ToggleButton>
                                 <ToggleButton value="pdf">PDF</ToggleButton>
@@ -243,6 +266,7 @@ const MyDocumentsPage: React.FC = () => {
                                 startIcon={refreshing ? <CircularProgress size={16} /> : <RefreshIcon />}
                                 onClick={onRefresh}
                                 disabled={refreshing}
+                                sx={{ width: { xs: "100%", md: "auto" } }}
                             >
                                 Refresh
                             </Button>

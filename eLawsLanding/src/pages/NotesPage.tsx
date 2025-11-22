@@ -141,7 +141,12 @@ const NotesPage: React.FC = () => {
                     onChange={(e) => setSearch(e.target.value)}
                     sx={{ borderRadius: 3 }}
                 />
-                <Button variant="contained" component={RouterLink} to="/ai/chat" sx={{ minWidth: 200 }}>
+                <Button
+                    variant="contained"
+                    component={RouterLink}
+                    to="/ai/chat"
+                    sx={{ minWidth: { md: 200 }, width: { xs: "100%", md: "auto" } }}
+                >
                     Create from chat
                 </Button>
             </Stack>

@@ -8,6 +8,14 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: transparent;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 *, *::before, *::after {
@@ -21,6 +29,11 @@ body {
   background-color: transparent;
   color: #2c2c2e;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
 }
 
 body::after {
@@ -34,6 +47,46 @@ body::after {
     linear-gradient(180deg, rgba(255, 255, 255, 0.25), transparent 70%);
   opacity: 0.85;
   z-index: -1;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-height: 50vh;
+  overflow-x: hidden;
+}
+
+.MuiContainer-root {
+  overflow-x: hidden;
+}
+
+.MuiGrid-root.MuiGrid-container {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  width: 100% !important;
+  overflow-x: hidden;
+}
+
+@media (max-width: 600px) {
+  :root {
+    font-size: 15px;
+  }
+
+  body::after {
+    opacity: 0.65;
+  }
 }
 
 a {

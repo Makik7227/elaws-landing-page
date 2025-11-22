@@ -559,6 +559,8 @@ function QuickAction({
                 py: 1.25,
                 fontWeight: 700,
                 textTransform: "none",
+                width: { xs: "100%", sm: "auto" },
+                justifyContent: { xs: "space-between", sm: "center" },
             }}
         >
             {title}
@@ -585,8 +587,9 @@ function InfoCard({
             sx={{
                 borderRadius: 3,
                 flex: "1 1 320px",
-                minWidth: 280,
-                maxWidth: 520,
+                width: "100%",
+                minWidth: { xs: "unset", sm: 280 },
+                maxWidth: { xs: "100%", md: 520 },
             }}
         >
             <CardContent>
@@ -636,8 +639,9 @@ function MenuTile({
             sx={{
                 borderRadius: 3,
                 flex: "1 1 260px",
-                minWidth: 220,
-                maxWidth: 320,
+                width: "100%",
+                minWidth: { xs: "unset", sm: 220 },
+                maxWidth: { xs: "100%", sm: 320 },
             }}
             component="div"
         >

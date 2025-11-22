@@ -314,18 +314,33 @@ const GenerateDocumentPage: React.FC = () => {
     return (
         <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
             <Stack spacing={4}>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <IconButton component={RouterLink} to="/documents">
-                        <ArrowBackIcon />
-                    </IconButton>
-                    <Box>
-                        <Typography variant="h4" fontWeight={900}>
-                            Generate a document
-                        </Typography>
-                        <Typography color="text.secondary">
-                            Choose a schema, fill in the required data, and let AI craft the legal draft.
-                        </Typography>
-                    </Box>
+                <Stack
+                    direction={{ xs: "column", md: "row" }}
+                    alignItems={{ xs: "flex-start", md: "center" }}
+                    spacing={{ xs: 1.5, md: 1 }}
+                    justifyContent="space-between"
+                >
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <IconButton component={RouterLink} to="/documents">
+                            <ArrowBackIcon />
+                        </IconButton>
+                        <Box>
+                            <Typography variant="h4" fontWeight={900}>
+                                Generate a document
+                            </Typography>
+                            <Typography color="text.secondary">
+                                Choose a schema, fill in the required data, and let AI craft the legal draft.
+                            </Typography>
+                        </Box>
+                    </Stack>
+                    <Button
+                        component={RouterLink}
+                        to="/documents/my"
+                        variant="text"
+                        sx={{ width: { xs: "100%", md: "auto" }, justifyContent: "flex-end" }}
+                    >
+                        View saved docs →
+                    </Button>
                 </Stack>
 
                 <Grid container spacing={{ xs: 4, md: 5 }}>
@@ -396,7 +411,10 @@ const GenerateDocumentPage: React.FC = () => {
                                                     const draft = listEditorDrafts[param.key] ?? "";
                                                     return (
                                                         <Box key={param.key}>
-                                                            <Stack direction="row" spacing={1}>
+                                                            <Stack
+                                                                direction={{ xs: "column", sm: "row" }}
+                                                                spacing={1}
+                                                            >
                                                                 <TextField
                                                                     label={`${param.label}${param.required ? " *" : ""}`}
                                                                     value={draft}
@@ -519,8 +537,12 @@ const GenerateDocumentPage: React.FC = () => {
                             {!!output && (
                                 <Card sx={{ borderRadius: 4 }}>
                                     <CardContent>
-                                        <Stack spacing={2}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
+                                            <Stack spacing={2}>
+                                            <Stack
+                                                direction={{ xs: "column", sm: "row" }}
+                                                spacing={1}
+                                                alignItems={{ xs: "flex-start", sm: "center" }}
+                                            >
                                                 <Typography variant="h6" fontWeight={800}>
                                                     Preview
                                                 </Typography>
