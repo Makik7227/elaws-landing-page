@@ -87,8 +87,9 @@ const TopBar = () => {
     const closeDrawer = () => setDrawerOpen(false);
 
     return (
+        <>
         <AppBar
-            position="sticky"
+            position="fixed"
             elevation={trigger ? 3 : 0}
             sx={{
                 backdropFilter: "blur(16px)",
@@ -97,6 +98,11 @@ const TopBar = () => {
                         ? alpha(theme.palette.background.paper, 0.9)
                         : alpha(theme.palette.background.paper, 0.6),
                 transition: "all 0.3s ease",
+                borderRadius: 0,
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: (theme) => theme.zIndex.appBar,
             }}
         >
             <Container maxWidth="lg">
@@ -111,22 +117,26 @@ const TopBar = () => {
                         minHeight: 72,
                     }}
                 >
-                    <MotionTypography
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        variant="h5"
+                    <Box
                         component={RouterLink}
                         to={user ? "/dashboard" : "/"}
                         sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
                             textDecoration: "none",
-                            color: "primary.main",
-                            fontWeight: 800,
-                            letterSpacing: -0.5,
-                            fontSize: { xs: "1.25rem", md: "1.5rem" },
                         }}
                     >
-                        E-Laws
-                    </MotionTypography>
+                        <Box
+                            component="img"
+                            src="/Logo.png"
+                            alt="E-Laws"
+                            sx={{
+                                height: 40,
+                                width: "auto",
+                                display: "block",
+                            }}
+                        />
+                    </Box>
 
                     {/* Desktop nav */}
                     {!user && (
@@ -251,21 +261,26 @@ const TopBar = () => {
                         gap: 1,
                     }}
                 >
-                    <MotionTypography
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        variant="h5"
+                    <Box
                         component={RouterLink}
                         to={user ? "/dashboard" : "/"}
                         sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
                             textDecoration: "none",
-                            color: "primary.main",
-                            fontWeight: 800,
-                            letterSpacing: -0.5,
                         }}
                     >
-                        E-Laws
-                    </MotionTypography>
+                        <Box
+                            component="img"
+                            src="/Logo.png"
+                            alt="E-Laws"
+                            sx={{
+                                height: 32,
+                                width: "auto",
+                                display: "block",
+                            }}
+                        />
+                    </Box>
                     <Stack direction="row" spacing={0.75} alignItems="center">
                         <LanguageToggleButton />
                         <ThemeToggleButton />
@@ -404,6 +419,8 @@ const TopBar = () => {
                 </Box>
             </Drawer>
         </AppBar>
+        <Box sx={{ height: { xs: 64, md: 80 } }} />
+        </>
     );
 };
 
