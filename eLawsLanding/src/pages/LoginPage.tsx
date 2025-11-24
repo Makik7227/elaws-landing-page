@@ -5,7 +5,6 @@ import {
     Button,
     Card,
     CardContent,
-    Chip,
     Container,
     Link,
     Stack,
@@ -54,16 +53,6 @@ const LoginPage = () => {
                         }}
                     >
                         <CardContent sx={{ p: { xs: 4, md: 5 } }}>
-                            <Chip
-                                label={t("loginPage.hero.badge")}
-                                variant="outlined"
-                                sx={{
-                                    color: "inherit",
-                                    borderColor: alpha(theme.palette.common.white, 0.4),
-                                    bgcolor: alpha(theme.palette.common.white, 0.08),
-                                    mb: 3,
-                                }}
-                            />
                             <Typography variant="h4" fontWeight={900} gutterBottom>
                                 {t("loginPage.hero.title")}
                             </Typography>
@@ -100,7 +89,6 @@ const LoginPage = () => {
                         <CardContent sx={{ p: { xs: 4, md: 5 } }}>
                             <Stack spacing={3}>
                                 <Box>
-                                    <Chip label={t("loginPage.form.badge")} color="primary" variant="outlined" sx={{ mb: 1 }} />
                                     <Typography variant="h5" fontWeight={800}>
                                         {t("loginPage.form.title")}
                                     </Typography>

@@ -275,7 +275,6 @@ const SignUp = () =>  {
                             <CardContent sx={{ p: { xs: 4, md: 5 } }}>
                                 <Stack spacing={3}>
                                     <Box>
-                                        <Chip label={t("signupPage.form.badge")} color="primary" variant="outlined" sx={{ mb: 1 }} />
                                         <Typography variant="h5" fontWeight={800}>
                                             {t("signupPage.form.title")}
                                         </Typography>
