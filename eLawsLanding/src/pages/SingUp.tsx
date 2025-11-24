@@ -164,7 +164,7 @@ const SignUp = () =>  {
             });
 
             setLoading(false);
-            navigate("/subscribe"); // mirror app flow
+            navigate("/dashboard/subscribe");
         } catch (err: unknown) {
             setLoading(false);
             let msg = String(err);
