@@ -122,6 +122,7 @@ export default function PanicButtonWeb({
                 state: {
                     procedures: content,
                     country,
+                    countryCode,
                     tokensUsed: tokensUsed?.toString() || "0",
                     tokenLimit: tokenLimit?.toString() || "0",
                 },

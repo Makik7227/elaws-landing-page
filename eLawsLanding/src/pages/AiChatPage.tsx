@@ -106,6 +106,9 @@ const AiChatPage: React.FC = () => {
     });
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const localizedCountryName = countryCode
+        ? t(`countries.${countryCode}`, { defaultValue: country || countryCode })
+        : country;
 
     useEffect(() => {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -429,7 +432,7 @@ Instructions:
                         <Typography variant="subtitle2" color="text.secondary">
                             {t("aiChat.labels.country")}
                         </Typography>
-                        <Typography variant="body2">{country || t("aiChat.labels.anyCountry")}</Typography>
+                        <Typography variant="body2">{localizedCountryName || t("aiChat.labels.anyCountry")}</Typography>
                     </Box>
                 </Stack>
 

@@ -23,13 +23,16 @@ export default function ProceduresView() {
         | {
         procedures: string;
         country?: string;
+        countryCode?: string;
         tokensUsed?: string;
         tokenLimit?: string;
     }
         | undefined;
 
     const procedures = state?.procedures || t("proceduresPage.empty");
-    const country = state?.country || t("proceduresPage.unknown");
+    const displayCountry = state?.countryCode
+        ? t(`countries.${state.countryCode}`, { defaultValue: state?.country || state.countryCode })
+        : state?.country || t("proceduresPage.unknown");
 
     return (
         <Container maxWidth="sm" sx={{ py: { xs: 4, md: 6 } }}>
@@ -42,7 +45,7 @@ export default function ProceduresView() {
                         {t("proceduresPage.title")}
                     </Typography>
                     <Typography variant="subtitle1" color="text.secondary">
-                        {t("proceduresPage.country", { country })}
+                        {t("proceduresPage.country", { country: displayCountry })}
                     </Typography>
                 </Box>
             </Box>

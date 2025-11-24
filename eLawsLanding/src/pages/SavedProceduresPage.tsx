@@ -63,6 +63,8 @@ const SavedProceduresPage: React.FC = () => {
                 .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
             : "🏳️";
 
+    const formatCountry = (code: string) => t(`countries.${code}`, { defaultValue: code });
+
     return (
         <Container maxWidth="md" sx={{ py: 6 }}>
             <Box display="flex" alignItems="center" gap={2} mb={3}>
@@ -109,7 +111,7 @@ const SavedProceduresPage: React.FC = () => {
                                         {proc.title}
                                     </Typography>
                                 }
-                                subheader={t("savedProcedures.country", { country: proc.countryCode })}
+                                subheader={t("savedProcedures.country", { country: formatCountry(proc.countryCode), code: proc.countryCode })}
                                 action={
                                     <IconButton onClick={() => setExpandedId(expanded ? null : proc.id)}>
                                         {expanded ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />}

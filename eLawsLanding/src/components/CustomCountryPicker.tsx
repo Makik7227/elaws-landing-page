@@ -42,9 +42,18 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
     const [open, setOpen] = useState(false);
     const { t } = useTranslation();
 
-    const filtered = countries.filter((c) =>
-        c.name.toLowerCase().includes(search.toLowerCase())
-    );
+    const getLocalizedName = (code: string, fallback: string) =>
+        t(`countries.${code}`, { defaultValue: fallback || code });
+
+    const normalizedSearch = search.trim().toLowerCase();
+    const filtered = countries.filter((c) => {
+        const localized = getLocalizedName(c.code, c.name).toLowerCase();
+        return (
+            localized.includes(normalizedSearch) ||
+            c.name.toLowerCase().includes(normalizedSearch) ||
+            c.code.toLowerCase().includes(normalizedSearch)
+        );
+    });
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
@@ -76,7 +85,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                             variant="square"
                         />
                         <Typography fontWeight={600}>
-                            {country} ({countryCode})
+                            {getLocalizedName(countryCode, country)} ({countryCode})
                         </Typography>
                         {enableXReset && (
                             <IconButton
@@ -146,7 +155,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                                     />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={item.name}
+                                    primary={getLocalizedName(item.code, item.name)}
                                     secondary={item.code}
                                     primaryTypographyProps={{ fontWeight: 500 }}
                                 />

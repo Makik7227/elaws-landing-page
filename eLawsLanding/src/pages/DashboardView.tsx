@@ -282,11 +282,14 @@ const Dashboard: React.FC = () => {
 
     const heroName = firstName || t("dashboard.hero.anonymous");
     const heroRoleLabel = t(`dashboard.hero.roles.${role}`);
-    const heroMeta = country
+    const heroCountryLabel = user.countryCode
+        ? t(`countries.${user.countryCode}`, { defaultValue: country || user.countryCode })
+        : country;
+    const heroMeta = heroCountryLabel
         ? t("dashboard.hero.metaWithCountry", {
               tier: subscriptionTier?.toUpperCase(),
               role: heroRoleLabel,
-              country,
+              country: heroCountryLabel,
           })
         : t("dashboard.hero.meta", {
               tier: subscriptionTier?.toUpperCase(),
