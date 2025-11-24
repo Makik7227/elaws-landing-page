@@ -26,6 +26,8 @@ import { auth } from "../../firebase.ts";
 import ThemeToggleButton from "./ThemeToggleButton.tsx"; // keep your existing path
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import LanguageToggleButton from "./LanguageToggleButton";
+import { useTranslation } from "react-i18next";
 
 const TopBar = () => {
     const theme = useTheme();
@@ -33,6 +35,7 @@ const TopBar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+    const { t } = useTranslation();
 
     const [user, setUser] = useState<User | null>(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -59,21 +62,21 @@ const TopBar = () => {
 
     const NAV = useMemo(
         () => [
-            { label: "Home", to: "/" },
-            { label: "Features", to: "/features" },
-            { label: "Pricing", to: "/pricing" },
-            { label: "About", to: "/about" },
+            { labelKey: "nav.home", to: "/" },
+            { labelKey: "nav.features", to: "/features" },
+            { labelKey: "nav.pricing", to: "/pricing" },
+            { labelKey: "nav.about", to: "/about" },
         ],
         []
     );
 
     const APP_NAV = useMemo(
         () => [
-            { label: "Dashboard", to: "/dashboard" },
-            { label: "AI Chat", to: "/ai/chat" },
-            { label: "Documents", to: "/documents" },
-            { label: "Procedures", to: "/procedures" },
-            { label: "Notes", to: "/dashboard/notes" },
+            { labelKey: "nav.dashboard", to: "/dashboard" },
+            { labelKey: "nav.aiChat", to: "/ai/chat" },
+            { labelKey: "nav.documents", to: "/documents" },
+            { labelKey: "nav.procedures", to: "/procedures" },
+            { labelKey: "nav.notes", to: "/dashboard/notes" },
         ],
         []
     );
@@ -128,7 +131,7 @@ const TopBar = () => {
                     {/* Desktop nav */}
                     {!user && (
                         <Box sx={{ display: "flex", gap: 3, flexShrink: 0 }}>
-                            {NAV.map(({ label, to }) => {
+                            {NAV.map(({ labelKey, to }) => {
                                 const active = isActive(to);
                                 return (
                                     <MotionTypography
@@ -158,13 +161,14 @@ const TopBar = () => {
                                             "&:hover:after": { width: "100%" },
                                         }}
                                     >
-                                        {label}
+                                        {t(labelKey)}
                                     </MotionTypography>
                                 );
                             })}
                         </Box>
                     )}
                     <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexShrink: 0 }}>
+                        <LanguageToggleButton />
                         <ThemeToggleButton />
                         {user ? (
                             <>
@@ -177,7 +181,7 @@ const TopBar = () => {
                                     whileTap={{ scale: 0.95 }}
                                     sx={{ borderRadius: 2, px: 2.25, fontWeight: 700, textTransform: "none" }}
                                 >
-                                    Dashboard
+                                    {t("nav.dashboard")}
                                 </MotionButton>
                                 <MotionButton
                                     component={RouterLink}
@@ -188,7 +192,7 @@ const TopBar = () => {
                                     whileTap={{ scale: 0.95 }}
                                     sx={{ borderRadius: 2, px: 2.25, fontWeight: 700, textTransform: "none" }}
                                 >
-                                    Account
+                                    {t("auth.account")}
                                 </MotionButton>
                                 <MotionButton
                                     onClick={handleLogout}
@@ -198,7 +202,7 @@ const TopBar = () => {
                                     whileTap={{ scale: 0.95 }}
                                     sx={{ borderRadius: 2, px: 2, fontWeight: 600, textTransform: "none" }}
                                 >
-                                    Logout
+                                    {t("auth.logout")}
                                 </MotionButton>
                             </>
                         ) : (
@@ -212,7 +216,7 @@ const TopBar = () => {
                                     whileTap={{ scale: 0.95 }}
                                     sx={{ borderRadius: 2, px: 2, fontWeight: 600, textTransform: "none" }}
                                 >
-                                    Login
+                                    {t("auth.login")}
                                 </MotionButton>
                                 <MotionButton
                                     component={RouterLink}
@@ -229,7 +233,7 @@ const TopBar = () => {
                                         boxShadow: "0 4px 14px rgba(0,0,0,.15)",
                                     }}
                                 >
-                                    Sign Up
+                                    {t("auth.signup")}
                                 </MotionButton>
                             </>
                         )}
@@ -263,10 +267,11 @@ const TopBar = () => {
                         E-Laws
                     </MotionTypography>
                     <Stack direction="row" spacing={0.75} alignItems="center">
+                        <LanguageToggleButton />
                         <ThemeToggleButton />
                         <IconButton
                             color="inherit"
-                            aria-label="Open menu"
+                            aria-label={t("topBar.openMenu")}
                             onClick={() => setDrawerOpen(true)}
                             sx={{
                                 border: (t) => `1px solid ${alpha(t.palette.text.primary, 0.1)}`,
@@ -292,15 +297,15 @@ const TopBar = () => {
                 >
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                         <Typography variant="h6" fontWeight={800}>
-                            Menu
+                            {t("topBar.menu")}
                         </Typography>
-                        <IconButton aria-label="Close menu" onClick={closeDrawer}>
+                        <IconButton aria-label={t("topBar.closeMenu")} onClick={closeDrawer}>
                             <CloseRoundedIcon />
                         </IconButton>
                     </Stack>
                     <Divider />
                     <List sx={{ flex: 1, py: 0 }}>
-                        {(user ? APP_NAV : NAV).map(({ label, to }) => (
+                        {(user ? APP_NAV : NAV).map(({ labelKey, to }) => (
                             <ListItemButton
                                 key={to}
                                 component={RouterLink}
@@ -312,7 +317,10 @@ const TopBar = () => {
                                     mb: 0.5,
                                 }}
                             >
-                                <ListItemText primary={label} primaryTypographyProps={{ fontWeight: 600 }} />
+                                <ListItemText
+                                    primary={t(labelKey)}
+                                    primaryTypographyProps={{ fontWeight: 600 }}
+                                />
                             </ListItemButton>
                         ))}
                     </List>
@@ -328,7 +336,7 @@ const TopBar = () => {
                                     onClick={closeDrawer}
                                     sx={{ borderRadius: 2, fontWeight: 700 }}
                                 >
-                                    Dashboard
+                                    {t("nav.dashboard")}
                                 </MotionButton>
                                 <MotionButton
                                     component={RouterLink}
@@ -338,7 +346,7 @@ const TopBar = () => {
                                     onClick={closeDrawer}
                                     sx={{ borderRadius: 2, fontWeight: 700 }}
                                 >
-                                    Account
+                                    {t("auth.account")}
                                 </MotionButton>
                                 <MotionButton
                                     fullWidth
@@ -350,7 +358,7 @@ const TopBar = () => {
                                     }}
                                     sx={{ borderRadius: 2, fontWeight: 600 }}
                                 >
-                                    Logout
+                                    {t("auth.logout")}
                                 </MotionButton>
                             </>
                         ) : (
@@ -363,7 +371,7 @@ const TopBar = () => {
                                     onClick={closeDrawer}
                                     sx={{ borderRadius: 2, fontWeight: 700 }}
                                 >
-                                    Login
+                                    {t("auth.login")}
                                 </MotionButton>
                                 <MotionButton
                                     component={RouterLink}
@@ -373,15 +381,24 @@ const TopBar = () => {
                                     onClick={closeDrawer}
                                     sx={{ borderRadius: 2, fontWeight: 800 }}
                                 >
-                                    Create account
+                                    {t("auth.createAccount")}
                                 </MotionButton>
                             </>
                         )}
-                        <Stack direction="row" alignItems="center" spacing={1.5} mt={0.5}>
-                            <ThemeToggleButton />
-                            <Typography variant="body2" color="text.secondary">
-                                Toggle theme
-                            </Typography>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1.5}
+                            mt={0.5}
+                            flexWrap="wrap"
+                        >
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                                <ThemeToggleButton />
+                                <Typography variant="body2" color="text.secondary">
+                                    {t("topBar.themeToggle")}
+                                </Typography>
+                            </Stack>
+                            <LanguageToggleButton />
                         </Stack>
                     </Stack>
                 </Box>

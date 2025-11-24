@@ -1,0 +1,331 @@
+{
+    "common": {
+        "language": {
+            "tooltip": "Switch language to {{language}}",
+            "names": {
+                "en": "English",
+                "pl": "Polish"
+            },
+            "short": {
+                "en": "EN",
+                "pl": "PL"
+            },
+            "aria": "Toggle language"
+        }
+    },
+    "nav": {
+        "home": "Home",
+        "features": "Features",
+        "pricing": "Pricing",
+        "about": "About",
+        "dashboard": "Dashboard",
+        "aiChat": "AI Chat",
+        "documents": "Documents",
+        "procedures": "Procedures",
+        "notes": "Notes"
+    },
+    "auth": {
+        "account": "Account",
+        "logout": "Logout",
+        "login": "Login",
+        "signup": "Sign Up",
+        "createAccount": "Create account"
+    },
+    "topBar": {
+        "menu": "Menu",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "themeToggle": "Toggle theme"
+    },
+    "home": {
+        "hero": {
+            "badge": "AI legal copilot",
+            "title": "E-Laws — legal help, on-demand.",
+            "subtitle": "Ask questions, generate documents, and chat with a legal assistant tuned to your jurisdiction. Privacy-first. Built for legal teams and solo founders alike.",
+            "ctaDashboard": "Go to dashboard",
+            "ctaPrimary": "Create free account",
+            "ctaSecondary": "Try the Demo",
+            "metrics": {
+                "questions": "Questions answered",
+                "docs": "Docs drafted",
+                "response": "Avg. response time"
+            },
+            "highlights": {
+                "security": "End-to-end security",
+                "localization": "Country-aware guidance",
+                "citations": "Cited answers"
+            },
+            "trustedBy": "Trusted by modern legal teams:"
+        },
+        "features": {
+            "overline": "What you get",
+            "title": "Built for real-world legal tasks",
+            "subtitle": "Designed for SaaS simplicity: clear modules, instant context, and beautiful defaults.",
+            "cards": {
+                "countryChat": {
+                    "title": "Country-specific chat",
+                    "desc": "Ask in natural language and get answers tuned to your jurisdiction."
+                },
+                "topicPresets": {
+                    "title": "Topic presets",
+                    "desc": "Civil, criminal, business, labor, tax… jump in with curated prompts."
+                },
+                "privacy": {
+                    "title": "Privacy by default",
+                    "desc": "Secure storage, strict access controls, and audit trails built in."
+                },
+                "speed": {
+                    "title": "Lightning fast",
+                    "desc": "Optimized pipeline and caching. Answers in seconds, not minutes."
+                }
+            }
+        },
+        "workflow": {
+            "badge": "Workflow",
+            "title": "Everything teams need—without the clunky UI.",
+            "description": "We borrowed the best SaaS patterns: left-hand navigation, delightful cards, progressive disclosure, and optional dark mode. It feels like your favorite productivity suite, not old-school legal tech.",
+            "points": {
+                "workspace": {
+                    "title": "Unified workspace",
+                    "desc": "Chat, notes, cases, and procedures share the same context so nothing gets lost."
+                },
+                "realtime": {
+                    "title": "Real-time AI",
+                    "desc": "We stream responses, highlight citations, and let you branch threads instantly."
+                },
+                "local": {
+                    "title": "Local expertise",
+                    "desc": "Country packs bake in regulations, forms, and deadlines unique to your region."
+                }
+            },
+            "primaryCta": "Explore the product",
+            "secondaryCta": "View pricing →",
+            "preview": {
+                "title": "Live preview",
+                "draftNda": {
+                    "title": "Draft NDA",
+                    "desc": "AI-built in 35 seconds."
+                },
+                "laborChat": {
+                    "title": "Labor dispute chat",
+                    "desc": "Summaries + citations ready to share."
+                },
+                "immigration": {
+                    "title": "Immigration checklist",
+                    "desc": "Checklist auto-adjusts to your country."
+                },
+                "footerTitle": "Dark mode ready",
+                "footerDesc": "Toggle it anytime from the nav."
+            }
+        },
+        "steps": {
+            "overline": "How it works",
+            "title": "Three steps. Zero confusion.",
+            "subtitle": "Guided flows keep complex procedures approachable. Every workspace feels familiar.",
+            "pickCountry": {
+                "title": "Pick country & topic",
+                "desc": "We tailor the AI context to local legislation and practice."
+            },
+            "chatDraft": {
+                "title": "Chat, draft, or plan",
+                "desc": "Ask follow ups, generate filings, or spin up guided procedures."
+            },
+            "saveCollaborate": {
+                "title": "Save & collaborate",
+                "desc": "Store insights, export docs, and loop in lawyers when needed."
+            }
+        },
+        "ctaBand": {
+            "title": "Start your first case in minutes",
+            "subtitle": "Free plan available. Upgrade anytime.",
+            "primary": "Create account",
+            "secondary": "See pricing"
+        },
+        "footer": {
+            "privacy": "Privacy",
+            "terms": "Terms",
+            "contact": "Contact"
+        }
+    },
+    "featuresPage": {
+        "hero": {
+            "badge": "Features",
+            "title": "Built for real-world legal work",
+            "subtitle": "From quick answers to full documents and organized cases — all in one place.",
+            "primaryCta": "Get started",
+            "secondaryCta": "Try the demo"
+        },
+        "coreSection": {
+            "overline": "Core",
+            "title": "Everything you need to get moving"
+        },
+        "moreSection": {
+            "overline": "And more",
+            "title": "Practical details that actually matter",
+            "cta": "See pricing"
+        },
+        "cards": {
+            "defaultCta": "Explore"
+        },
+        "core": {
+            "aiChat": {
+                "title": "AI Legal Chat",
+                "desc": "Ask jurisdiction-aware legal questions and get concise, cited guidance.",
+                "cta": "Start chatting"
+            },
+            "documents": {
+                "title": "Generate Documents",
+                "desc": "Draft contracts, letters, and filings with AI, then edit and export.",
+                "cta": "Create a doc"
+            },
+            "cases": {
+                "title": "Manage Cases",
+                "desc": "Open, track, and review your legal matters in one place.",
+                "cta": "View cases"
+            },
+            "notes": {
+                "title": "Saved Notes",
+                "desc": "Capture important answers and keep them organized by topic.",
+                "cta": "Open notes"
+            }
+        },
+        "more": {
+            "procedures": {
+                "title": "Country-specific Procedures",
+                "desc": "Step-by-step playbooks tailored to your country’s rules.",
+                "cta": "Browse procedures"
+            },
+            "presets": {
+                "title": "Legal Topics Presets",
+                "desc": "Jump straight into Civil, Criminal, Business, Labor, Tax, and more.",
+                "cta": "Choose a topic"
+            },
+            "privacy": {
+                "title": "Privacy by Default",
+                "desc": "Your data stays yours — secure storage and strict access controls."
+            },
+            "speed": {
+                "title": "Fast & Reliable",
+                "desc": "Optimized pipeline and caching for snappy, consistent responses."
+            }
+        }
+    },
+    "pricingPage": {
+        "hero": {
+            "badge": "Pricing",
+            "title": "Simple, fair, and flexible",
+            "subtitle": "Pick what fits your workflow. Cancel anytime.",
+            "secondaryCta": "See features",
+            "openApp": "Open App"
+        },
+        "plans": {
+            "perMonth": "/ month",
+            "free": {
+                "name": "Free",
+                "tokens": "10,000 tokens / month",
+                "features": {
+                    "chatBasic": "AI legal chat (basic)",
+                    "policeShortcut": "“Stopped by Police” quick access"
+                }
+            },
+            "plus": {
+                "name": "Plus",
+                "tokens": "100,000 tokens / month",
+                "features": {
+                    "documents": "Secure document generation",
+                    "encryptedChat": "Encrypted chat with your lawyer",
+                    "chatEnhanced": "AI legal chat (enhanced)",
+                    "policeShortcut": "“Stopped by Police” quick access"
+                }
+            },
+            "premium": {
+                "name": "Premium",
+                "tokens": "500,000 tokens / month",
+                "features": {
+                    "plusAll": "Everything in Plus",
+                    "clientChat": "Encrypted chat with your clients",
+                    "caseManagement": "Case management for clients",
+                    "prioritySupport": "Priority support"
+                }
+            },
+            "recommendedTag": "Recommended",
+            "currentLabel": "Current Plan"
+        },
+        "cta": {
+            "startFree": "Start for Free",
+            "upgradeTo": "Upgrade to {{plan}}",
+            "currentPlan": "You're on this plan",
+            "downgradeTo": "Downgrade to {{plan}}",
+            "selectPlan": "Select {{plan}}"
+        },
+        "included": {
+            "overline": "What’s included",
+            "title": "Everything you need to get moving",
+            "chat": "AI legal chat",
+            "docs": "Doc generation",
+            "localGuidance": "Country-aware guidance",
+            "security": "Privacy-first security",
+            "speed": "Fast & reliable",
+            "manageButton": "Manage subscription",
+            "createAccountButton": "Create your account"
+        }
+    },
+    "about": {
+        "hero": {
+            "badge": "About",
+            "title": "Making legal help fast, clear, and accessible",
+            "subtitle": "E-Laws is your AI legal copilot — built to answer questions, generate documents, and guide you through procedures with privacy by default.",
+            "secondaryCta": "Our Features",
+            "primaryCta": "Get Started"
+        },
+        "mission": {
+            "title": "Our mission",
+            "subtitle": "People deserve understandable, actionable legal guidance — not endless jargon and wait times. We combine reliable AI with country-aware context to help you draft, decide, and move forward.",
+            "pills": {
+                "jurisdiction": "Jurisdiction-aware answers",
+                "local": "Local procedures & presets",
+                "privacy": "Privacy-first by design",
+                "speed": "Fast and reliable responses"
+            }
+        },
+        "stats": {
+            "users": "Users helped",
+            "countries": "Countries supported",
+            "response": "Avg. response prep"
+        },
+        "trust": {
+            "overline": "Trust & Safety",
+            "title": "Designed to be dependable",
+            "points": {
+                "citations": "Clear citations and jurisdictional hints where relevant",
+                "control": "No sale of your personal data — you control exports",
+                "security": "Role-based access and encryption at rest",
+                "editable": "Human-readable docs you can edit and sign"
+            }
+        },
+        "story": {
+            "overline": "Our story",
+            "title": "From idea to everyday copilot",
+            "timeline": {
+                "2024": {
+                    "title": "Prototype",
+                    "desc": "We shipped our first jurisdiction-aware chat with document drafting."
+                },
+                "2025": {
+                    "title": "Cases & Procedures",
+                    "desc": "Added local procedures, saved notes, and structured case management."
+                },
+                "today": {
+                    "title": "Scaling globally",
+                    "desc": "Improving multilingual guidance, performance, and lawyer workflows."
+                }
+            }
+        },
+        "cta": {
+            "title": "Want to partner or have feedback?",
+            "subtitle": "We collaborate with lawyers and organizations to make legal help accessible.",
+            "primary": "Contact us",
+            "secondary": "See pricing"
+        }
+    }
+}

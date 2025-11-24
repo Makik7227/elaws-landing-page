@@ -21,7 +21,8 @@ import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import {auth, db} from "../../firebase.ts";
+import { auth, db } from "../../firebase.ts";
+import { useTranslation } from "react-i18next";
 
 type PlanId = "free" | "plus" | "premium";
 
@@ -31,7 +32,6 @@ type Plan = {
     priceLabel: string;
     per?: string;
     tokens: string;
-    badge?: "Best value" | "Recommended";
     features: string[];
 };
 
@@ -42,16 +42,74 @@ type ButtonMeta = {
     actionHref: string; // where we navigate
 };
 
+type PlanDefinition = {
+    id: PlanId;
+    nameKey: string;
+    priceLabel: string;
+    perKey?: string;
+    tokensKey: string;
+    featuresKeys: string[];
+};
+
+const PLAN_DEFINITIONS: PlanDefinition[] = [
+    {
+        id: "free",
+        nameKey: "pricingPage.plans.free.name",
+        priceLabel: "$0",
+        tokensKey: "pricingPage.plans.free.tokens",
+        featuresKeys: [
+            "pricingPage.plans.free.features.chatBasic",
+            "pricingPage.plans.free.features.policeShortcut",
+        ],
+    },
+    {
+        id: "plus",
+        nameKey: "pricingPage.plans.plus.name",
+        priceLabel: "$9.99",
+        perKey: "pricingPage.plans.perMonth",
+        tokensKey: "pricingPage.plans.plus.tokens",
+        featuresKeys: [
+            "pricingPage.plans.plus.features.documents",
+            "pricingPage.plans.plus.features.encryptedChat",
+            "pricingPage.plans.plus.features.chatEnhanced",
+            "pricingPage.plans.plus.features.policeShortcut",
+        ],
+    },
+    {
+        id: "premium",
+        nameKey: "pricingPage.plans.premium.name",
+        priceLabel: "$19.99",
+        perKey: "pricingPage.plans.perMonth",
+        tokensKey: "pricingPage.plans.premium.tokens",
+        featuresKeys: [
+            "pricingPage.plans.premium.features.plusAll",
+            "pricingPage.plans.premium.features.clientChat",
+            "pricingPage.plans.premium.features.caseManagement",
+            "pricingPage.plans.premium.features.prioritySupport",
+        ],
+    },
+];
+
+const INCLUDED_FEATURES = [
+    { icon: <ChatRoundedIcon />, labelKey: "pricingPage.included.chat" },
+    { icon: <DescriptionRoundedIcon />, labelKey: "pricingPage.included.docs" },
+    { icon: <GavelRoundedIcon />, labelKey: "pricingPage.included.localGuidance" },
+    { icon: <ShieldRoundedIcon />, labelKey: "pricingPage.included.security" },
+    { icon: <BoltRoundedIcon />, labelKey: "pricingPage.included.speed" },
+];
+
 const PlanCard = ({
-                      plan,
-                      current,
-                      cta,
-                      recommended,
-                  }: {
+    plan,
+    current,
+    cta,
+    recommendedLabel,
+    currentLabel,
+}: {
     plan: Plan;
     current: boolean;
     cta: ButtonMeta;
-    recommended?: boolean;
+    recommendedLabel?: string;
+    currentLabel: string;
 }) => {
     return (
         <Card
@@ -70,11 +128,11 @@ const PlanCard = ({
                 },
             }}
         >
-            {recommended && (
+            {recommendedLabel && (
                 <Chip
                     icon={<StarRoundedIcon />}
                     color="primary"
-                    label="Recommended"
+                    label={recommendedLabel}
                     sx={{ position: "absolute", top: 12, right: 12, borderRadius: 2 }}
                 />
             )}
@@ -87,7 +145,7 @@ const PlanCard = ({
 
                     <Stack direction="row" spacing={1} alignItems="baseline">
                         <Typography variant="h4" fontWeight={900}>
-                            {current ? "Current Plan" : plan.priceLabel}
+                            {current ? currentLabel : plan.priceLabel}
                         </Typography>
                         {!current && plan.per && (
                             <Typography variant="body2" color="text.secondary">
@@ -134,6 +192,7 @@ const PlanCard = ({
 const PricingPage: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [uid, setUid] = useState<string | null>(null);
     const [currentTier, setCurrentTier] = useState<PlanId | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -167,44 +226,16 @@ const PricingPage: React.FC = () => {
     }, []);
 
     const plans: Plan[] = useMemo(
-        () => [
-            {
-                id: "free",
-                name: "Free",
-                priceLabel: "$0",
-                tokens: "10,000 tokens / month",
-                features: ["AI legal chat (basic)", "“Stopped by Police” quick access"],
-            },
-            {
-                id: "plus",
-                name: "Plus",
-                priceLabel: "$9.99",
-                per: "/ month",
-                tokens: "100,000 tokens / month",
-                badge: "Best value",
-                features: [
-                    "Secure document generation",
-                    "Encrypted chat with your lawyer",
-                    "AI legal chat (enhanced)",
-                    "“Stopped by Police” quick access",
-                ],
-            },
-            {
-                id: "premium",
-                name: "Premium",
-                priceLabel: "$19.99",
-                per: "/ month",
-                tokens: "500,000 tokens / month",
-                badge: "Recommended",
-                features: [
-                    "Everything in Plus",
-                    "Encrypted chat with your clients",
-                    "Case management for clients",
-                    "Priority support",
-                ],
-            },
-        ],
-        []
+        () =>
+            PLAN_DEFINITIONS.map((plan) => ({
+                id: plan.id,
+                name: t(plan.nameKey),
+                priceLabel: plan.priceLabel,
+                per: plan.perKey ? t(plan.perKey) : undefined,
+                tokens: t(plan.tokensKey),
+                features: plan.featuresKeys.map((key) => t(key)),
+            })),
+        [t]
     );
 
     // compute CTA per plan based on auth + current tier
@@ -212,7 +243,10 @@ const PricingPage: React.FC = () => {
         // not logged in → push to signup
         if (!uid) {
             return {
-                label: plan.id === "free" ? "Start for Free" : `Upgrade to ${capitalize(plan.id)}`,
+                label:
+                    plan.id === "free"
+                        ? t("pricingPage.cta.startFree")
+                        : t("pricingPage.cta.upgradeTo", { plan: plan.name }),
                 disabled: false,
                 variant: "contained",
                 actionHref: `/signup?plan=${plan.id}`,
@@ -222,7 +256,7 @@ const PricingPage: React.FC = () => {
         // logged in
         if (currentTier === plan.id) {
             return {
-                label: "You're on this plan",
+                label: t("pricingPage.cta.currentPlan"),
                 disabled: true,
                 variant: "outlined",
                 actionHref: "#",
@@ -232,7 +266,7 @@ const PricingPage: React.FC = () => {
         // switching logic
         if (currentTier === "free" && (plan.id === "plus" || plan.id === "premium")) {
             return {
-                label: `Upgrade to ${capitalize(plan.id)}`,
+                label: t("pricingPage.cta.upgradeTo", { plan: plan.name }),
                 disabled: false,
                 variant: "contained",
                 actionHref: `/subscribe?plan=${plan.id}&action=upgrade`,
@@ -243,7 +277,7 @@ const PricingPage: React.FC = () => {
             if (plan.id === "premium") {
                 // (RN app has a $10.99 one-time upgrade; keep label simple here)
                 return {
-                    label: "Upgrade to Premium",
+                    label: t("pricingPage.cta.upgradeTo", { plan: plan.name }),
                     disabled: false,
                     variant: "contained",
                     actionHref: `/subscribe?plan=premium&action=upgrade`,
@@ -251,7 +285,7 @@ const PricingPage: React.FC = () => {
             }
             if (plan.id === "free") {
                 return {
-                    label: "Downgrade to Free",
+                    label: t("pricingPage.cta.downgradeTo", { plan: plan.name }),
                     disabled: false,
                     variant: "outlined",
                     actionHref: `/subscribe?plan=free&action=downgrade`,
@@ -262,7 +296,7 @@ const PricingPage: React.FC = () => {
         if (currentTier === "premium") {
             if (plan.id === "plus") {
                 return {
-                    label: "Downgrade to Plus",
+                    label: t("pricingPage.cta.downgradeTo", { plan: plan.name }),
                     disabled: false,
                     variant: "outlined",
                     actionHref: `/subscribe?plan=plus&action=downgrade`,
@@ -270,7 +304,7 @@ const PricingPage: React.FC = () => {
             }
             if (plan.id === "free") {
                 return {
-                    label: "Downgrade to Free",
+                    label: t("pricingPage.cta.downgradeTo", { plan: plan.name }),
                     disabled: false,
                     variant: "outlined",
                     actionHref: `/subscribe?plan=free&action=downgrade`,
@@ -280,7 +314,7 @@ const PricingPage: React.FC = () => {
 
         // fallback
         return {
-            label: `Select ${capitalize(plan.id)}`,
+            label: t("pricingPage.cta.selectPlan", { plan: plan.name }),
             disabled: false,
             variant: "contained",
             actionHref: `/subscribe?plan=${plan.id}`,
@@ -305,7 +339,7 @@ const PricingPage: React.FC = () => {
             >
                 <Container maxWidth="md">
                     <Chip
-                        label="Pricing"
+                        label={t("pricingPage.hero.badge")}
                         variant="outlined"
                         sx={{
                             color: "inherit",
@@ -316,10 +350,10 @@ const PricingPage: React.FC = () => {
                         }}
                     />
                     <Typography variant="h3" fontWeight={900} sx={{ letterSpacing: -0.5 }}>
-                        Simple, fair, and flexible
+                        {t("pricingPage.hero.title")}
                     </Typography>
                     <Typography sx={{ opacity: 0.95, mt: 1.25 }}>
-                        Pick what fits your workflow. Cancel anytime.
+                        {t("pricingPage.hero.subtitle")}
                     </Typography>
 
                     <Stack
@@ -339,14 +373,14 @@ const PricingPage: React.FC = () => {
                                 "&:hover": { borderColor: "currentColor" },
                             }}
                         >
-                            See Features
+                            {t("pricingPage.hero.secondaryCta")}
                         </Button>
                         <Button
                             onClick={handleQuickOpen}
                             variant="contained"
                             sx={{ borderRadius: 3, fontWeight: 800 }}
                         >
-                            {uid ? "Open App" : "Create Account"}
+                            {uid ? t("pricingPage.hero.openApp") : t("auth.createAccount")}
                         </Button>
                     </Stack>
                 </Container>
@@ -367,8 +401,9 @@ const PricingPage: React.FC = () => {
                                 key={p.id}
                                 plan={p}
                                 current={!loading && currentTier === p.id}
-                                recommended={p.id === "premium"}
+                                recommendedLabel={p.id === "premium" ? t("pricingPage.plans.recommendedTag") : undefined}
                                 cta={ctaFor(p)}
+                                currentLabel={t("pricingPage.plans.currentLabel")}
                             />
                         ))}
                     </Stack>
@@ -380,10 +415,10 @@ const PricingPage: React.FC = () => {
                 <Container>
                     <Stack spacing={1} mb={3} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
-                            What’s included
+                            {t("pricingPage.included.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={900}>
-                            Everything you need to get moving
+                            {t("pricingPage.included.title")}
                         </Typography>
                     </Stack>
 
@@ -394,15 +429,9 @@ const PricingPage: React.FC = () => {
                         flexWrap="wrap"
                         justifyContent="center"
                     >
-                        {[
-                            { icon: <ChatRoundedIcon />, label: "AI legal chat" },
-                            { icon: <DescriptionRoundedIcon />, label: "Doc generation" },
-                            { icon: <GavelRoundedIcon />, label: "Country-aware guidance" },
-                            { icon: <ShieldRoundedIcon />, label: "Privacy-first security" },
-                            { icon: <BoltRoundedIcon />, label: "Fast & reliable" },
-                        ].map((f) => (
+                        {INCLUDED_FEATURES.map((f) => (
                             <Card
-                                key={f.label}
+                                key={f.labelKey}
                                 elevation={2}
                                 sx={{
                                     flex: "1 1 220px",
@@ -429,7 +458,7 @@ const PricingPage: React.FC = () => {
                                             {f.icon}
                                         </Box>
                                         <Typography variant="subtitle1" fontWeight={800}>
-                                            {f.label}
+                                            {t(f.labelKey)}
                                         </Typography>
                                     </Stack>
                                 </CardContent>
@@ -444,7 +473,7 @@ const PricingPage: React.FC = () => {
                             variant="contained"
                             sx={{ borderRadius: 3, fontWeight: 800 }}
                         >
-                            {uid ? "Manage subscription" : "Create your account"}
+                            {uid ? t("pricingPage.included.manageButton") : t("pricingPage.included.createAccountButton")}
                         </Button>
                     </Stack>
                 </Container>
@@ -454,7 +483,3 @@ const PricingPage: React.FC = () => {
 };
 
 export default PricingPage;
-
-function capitalize(s: string) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-}

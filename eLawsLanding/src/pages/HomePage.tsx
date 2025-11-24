@@ -20,9 +20,10 @@ import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
-import {useEffect, useState} from "react";
-import {onAuthStateChanged, type User} from "firebase/auth";
-import {auth} from "../../firebase.ts";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { auth } from "../../firebase.ts";
+import { useTranslation } from "react-i18next";
 
 const FeatureCard: React.FC<{
     icon: React.ReactNode;
@@ -117,69 +118,76 @@ const StepCard: React.FC<{
 };
 
 const HERO_METRICS = [
-    { label: "Questions answered", value: "2.3M+" },
-    { label: "Docs drafted", value: "640K" },
-    { label: "Avg. response time", value: "6.4s" },
+    { labelKey: "home.hero.metrics.questions", value: "2.3M+" },
+    { labelKey: "home.hero.metrics.docs", value: "640K" },
+    { labelKey: "home.hero.metrics.response", value: "6.4s" },
 ];
 
 const TRUSTED_LOGOS = ["LexisLink", "NovaLegal", "Atlas Law", "CivicTech"];
 
 const HOW_IT_WORKS = [
-    { step: 1, title: "Pick country & topic", desc: "We tailor the AI context to local legislation and practice." },
-    { step: 2, title: "Chat, draft, or plan", desc: "Ask follow ups, generate filings, or spin up guided procedures." },
-    { step: 3, title: "Save & collaborate", desc: "Store insights, export docs, and loop in lawyers when needed." },
+    { step: 1, titleKey: "home.steps.pickCountry.title", descKey: "home.steps.pickCountry.desc" },
+    { step: 2, titleKey: "home.steps.chatDraft.title", descKey: "home.steps.chatDraft.desc" },
+    { step: 3, titleKey: "home.steps.saveCollaborate.title", descKey: "home.steps.saveCollaborate.desc" },
 ];
 
 const HERO_HIGHLIGHTS = [
-    { icon: <LockRoundedIcon fontSize="small" />, label: "End-to-end security" },
-    { icon: <LanguageRoundedIcon fontSize="small" />, label: "Country-aware guidance" },
-    { icon: <AssessmentRoundedIcon fontSize="small" />, label: "Cited answers" },
+    { icon: <LockRoundedIcon fontSize="small" />, labelKey: "home.hero.highlights.security" },
+    { icon: <LanguageRoundedIcon fontSize="small" />, labelKey: "home.hero.highlights.localization" },
+    { icon: <AssessmentRoundedIcon fontSize="small" />, labelKey: "home.hero.highlights.citations" },
 ];
 
 const FEATURE_LIST = [
     {
         icon: <GavelRoundedIcon />,
-        title: "Country-specific chat",
-        desc: "Ask in natural language and get answers tuned to your jurisdiction.",
+        titleKey: "home.features.cards.countryChat.title",
+        descKey: "home.features.cards.countryChat.desc",
     },
     {
         icon: <ChatRoundedIcon />,
-        title: "Topic presets",
-        desc: "Civil, criminal, business, labor, tax… jump in with curated prompts.",
+        titleKey: "home.features.cards.topicPresets.title",
+        descKey: "home.features.cards.topicPresets.desc",
     },
     {
         icon: <LockRoundedIcon />,
-        title: "Privacy by default",
-        desc: "Secure storage, strict access controls, and audit trails built in.",
+        titleKey: "home.features.cards.privacy.title",
+        descKey: "home.features.cards.privacy.desc",
     },
     {
         icon: <BoltRoundedIcon />,
-        title: "Lightning fast",
-        desc: "Optimized pipeline and caching. Answers in seconds, not minutes.",
+        titleKey: "home.features.cards.speed.title",
+        descKey: "home.features.cards.speed.desc",
     },
 ];
 
 const WORKFLOW_POINTS = [
     {
         icon: <ChatRoundedIcon />,
-        title: "Unified workspace",
-        desc: "Chat, notes, cases, and procedures share the same context so nothing gets lost.",
+        titleKey: "home.workflow.points.workspace.title",
+        descKey: "home.workflow.points.workspace.desc",
     },
     {
         icon: <BoltRoundedIcon />,
-        title: "Real-time AI",
-        desc: "We stream responses, highlight citations, and let you branch threads instantly.",
+        titleKey: "home.workflow.points.realtime.title",
+        descKey: "home.workflow.points.realtime.desc",
     },
     {
         icon: <GavelRoundedIcon />,
-        title: "Local expertise",
-        desc: "Country packs bake in regulations, forms, and deadlines unique to your region.",
+        titleKey: "home.workflow.points.local.title",
+        descKey: "home.workflow.points.local.desc",
     },
+];
+
+const PREVIEW_ITEMS = [
+    { titleKey: "home.workflow.preview.draftNda.title", descKey: "home.workflow.preview.draftNda.desc" },
+    { titleKey: "home.workflow.preview.laborChat.title", descKey: "home.workflow.preview.laborChat.desc" },
+    { titleKey: "home.workflow.preview.immigration.title", descKey: "home.workflow.preview.immigration.desc" },
 ];
 
 const HomePage: React.FC = () => {
     const theme = useTheme();
     const [user, setUser] = useState<User | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => setUser(u));
@@ -218,7 +226,7 @@ const HomePage: React.FC = () => {
                 <Container sx={{ position: "relative" }}>
                     <Stack spacing={4} alignItems="center" textAlign="center">
                         <Chip
-                            label="AI legal copilot"
+                            label={t("home.hero.badge")}
                             variant="outlined"
                             sx={{
                                 color: "inherit",
@@ -238,7 +246,7 @@ const HomePage: React.FC = () => {
                                 maxWidth: 900,
                             }}
                         >
-                            E-Laws — legal help, on-demand.
+                            {t("home.hero.title")}
                         </Typography>
                         <Typography
                             sx={{
@@ -247,9 +255,7 @@ const HomePage: React.FC = () => {
                                 fontSize: { xs: 16, md: 18 },
                             }}
                         >
-                            Ask questions, generate documents, and chat with a legal assistant
-                            tuned to your jurisdiction. Privacy-first. Built for legal teams and
-                            solo founders alike.
+                            {t("home.hero.subtitle")}
                         </Typography>
 
                         <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -264,7 +270,7 @@ const HomePage: React.FC = () => {
                                     fontWeight: 800,
                                 }}
                             >
-                                {user ? "Go to dashboard" : "Create free account"}
+                                {user ? t("home.hero.ctaDashboard") : t("home.hero.ctaPrimary")}
                             </Button>
                             {!user && (
                                 <Button
@@ -282,7 +288,7 @@ const HomePage: React.FC = () => {
                                         "&:hover": { borderColor: "inherit" },
                                     }}
                                 >
-                                    Try the Demo
+                                    {t("home.hero.ctaSecondary")}
                                 </Button>
                             )}
                         </Stack>
@@ -309,12 +315,16 @@ const HomePage: React.FC = () => {
                                         alignItems={{ xs: "flex-start", sm: "center" }}
                                     >
                                         {HERO_METRICS.map((metric) => (
-                                            <Stack key={metric.label} spacing={0.5} alignItems={{ xs: "flex-start", sm: "center" }}>
+                                            <Stack
+                                                key={metric.labelKey}
+                                                spacing={0.5}
+                                                alignItems={{ xs: "flex-start", sm: "center" }}
+                                            >
                                                 <Typography variant="h4" fontWeight={900}>
                                                     {metric.value}
                                                 </Typography>
                                                 <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                                                    {metric.label}
+                                                    {t(metric.labelKey)}
                                                 </Typography>
                                             </Stack>
                                         ))}
@@ -331,9 +341,9 @@ const HomePage: React.FC = () => {
                         >
                             {HERO_HIGHLIGHTS.map((item) => (
                                 <Chip
-                                    key={item.label}
+                                    key={item.labelKey}
                                     icon={item.icon}
-                                    label={item.label}
+                                    label={t(item.labelKey)}
                                     variant="outlined"
                                     sx={{
                                         color: "inherit",
@@ -351,7 +361,7 @@ const HomePage: React.FC = () => {
                             justifyContent="center"
                             sx={{ opacity: 0.8 }}
                         >
-                            <Typography variant="body2">Trusted by modern legal teams:</Typography>
+                            <Typography variant="body2">{t("home.hero.trustedBy")}</Typography>
                             <Divider flexItem orientation={"vertical"} sx={{ display: { xs: "none", sm: "block" } }} />
                             <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, sm: 3 }} alignItems="center">
                                 {TRUSTED_LOGOS.map((logo) => (
@@ -370,19 +380,23 @@ const HomePage: React.FC = () => {
                 <Container>
                     <Stack spacing={1} mb={4} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
-                            What you get
+                            {t("home.features.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
-                            Built for real-world legal tasks
+                            {t("home.features.title")}
                         </Typography>
                         <Typography color="text.secondary">
-                            Designed for SaaS simplicity: clear modules, instant context, and beautiful defaults.
+                            {t("home.features.subtitle")}
                         </Typography>
                     </Stack>
                     <Grid container spacing={3}>
                         {FEATURE_LIST.map((feature) => (
-                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={feature.title}>
-                                <FeatureCard {...feature} />
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={feature.titleKey}>
+                                <FeatureCard
+                                    icon={feature.icon}
+                                    title={t(feature.titleKey)}
+                                    desc={t(feature.descKey)}
+                                />
                             </Grid>
                         ))}
                     </Grid>
@@ -395,16 +409,16 @@ const HomePage: React.FC = () => {
                     <Grid container spacing={{ xs: 4, md: 6 }} alignItems="center">
                         <Grid size={{ xs: 12, md: 6 }}>
                             <Stack spacing={2}>
-                                <Chip label="Workflow" color="primary" variant="outlined" sx={{ width: "fit-content" }} />
+                                <Chip label={t("home.workflow.badge")} color="primary" variant="outlined" sx={{ width: "fit-content" }} />
                                 <Typography variant="h4" fontWeight={800}>
-                                    Everything teams need—without the clunky UI.
+                                    {t("home.workflow.title")}
                                 </Typography>
                                 <Typography color="text.secondary">
-                                    We borrowed the best SaaS patterns: left-hand navigation, delightful cards, progressive disclosure, and optional dark mode. It feels like your favorite productivity suite, not old-school legal tech.
+                                    {t("home.workflow.description")}
                                 </Typography>
                                 <Stack spacing={2}>
                                     {WORKFLOW_POINTS.map((point) => (
-                                        <Stack direction="row" spacing={2} key={point.title} alignItems="flex-start">
+                                        <Stack direction="row" spacing={2} key={point.titleKey} alignItems="flex-start">
                                             <Box
                                                 sx={{
                                                     width: 44,
@@ -419,9 +433,9 @@ const HomePage: React.FC = () => {
                                                 {point.icon}
                                             </Box>
                                             <Box>
-                                                <Typography fontWeight={700}>{point.title}</Typography>
+                                                <Typography fontWeight={700}>{t(point.titleKey)}</Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {point.desc}
+                                                    {t(point.descKey)}
                                                 </Typography>
                                             </Box>
                                         </Stack>
@@ -429,10 +443,10 @@ const HomePage: React.FC = () => {
                                 </Stack>
                                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
                                     <Button component={RouterLink} to="/features" variant="contained">
-                                        Explore the product
+                                        {t("home.workflow.primaryCta")}
                                     </Button>
                                     <Button component={RouterLink} to="/pricing" variant="text">
-                                        View pricing →
+                                        {t("home.workflow.secondaryCta")}
                                     </Button>
                                 </Stack>
                             </Stack>
@@ -452,11 +466,14 @@ const HomePage: React.FC = () => {
                                 }}
                             >
                                 <Typography variant="subtitle2" fontWeight={700} mb={2}>
-                                    Live preview
+                                    {t("home.workflow.preview.title")}
                                 </Typography>
                                 <Stack spacing={2}>
-                                    {["Draft NDA", "Labor dispute chat", "Immigration checklist"].map((title, idx) => (
-                                        <Card key={title} sx={{ borderRadius: 4, borderColor: alpha(theme.palette.primary.main, 0.08) }}>
+                                    {PREVIEW_ITEMS.map((item, idx) => (
+                                        <Card
+                                            key={item.titleKey}
+                                            sx={{ borderRadius: 4, borderColor: alpha(theme.palette.primary.main, 0.08) }}
+                                        >
                                             <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                                                 <Box
                                                     sx={{
@@ -472,11 +489,9 @@ const HomePage: React.FC = () => {
                                                     {idx + 1}
                                                 </Box>
                                                 <Box>
-                                                    <Typography fontWeight={700}>{title}</Typography>
+                                                    <Typography fontWeight={700}>{t(item.titleKey)}</Typography>
                                                     <Typography variant="body2" color="text.secondary">
-                                                        {idx === 0 && "AI-built in 35 seconds."}
-                                                        {idx === 1 && "Summaries + citations ready to share."}
-                                                        {idx === 2 && "Checklist auto-adjusts to your country."}
+                                                        {t(item.descKey)}
                                                     </Typography>
                                                 </Box>
                                             </CardContent>
@@ -492,9 +507,9 @@ const HomePage: React.FC = () => {
                                         textAlign: "center",
                                     }}
                                 >
-                                    <Typography fontWeight={700}>Dark mode ready</Typography>
+                                    <Typography fontWeight={700}>{t("home.workflow.preview.footerTitle")}</Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Toggle it anytime from the nav.
+                                        {t("home.workflow.preview.footerDesc")}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -514,20 +529,24 @@ const HomePage: React.FC = () => {
                 <Container>
                     <Stack spacing={1.5} mb={5} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
-                            How it works
+                            {t("home.steps.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
-                            Three steps. Zero confusion.
+                            {t("home.steps.title")}
                         </Typography>
                         <Typography color="text.secondary">
-                            Guided flows keep complex procedures approachable. Every workspace feels familiar.
+                            {t("home.steps.subtitle")}
                         </Typography>
                     </Stack>
 
                     <Grid container spacing={3} justifyContent="center">
                         {HOW_IT_WORKS.map((step) => (
                             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={step.step}>
-                                <StepCard {...step} />
+                                <StepCard
+                                    step={step.step}
+                                    title={t(step.titleKey)}
+                                    desc={t(step.descKey)}
+                                />
                             </Grid>
                         ))}
                     </Grid>
@@ -557,10 +576,10 @@ const HomePage: React.FC = () => {
                             >
                                 <Box>
                                     <Typography variant="h5" fontWeight={800}>
-                                        Start your first case in minutes
+                                        {t("home.ctaBand.title")}
                                     </Typography>
                                     <Typography sx={{opacity: 0.9}}>
-                                        Free plan available. Upgrade anytime.
+                                        {t("home.ctaBand.subtitle")}
                                     </Typography>
                                 </Box>
                                 <Stack direction={{xs: "column", sm: "row"}} spacing={1.5}>
@@ -571,7 +590,7 @@ const HomePage: React.FC = () => {
                                         size="large"
                                         sx={{borderRadius: 3, fontWeight: 800}}
                                     >
-                                        Create account
+                                        {t("home.ctaBand.primary")}
                                     </Button>
                                     <Button
                                         component={RouterLink}
@@ -585,7 +604,7 @@ const HomePage: React.FC = () => {
                                             "&:hover": {borderColor: "currentColor"},
                                         }}
                                     >
-                                        See pricing
+                                        {t("home.ctaBand.secondary")}
                                     </Button>
                                 </Stack>
                             </Stack>
@@ -621,7 +640,7 @@ const HomePage: React.FC = () => {
                                 variant="body2"
                                 sx={{ "&:hover": { color: "text.primary" } }}
                             >
-                                Privacy
+                                {t("home.footer.privacy")}
                             </Typography>
                             <Typography
                                 component={RouterLink}
@@ -630,7 +649,7 @@ const HomePage: React.FC = () => {
                                 variant="body2"
                                 sx={{ "&:hover": { color: "text.primary" } }}
                             >
-                                Terms
+                                {t("home.footer.terms")}
                             </Typography>
                             <Typography
                                 component={RouterLink}
@@ -639,7 +658,7 @@ const HomePage: React.FC = () => {
                                 variant="body2"
                                 sx={{ "&:hover": { color: "text.primary" } }}
                             >
-                                Contact
+                                {t("home.footer.contact")}
                             </Typography>
                         </Stack>
                     </Stack>

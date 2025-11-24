@@ -1,0 +1,331 @@
+{
+    "common": {
+        "language": {
+            "tooltip": "Przełącz język na {{language}}",
+            "names": {
+                "en": "Angielski",
+                "pl": "Polski"
+            },
+            "short": {
+                "en": "EN",
+                "pl": "PL"
+            },
+            "aria": "Przełącz język"
+        }
+    },
+    "nav": {
+        "home": "Strona główna",
+        "features": "Funkcje",
+        "pricing": "Cennik",
+        "about": "O nas",
+        "dashboard": "Panel",
+        "aiChat": "Czat AI",
+        "documents": "Dokumenty",
+        "procedures": "Procedury",
+        "notes": "Notatki"
+    },
+    "auth": {
+        "account": "Konto",
+        "logout": "Wyloguj",
+        "login": "Zaloguj",
+        "signup": "Zarejestruj się",
+        "createAccount": "Utwórz konto"
+    },
+    "topBar": {
+        "menu": "Menu",
+        "openMenu": "Otwórz menu",
+        "closeMenu": "Zamknij menu",
+        "themeToggle": "Zmień motyw"
+    },
+    "home": {
+        "hero": {
+            "badge": "Prawny kopilot AI",
+            "title": "E-Laws — pomoc prawna na żądanie.",
+            "subtitle": "Zadawaj pytania, generuj dokumenty i rozmawiaj z asystentem prawnym dopasowanym do Twojej jurysdykcji. Prywatność przede wszystkim. Dla zespołów prawnych i solowych founderów.",
+            "ctaDashboard": "Przejdź do panelu",
+            "ctaPrimary": "Załóż darmowe konto",
+            "ctaSecondary": "Wypróbuj demo",
+            "metrics": {
+                "questions": "Odpowiedziane pytania",
+                "docs": "Utworzone dokumenty",
+                "response": "Średni czas odpowiedzi"
+            },
+            "highlights": {
+                "security": "Pełne bezpieczeństwo",
+                "localization": "Wiedza o krajowych przepisach",
+                "citations": "Odpowiedzi z przypisami"
+            },
+            "trustedBy": "Zaufali nam nowoczesni prawnicy:"
+        },
+        "features": {
+            "overline": "Co otrzymujesz",
+            "title": "Stworzone do realnych zadań prawnych",
+            "subtitle": "Logika znana z SaaS: moduły, kontekst i piękne domyślne ustawienia.",
+            "cards": {
+                "countryChat": {
+                    "title": "Czat dostosowany do kraju",
+                    "desc": "Pytaj naturalnym językiem i otrzymuj odpowiedzi dopasowane do Twojej jurysdykcji."
+                },
+                "topicPresets": {
+                    "title": "Gotowe presety tematów",
+                    "desc": "Cywilne, karne, biznesowe, pracownicze, podatkowe… zacznij od wybranych podpowiedzi."
+                },
+                "privacy": {
+                    "title": "Prywatność domyślnie",
+                    "desc": "Bezpieczne przechowywanie, kontrola dostępu i pełna audytowalność."
+                },
+                "speed": {
+                    "title": "Błyskawiczne działanie",
+                    "desc": "Optymalny pipeline i cache. Odpowiedzi w sekundy, nie minuty."
+                }
+            }
+        },
+        "workflow": {
+            "badge": "Praca",
+            "title": "Wszystko, czego potrzebują zespoły — bez topornych interfejsów.",
+            "description": "Wzięliśmy to, co najlepsze w SaaS: nawigację z lewej strony, przyjemne karty, stopniowe odsłanianie opcji i tryb ciemny. Czujesz się jak w ulubionym narzędziu produktywnym, nie w archaicznym systemie prawnym.",
+            "points": {
+                "workspace": {
+                    "title": "Jedno środowisko",
+                    "desc": "Czat, notatki, sprawy i procedury dzielą kontekst, więc nic nie ginie."
+                },
+                "realtime": {
+                    "title": "AI w czasie rzeczywistym",
+                    "desc": "Strumieniujemy odpowiedzi, podkreślamy cytaty i pozwalamy rozgałęziać wątki."
+                },
+                "local": {
+                    "title": "Lokalna ekspertyza",
+                    "desc": "Pakiety krajowe zawierają przepisy, formularze i terminy specyficzne dla regionu."
+                }
+            },
+            "primaryCta": "Poznaj produkt",
+            "secondaryCta": "Zobacz ceny →",
+            "preview": {
+                "title": "Podgląd na żywo",
+                "draftNda": {
+                    "title": "Projekt NDA",
+                    "desc": "Dokument AI w 35 sekund."
+                },
+                "laborChat": {
+                    "title": "Czat o sporach pracowniczych",
+                    "desc": "Podsumowania z cytatami gotowe do udostępnienia."
+                },
+                "immigration": {
+                    "title": "Lista kontrolna imigracyjna",
+                    "desc": "Checklist automatycznie dostosowana do Twojego kraju."
+                },
+                "footerTitle": "Tryb ciemny w pakiecie",
+                "footerDesc": "Włączaj w dowolnym momencie z poziomu nawigacji."
+            }
+        },
+        "steps": {
+            "overline": "Jak to działa",
+            "title": "Trzy kroki. Zero chaosu.",
+            "subtitle": "Prowadzone ścieżki upraszczają złożone procedury. Każde środowisko jest znajome.",
+            "pickCountry": {
+                "title": "Wybierz kraj i temat",
+                "desc": "Dopasowujemy kontekst AI do lokalnych przepisów i praktyki."
+            },
+            "chatDraft": {
+                "title": "Rozmawiaj, twórz, planuj",
+                "desc": "Zadawaj dodatkowe pytania, generuj pisma lub uruchamiaj procedury."
+            },
+            "saveCollaborate": {
+                "title": "Zapisuj i współpracuj",
+                "desc": "Zachowuj wnioski, eksportuj dokumenty i zapraszaj prawników."
+            }
+        },
+        "ctaBand": {
+            "title": "Uruchom pierwszą sprawę w kilka minut",
+            "subtitle": "Dostępny darmowy plan. Awansuj, kiedy chcesz.",
+            "primary": "Utwórz konto",
+            "secondary": "Poznaj ceny"
+        },
+        "footer": {
+            "privacy": "Prywatność",
+            "terms": "Regulamin",
+            "contact": "Kontakt"
+        }
+    },
+    "featuresPage": {
+        "hero": {
+            "badge": "Funkcje",
+            "title": "Zaprojektowane do prawdziwej pracy prawniczej",
+            "subtitle": "Od szybkich odpowiedzi po kompletne dokumenty i uporządkowane sprawy — wszystko w jednym miejscu.",
+            "primaryCta": "Zacznij teraz",
+            "secondaryCta": "Wypróbuj demo"
+        },
+        "coreSection": {
+            "overline": "Podstawa",
+            "title": "Wszystko, czego potrzebujesz, by ruszyć"
+        },
+        "moreSection": {
+            "overline": "I więcej",
+            "title": "Praktyczne detale, które mają znaczenie",
+            "cta": "Sprawdź ceny"
+        },
+        "cards": {
+            "defaultCta": "Poznaj"
+        },
+        "core": {
+            "aiChat": {
+                "title": "Prawny czat AI",
+                "desc": "Zadawaj pytania z uwzględnieniem jurysdykcji i otrzymuj zwięzłe odpowiedzi z przypisami.",
+                "cta": "Rozpocznij czat"
+            },
+            "documents": {
+                "title": "Generuj dokumenty",
+                "desc": "Twórz umowy, pisma i wnioski, a potem edytuj i eksportuj.",
+                "cta": "Utwórz dokument"
+            },
+            "cases": {
+                "title": "Zarządzaj sprawami",
+                "desc": "Otwieraj, śledź i analizuj sprawy w jednym miejscu.",
+                "cta": "Zobacz sprawy"
+            },
+            "notes": {
+                "title": "Zapisane notatki",
+                "desc": "Zachowuj ważne odpowiedzi i porządkuj je według tematów.",
+                "cta": "Otwórz notatki"
+            }
+        },
+        "more": {
+            "procedures": {
+                "title": "Procedury dla danego kraju",
+                "desc": "Instrukcje krok po kroku dopasowane do lokalnych wymogów.",
+                "cta": "Przeglądaj procedury"
+            },
+            "presets": {
+                "title": "Presety tematów prawnych",
+                "desc": "Wejdź od razu w cywilne, karne, biznesowe, pracownicze, podatkowe i inne ścieżki.",
+                "cta": "Wybierz temat"
+            },
+            "privacy": {
+                "title": "Prywatność domyślnie",
+                "desc": "Twoje dane zostają u Ciebie — ścisła kontrola dostępu i audyt."
+            },
+            "speed": {
+                "title": "Szybko i niezawodnie",
+                "desc": "Optymalizacje i cache zapewniają błyskawiczne odpowiedzi."
+            }
+        }
+    },
+    "pricingPage": {
+        "hero": {
+            "badge": "Cennik",
+            "title": "Prosto, sprawiedliwie i elastycznie",
+            "subtitle": "Wybierz plan pasujący do Twojej pracy. Możesz zrezygnować w dowolnym momencie.",
+            "secondaryCta": "Zobacz funkcje",
+            "openApp": "Otwórz aplikację"
+        },
+        "plans": {
+            "perMonth": "/ miesiąc",
+            "free": {
+                "name": "Free",
+                "tokens": "10 000 tokenów / miesiąc",
+                "features": {
+                    "chatBasic": "Prawny czat AI (podstawowy)",
+                    "policeShortcut": "Błyskawiczny dostęp „Zatrzymany przez policję”"
+                }
+            },
+            "plus": {
+                "name": "Plus",
+                "tokens": "100 000 tokenów / miesiąc",
+                "features": {
+                    "documents": "Bezpieczna generacja dokumentów",
+                    "encryptedChat": "Szyfrowany czat z prawnikiem",
+                    "chatEnhanced": "Prawny czat AI (rozszerzony)",
+                    "policeShortcut": "Błyskawiczny dostęp „Zatrzymany przez policję”"
+                }
+            },
+            "premium": {
+                "name": "Premium",
+                "tokens": "500 000 tokenów / miesiąc",
+                "features": {
+                    "plusAll": "Wszystko z planu Plus",
+                    "clientChat": "Szyfrowany czat z klientami",
+                    "caseManagement": "Zarządzanie sprawami klientów",
+                    "prioritySupport": "Priorytetowe wsparcie"
+                }
+            },
+            "recommendedTag": "Rekomendowany",
+            "currentLabel": "Bieżący plan"
+        },
+        "cta": {
+            "startFree": "Rozpocznij za darmo",
+            "upgradeTo": "Przejdź na {{plan}}",
+            "currentPlan": "To Twój plan",
+            "downgradeTo": "Zmień na {{plan}}",
+            "selectPlan": "Wybierz {{plan}}"
+        },
+        "included": {
+            "overline": "W cenie",
+            "title": "Wszystko, czego potrzebujesz, by działać",
+            "chat": "Prawny czat AI",
+            "docs": "Generowanie dokumentów",
+            "localGuidance": "Wskazówki uwzględniające kraj",
+            "security": "Bezpieczeństwo prywatności",
+            "speed": "Szybkość i niezawodność",
+            "manageButton": "Zarządzaj subskrypcją",
+            "createAccountButton": "Utwórz konto"
+        }
+    },
+    "about": {
+        "hero": {
+            "badge": "O nas",
+            "title": "Szybka, zrozumiała i dostępna pomoc prawna",
+            "subtitle": "E-Laws to Twój prawny kopilot AI — odpowiada, tworzy dokumenty i prowadzi przez procedury z zachowaniem prywatności.",
+            "secondaryCta": "Nasze funkcje",
+            "primaryCta": "Zacznij już dziś"
+        },
+        "mission": {
+            "title": "Nasza misja",
+            "subtitle": "Ludzie zasługują na zrozumiałe, praktyczne wskazówki prawne — bez żargonu i czekania. Łączymy zaufane AI z kontekstem krajowym, by pomagać decydować i działać.",
+            "pills": {
+                "jurisdiction": "Odpowiedzi z uwzględnieniem jurysdykcji",
+                "local": "Lokalne procedury i presety",
+                "privacy": "Prywatność w projekcie",
+                "speed": "Szybkie i wiarygodne odpowiedzi"
+            }
+        },
+        "stats": {
+            "users": "Obsłużeni użytkownicy",
+            "countries": "Obsługiwane kraje",
+            "response": "Śr. czas przygotowania odpowiedzi"
+        },
+        "trust": {
+            "overline": "Zaufanie i bezpieczeństwo",
+            "title": "Projektujemy niezawodność",
+            "points": {
+                "citations": "Czytelne cytaty i wskazówki jurysdykcyjne",
+                "control": "Nie sprzedajemy danych — to Ty decydujesz o eksporcie",
+                "security": "Role i szyfrowanie w spoczynku",
+                "editable": "Dokumenty gotowe do edycji i podpisu"
+            }
+        },
+        "story": {
+            "overline": "Nasza historia",
+            "title": "Od pomysłu do codziennego kopilota",
+            "timeline": {
+                "2024": {
+                    "title": "Prototyp",
+                    "desc": "Wypuściliśmy pierwszy czat z uwzględnieniem jurysdykcji i generowaniem dokumentów."
+                },
+                "2025": {
+                    "title": "Sprawy i procedury",
+                    "desc": "Dodaliśmy lokalne procedury, notatki i uporządkowane zarządzanie sprawami."
+                },
+                "today": {
+                    "title": "Skala światowa",
+                    "desc": "Rozwijamy wielojęzyczne wskazówki, wydajność i narzędzia dla prawników."
+                }
+            }
+        },
+        "cta": {
+            "title": "Chcesz współpracować lub masz opinię?",
+            "subtitle": "Współtworzymy rozwiązania z prawnikami i organizacjami, by ułatwiać dostęp do prawa.",
+            "primary": "Skontaktuj się",
+            "secondary": "Sprawdź ceny"
+        }
+    }
+}
