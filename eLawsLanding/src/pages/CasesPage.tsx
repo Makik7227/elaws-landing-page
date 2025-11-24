@@ -109,6 +109,7 @@ const CasesPage: React.FC = () => {
     const [properties, setProperties] = useState<CasePropertyDoc[]>([]);
     const [propertiesLoading, setPropertiesLoading] = useState(false);
     const [newPropName, setNewPropName] = useState("");
+    const [propInputValue, setPropInputValue] = useState("");
     const [newPropValue, setNewPropValue] = useState("");
     const [showAddProperty, setShowAddProperty] = useState(false);
     const [selectedProp, setSelectedProp] = useState<{ key: string; label: string } | null>(null);
@@ -124,6 +125,20 @@ const CasesPage: React.FC = () => {
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const { t, i18n } = useTranslation();
+
+    const propertyKeyMap = useMemo(() => {
+        const map = new Map<string, string>();
+        popularProperties.forEach((prop) => {
+            map.set(prop.label.toLowerCase(), prop.key);
+        });
+        return map;
+    }, []);
+
+    const getPropertyDisplayName = (name?: string) => {
+        if (!name) return "";
+        const key = propertyKeyMap.get(name.toLowerCase());
+        return key ? t(`caseProperties.labels.${key}`, { defaultValue: name }) : name;
+    };
 
     const formatDateTime = (timestamp?: { seconds?: number } | string | number) => {
         if (!timestamp) return "";
@@ -351,6 +366,7 @@ const CasesPage: React.FC = () => {
             });
             setNewPropName("");
             setNewPropValue("");
+            setPropInputValue("");
             setSuccessMsg(t("casesPage.success.propertyAdded"));
             const nextCount = properties.length + 1;
             setPropsPage(Math.floor((nextCount - 1) / PROPS_PAGE_SIZE));
@@ -639,7 +655,7 @@ const CasesPage: React.FC = () => {
                                                                     alignItems={{ xs: "flex-start", sm: "center" }}
                                                                 >
                                                                     <Box flex={1} minWidth={0}>
-                                                                        <Typography variant="body2" fontWeight={600} noWrap>{p.name}</Typography>
+                                                                        <Typography variant="body2" fontWeight={600} noWrap>{getPropertyDisplayName(p.name)}</Typography>
                                                                         <Typography variant="body2" color="text.secondary" sx={{ wordBreak: "break-word" }}>
                                                                             {p.value || "—"}
                                                                         </Typography>
@@ -732,19 +748,34 @@ const CasesPage: React.FC = () => {
                                                                 sx={{ minWidth: 200, flex: 1 }}
                                                                 options={popularProperties}
                                                                 getOptionLabel={(option) =>
-                                                                    typeof option === "string" ? option : option.label
+                                                                    typeof option === "string"
+                                                                        ? option
+                                                                        : t(`caseProperties.labels.${option.key}`, { defaultValue: option.label })
                                                                 }
                                                                 value={selectedProp}
+                                                                inputValue={propInputValue}
+                                                                onInputChange={(_, value, reason) => {
+                                                                    setPropInputValue(value);
+                                                                    if (reason === "input" || reason === "clear") {
+                                                                        setNewPropName(value);
+                                                                        setSelectedProp(null);
+                                                                    }
+                                                                }}
                                                                 onChange={(_, newValue) => {
                                                                     if (typeof newValue === "string") {
                                                                         setSelectedProp({ key: newValue, label: newValue });
                                                                         setNewPropName(newValue);
+                                                                        setPropInputValue(newValue);
                                                                     } else if (newValue) {
                                                                         setSelectedProp(newValue);
                                                                         setNewPropName(newValue.label);
+                                                                        setPropInputValue(
+                                                                            t(`caseProperties.labels.${newValue.key}`, { defaultValue: newValue.label })
+                                                                        );
                                                                     } else {
                                                                         setSelectedProp(null);
                                                                         setNewPropName("");
+                                                                        setPropInputValue("");
                                                                     }
                                                                 }}
                                                                 freeSolo
@@ -753,8 +784,6 @@ const CasesPage: React.FC = () => {
                                                                         {...params}
                                                                         label={t("casesPage.details.properties.nameLabel")}
                                                                         size="small"
-                                                                        value={newPropName}
-                                                                        onChange={(e) => setNewPropName(e.target.value)}
                                                                     />
                                                                 )}
                                                             />
@@ -782,6 +811,7 @@ const CasesPage: React.FC = () => {
                                                                     setNewPropName("");
                                                                     setNewPropValue("");
                                                                     setSelectedProp(null);
+                                                                    setPropInputValue("");
                                                                 }}
                                                             >
                                                                 {t("casesPage.common.cancel")}

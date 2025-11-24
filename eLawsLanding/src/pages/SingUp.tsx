@@ -326,7 +326,8 @@ const SignUp = () =>  {
                                         options={COUNTRIES}
                                         value={country}
                                         onChange={(_, val) => val && setCountry(val)}
-                                        getOptionLabel={(o) => o.label}
+                                        getOptionLabel={(o) => t(`countries.${o.code}`, { defaultValue: o.label })}
+                                        isOptionEqualToValue={(option, value) => option.code === value.code}
                                         renderInput={(params) => <TextField {...params} label={t("signupPage.form.country")} />}
                                     />
 

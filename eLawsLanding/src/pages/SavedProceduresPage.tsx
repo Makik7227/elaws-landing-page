@@ -19,6 +19,7 @@ import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {auth, db} from "../../firebase.ts";
 import {onAuthStateChanged} from "firebase/auth";
+import {useTranslation} from "react-i18next";
 
 type Procedure = {
     id: string;
@@ -30,6 +31,7 @@ type Procedure = {
 
 const SavedProceduresPage: React.FC = () => {
     const theme = useTheme();
+    const {t} = useTranslation();
     const [procedures, setProcedures] = useState<Procedure[]>([]);
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [filter, setFilter] = useState("");
@@ -66,12 +68,12 @@ const SavedProceduresPage: React.FC = () => {
             <Box display="flex" alignItems="center" gap={2} mb={3}>
                 <FlagRoundedIcon color="primary" />
                 <Typography variant="h5" fontWeight={800}>
-                    Saved Procedures
+                    {t("savedProcedures.title")}
                 </Typography>
             </Box>
 
             <TextField
-                label="Filter by country code"
+                label={t("savedProcedures.filter")}
                 fullWidth
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
@@ -80,7 +82,7 @@ const SavedProceduresPage: React.FC = () => {
 
             {filtered.length === 0 ? (
                 <Typography color="text.secondary" align="center" mt={5}>
-                    No saved procedures found.
+                    {t("savedProcedures.empty")}
                 </Typography>
             ) : (
                 filtered.map((proc) => {
@@ -107,7 +109,7 @@ const SavedProceduresPage: React.FC = () => {
                                         {proc.title}
                                     </Typography>
                                 }
-                                subheader={`Country: ${proc.countryCode}`}
+                                subheader={t("savedProcedures.country", { country: proc.countryCode })}
                                 action={
                                     <IconButton onClick={() => setExpandedId(expanded ? null : proc.id)}>
                                         {expanded ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />}

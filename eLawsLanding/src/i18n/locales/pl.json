@@ -691,6 +691,301 @@
             "passwordChanged": "Hasło zostało zmienione."
         }
     },
+    "myDocuments": {
+        "loadingAuth": "Sprawdzanie konta…",
+        "hero": {
+            "title": "Moje dokumenty",
+            "subtitle": "Pobieraj, kopiuj lub usuwaj wygenerowane pliki.",
+            "new": "Nowy dokument"
+        },
+        "filters": {
+            "search": "Szukaj",
+            "all": "Wszystkie",
+            "pdf": "PDF",
+            "images": "Obrazy",
+            "docs": "Dokumenty",
+            "refresh": "Odśwież",
+            "refreshing": "Odświeżanie…"
+        },
+        "loadingDocs": "Ładowanie dokumentów…",
+        "empty": {
+            "title": "Brak dokumentów",
+            "subtitle": "Wygeneruj dokument lub zmień filtry.",
+            "cta": "Wygeneruj dokument"
+        },
+        "when": {
+            "justNow": "przed chwilą",
+            "minutesAgo": "{{count}} min temu",
+            "minutesAgo_other": "{{count}} min temu",
+            "hoursAgo": "{{count}} godz. temu",
+            "hoursAgo_other": "{{count}} godz. temu",
+            "daysAgo": "{{count}} dzień temu",
+            "daysAgo_other": "{{count}} dni temu",
+            "date": "{{value}}",
+            "unknown": "nieznane"
+        },
+        "actions": {
+            "open": "Otwórz w nowej karcie",
+            "download": "Pobierz",
+            "copy": "Kopiuj link",
+            "delete": "Usuń dokument"
+        },
+        "delete": {
+            "confirm": "Usunąć \"{{name}}\"?"
+        },
+        "errors": {
+            "load": "Nie udało się wczytać dokumentów.",
+            "delete": "Nie udało się usunąć dokumentu.",
+            "clipboard": "Schowek jest niedostępny."
+        },
+        "success": {
+            "deleted": "Dokument został usunięty.",
+            "copied": "Skopiowano link do schowka.",
+            "download": "Rozpoczęto pobieranie."
+        }
+    },
+    "notesPage": {
+        "hero": {
+            "title": "Moje notatki",
+            "subtitle": "Zapisuj, wyszukuj i organizuj każdą odpowiedź od AI.",
+            "count": "{{count}} notatek"
+        },
+        "search": {
+            "placeholder": "Szukaj notatek..."
+        },
+        "actions": {
+            "createFromChat": "Utwórz z czatu"
+        },
+        "loading": "Ładowanie notatek...",
+        "empty": "Brak notatek.",
+        "note": {
+            "untitled": "Notatka bez tytułu",
+            "initialFallback": "N",
+            "topic": "Temat: {{topic}}",
+            "country": "Jurysdykcja: {{country}}"
+        },
+        "dialog": {
+            "title": "Usunąć notatkę",
+            "description": "Czy na pewno chcesz usunąć tę notatkę? Tej operacji nie można cofnąć.",
+            "cancel": "Anuluj",
+            "confirm": "Usuń"
+        }
+    },
+    "proceduresPage": {
+        "title": "Procedury podczas kontroli",
+        "country": "dla {{country}}",
+        "empty": "Nie znaleziono procedur.",
+        "unknown": "Nieznany",
+        "back": "OK, rozumiem"
+    },
+    "savedProcedures": {
+        "title": "Zapisane procedury",
+        "filter": "Filtruj według kodu kraju",
+        "empty": "Brak zapisanych procedur.",
+        "country": "Kraj: {{country}}"
+    },
+    "countries": {
+        "US": "Stany Zjednoczone",
+        "PL": "Polska",
+        "GB": "Wielka Brytania",
+        "DE": "Niemcy",
+        "FR": "Francja",
+        "ES": "Hiszpania",
+        "IT": "Włochy",
+        "NL": "Niderlandy",
+        "SE": "Szwecja",
+        "NO": "Norwegia",
+        "DK": "Dania",
+        "IE": "Irlandia",
+        "CA": "Kanada",
+        "AU": "Australia",
+        "NZ": "Nowa Zelandia"
+    },
+    "caseProperties": {
+        "labels": {
+            "case_number": "Numer sprawy",
+            "client_id": "ID klienta",
+            "lawyer_id": "ID prawnika",
+            "court_name": "Nazwa sądu",
+            "court_address": "Adres sądu",
+            "judge": "Sędzia",
+            "magistrate": "Sędzia pokoju",
+            "clerk": "Sekretarz sądowy",
+            "opposing_party": "Strona przeciwna",
+            "opposing_counsel": "Pełnomocnik strony przeciwnej",
+            "filing_date": "Data złożenia",
+            "service_date": "Data doręczenia",
+            "hearing_date": "Data posiedzenia",
+            "trial_date": "Data rozprawy",
+            "appeal_hearing_date": "Data rozprawy apelacyjnej",
+            "next_deadline": "Najbliższy termin",
+            "case_type": "Typ sprawy",
+            "case_category": "Kategoria sprawy",
+            "jurisdiction": "Jurysdykcja",
+            "venue": "Właściwość miejscowa",
+            "status_detail": "Szczegółowy status",
+            "priority": "Priorytet",
+            "assigned_team": "Przydzielony zespół",
+            "lead_lawyer": "Prawnik prowadzący",
+            "paralegal": "Przydzielony asystent prawny",
+            "contact_email": "Adres e-mail kontaktowy",
+            "contact_phone": "Telefon kontaktowy",
+            "address": "Adres klienta",
+            "dob": "Data urodzenia",
+            "ssn": "Numer ubezpieczenia społecznego",
+            "citizenship": "Obywatelstwo",
+            "occupation": "Zawód",
+            "employer": "Pracodawca",
+            "marital_status": "Stan cywilny",
+            "dependents": "Osoby na utrzymaniu",
+            "opposing_contact": "Dane kontaktowe strony przeciwnej",
+            "evidence_list": "Lista dowodów",
+            "exhibits": "Załączniki dowodowe",
+            "witness_list": "Lista świadków",
+            "expert_witnesses": "Biegli",
+            "affidavits": "Oświadczenia pod przysięgą",
+            "subpoenas": "Wezwania",
+            "discovery_status": "Status discovery",
+            "discovery_deadline": "Termin discovery",
+            "documents_filed": "Złożone dokumenty",
+            "motions_filed": "Złożone wnioski",
+            "orders_issued": "Wydane postanowienia",
+            "court_fees": "Opłaty sądowe",
+            "legal_fees": "Honoraria prawne",
+            "billing_status": "Status rozliczeń",
+            "retainer_amount": "Kwota retainer",
+            "retainer_balance": "Saldo retainer",
+            "hourly_rate": "Stawka godzinowa",
+            "total_hours": "Łączna liczba przepracowanych godzin",
+            "settlement_offers": "Oferty ugodowe",
+            "settlement_status": "Status ugody",
+            "mediation_date": "Data mediacji",
+            "arbitration_date": "Data arbitrażu",
+            "appeal_status": "Status apelacji",
+            "appeal_filing_date": "Data złożenia apelacji",
+            "appeal_outcome": "Wynik apelacji",
+            "sentence": "Wyrok / orzeczenie",
+            "probation_terms": "Warunki dozoru",
+            "bail_amount": "Kwota kaucji",
+            "bond_status": "Status poręczenia",
+            "incarceration_status": "Status osadzenia",
+            "parole_eligibility": "Możliwość warunkowego zwolnienia",
+            "release_date": "Data zwolnienia",
+            "compliance_requirements": "Wymogi zgodności",
+            "supervision_officer": "Kurator / funkcjonariusz nadzorujący",
+            "risk_level": "Poziom ryzyka",
+            "insurance_claims": "Roszczenia ubezpieczeniowe",
+            "damages_claimed": "Żądane odszkodowanie",
+            "damages_awarded": "Przyznane odszkodowanie",
+            "restitution_amount": "Kwota restytucji",
+            "liens": "Zastawy / obciążenia",
+            "assets_seized": "Zabezpieczone aktywa",
+            "case_notes": "Notatki sprawy",
+            "internal_memos": "Notatki wewnętrzne",
+            "strategy_notes": "Notatki strategiczne",
+            "related_cases": "Powiązane sprawy",
+            "precedent_references": "Odwołania do precedensów",
+            "citations": "Cytowania prawne",
+            "conflict_check": "Status sprawdzenia konfliktu",
+            "nda_signed": "Podpisane NDA",
+            "engagement_letter": "Podpisany list intencyjny",
+            "client_intake_date": "Data przyjęcia klienta",
+            "client_preferences": "Preferencje klienta",
+            "language": "Preferowany język",
+            "communication_method": "Preferowana metoda komunikacji",
+            "closing_date": "Data zamknięcia",
+            "archived": "Zarchiwizowano",
+            "reviewed_by": "Przeglądający",
+            "last_review_date": "Data ostatniego przeglądu",
+            "follow_up_date": "Data follow-up",
+            "next_action": "Następne działanie"
+        }
+    },
+    "subscribePage": {
+        "hero": {
+            "title": "Zarządzaj subskrypcją E-Lawyer",
+            "subtitle": "Ulepszaj, obniżaj lub cofaj zmiany w dowolnym momencie."
+        },
+        "banner": {
+            "downgrade": "Zaplanowano obniżenie do planu {{plan}}. Wejdzie w życie {{when}}.",
+            "cancelToFree": "Zaplanowano przejście na plan Free. Wejdzie w życie {{when}}.",
+            "when": {
+                "endOfCycle": "pod koniec bieżącego okresu rozliczeniowego",
+                "date": "{{date}}"
+            },
+            "undo": "Cofnij"
+        },
+        "plans": {
+            "free": {
+                "name": "Free",
+                "subtitle": "Nowe konto",
+                "tokens": "10 000 tokenów / mies.",
+                "features": [
+                    "Czat z AI Law Assistant",
+                    "Dostęp do przycisku „Zatrzymała mnie policja”"
+                ]
+            },
+            "plus": {
+                "name": "Plus",
+                "subtitle": "Konto klienta",
+                "tokens": "100 000 tokenów / mies.",
+                "badge": "Najlepsza oferta",
+                "features": [
+                    "Bezpieczne generowanie dokumentów",
+                    "Szyfrowany czat z Twoim prawnikiem",
+                    "Czat z AI Law Assistant",
+                    "Dostęp do przycisku „Zatrzymała mnie policja”"
+                ]
+            },
+                "premium": {
+                "name": "Premium",
+                "subtitle": "Konto klienta/prawnika",
+                "tokens": "500 000 tokenów / mies.",
+                "badge": "Polecane",
+                "features": [
+                    "Bezpieczne generowanie dokumentów",
+                    "Szyfrowany czat z klientami",
+                    "Zarządzanie sprawami z przypisanymi klientami",
+                    "Czat z AI Law Assistant",
+                    "Dostęp do przycisku „Zatrzymała mnie policja”"
+                ]
+            }
+        },
+        "cta": {
+            "upgrade": "Ulepsz do {{plan}}",
+            "downgrade": "Obniż do {{plan}}",
+            "current": "Korzystasz z planu {{plan}}",
+            "currentPlan": "To Twój obecny plan",
+            "pending": "Obniżenie zaplanowane",
+            "loading": "Przetwarzanie..."
+        },
+        "success": {
+            "downgradeScheduled": "Obniżenie zaplanowane. Zachowasz bieżące korzyści do końca okresu rozliczeniowego.",
+            "subscriptionUpdated": "Zaktualizowano subskrypcję.",
+            "undo": "Obniżenie cofnięte. Pozostajesz na obecnym planie."
+        },
+        "errors": {
+            "pendingDowngrade": "Masz już zaplanowane obniżenie. Cofnij je przed kolejnymi zmianami.",
+            "samePlan": "Już korzystasz z tego planu.",
+            "missingClientSecret": "Brak client secret dla ulepszenia Premium.",
+            "missingPriceId": "Brak identyfikatora ceny Stripe dla wybranego planu.",
+            "generic": "Coś poszło nie tak.",
+            "unexpected": "Wystąpił nieoczekiwany błąd."
+        },
+        "payment": {
+            "premiumUpgrade": {
+                "planName": "Ulepszenie do Premium",
+                "amount": "Opłata za ulepszenie 10,99 USD",
+                "helper": "Po zakończeniu płatności automatycznie przełączymy Cię na Premium.",
+                "success": "Opłacono ulepszenie. Przełączymy Cię na Premium, gdy Stripe potwierdzi płatność."
+            },
+            "default": {
+                "planName": "Plan {{plan}}",
+                "helper": "Zakończ płatność, aby zaktualizować subskrypcję.",
+                "success": "Płatność potwierdzona. Twoja subskrypcja wkrótce się zaktualizuje."
+            }
+        }
+    },
     "dashboard": {
         "loading": "Ładowanie panelu…",
         "hero": {

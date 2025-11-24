@@ -37,6 +37,7 @@ import {
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { auth, db, storage } from "../../firebase";
+import { useTranslation } from "react-i18next";
 
 type DocumentItem = {
     id: string;
@@ -49,7 +50,7 @@ type DocumentItem = {
 
 type Filter = "all" | "pdf" | "images" | "docs";
 
-const formatWhen = (value?: Timestamp | Date | string | null): string => {
+const formatWhen = (value?: Timestamp | Date | string | null, formatter?: (key: string, params?: Record<string, unknown>) => string): string => {
     try {
         const date =
             value instanceof Timestamp
@@ -61,21 +62,28 @@ const formatWhen = (value?: Timestamp | Date | string | null): string => {
                         : new Date();
         const diffMs = Date.now() - date.getTime();
         const diffSec = Math.max(1, Math.floor(diffMs / 1000));
-        if (diffSec < 60) return "just now";
+        if (diffSec < 60) return formatter ? formatter("justNow") : "just now";
         const diffMin = Math.floor(diffSec / 60);
-        if (diffMin < 60) return `${diffMin} min ago`;
+        if (diffMin < 60) return formatter ? formatter("minutesAgo", { count: diffMin }) : `${diffMin} min ago`;
         const diffHr = Math.floor(diffMin / 60);
-        if (diffHr < 24) return `${diffHr} hr${diffHr > 1 ? "s" : ""} ago`;
+        if (diffHr < 24)
+            return formatter
+                ? formatter("hoursAgo", { count: diffHr })
+                : `${diffHr} hr${diffHr > 1 ? "s" : ""} ago`;
         const diffDay = Math.floor(diffHr / 24);
-        if (diffDay < 7) return `${diffDay} day${diffDay > 1 ? "s" : ""} ago`;
-        return date.toLocaleString();
+        if (diffDay < 7)
+            return formatter
+                ? formatter("daysAgo", { count: diffDay })
+                : `${diffDay} day${diffDay > 1 ? "s" : ""} ago`;
+        return formatter ? formatter("date", { value: date.toLocaleString() }) : date.toLocaleString();
     } catch {
-        return "unknown";
+        return formatter ? formatter("unknown") : "unknown";
     }
 };
 
 const MyDocumentsPage: React.FC = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [user, setUser] = useState<User | null>(auth.currentUser);
     const [docs, setDocs] = useState<DocumentItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -107,11 +115,11 @@ const MyDocumentsPage: React.FC = () => {
             setDocs(list);
         } catch (error) {
             console.error("Failed to load documents", error);
-            setSnackbar({ open: true, text: "Failed to load documents." });
+            setSnackbar({ open: true, text: t("myDocuments.errors.load") });
         } finally {
             setLoading(false);
         }
-    }, [user]);
+    }, [user, t]);
 
     useEffect(() => {
         if (!user) return;
@@ -128,7 +136,7 @@ const MyDocumentsPage: React.FC = () => {
     };
 
     const handleDelete = async (item: DocumentItem) => {
-        if (!user || !window.confirm(`Delete "${item.fileName}"?`)) return;
+        if (!user || !window.confirm(t("myDocuments.delete.confirm", { name: item.fileName }))) return;
         setDeletingId(item.id);
         try {
             const path = decodeURIComponent(item.url.split("/o/")[1]?.split("?")[0] ?? "");
@@ -139,10 +147,10 @@ const MyDocumentsPage: React.FC = () => {
             }
             await deleteDoc(doc(db, "documents", user.uid, "files", item.id));
             setDocs((prev) => prev.filter((docItem) => docItem.id !== item.id));
-            setSnackbar({ open: true, text: "Document deleted." });
+            setSnackbar({ open: true, text: t("myDocuments.success.deleted") });
         } catch (error) {
             console.error("Delete failed", error);
-            setSnackbar({ open: true, text: "Unable to delete document." });
+            setSnackbar({ open: true, text: t("myDocuments.errors.delete") });
         } finally {
             setDeletingId(null);
         }
@@ -151,9 +159,9 @@ const MyDocumentsPage: React.FC = () => {
     const handleCopyLink = async (url: string) => {
         try {
             await navigator.clipboard.writeText(url);
-            setSnackbar({ open: true, text: "Link copied to clipboard." });
+            setSnackbar({ open: true, text: t("myDocuments.success.copied") });
         } catch {
-            setSnackbar({ open: true, text: "Clipboard unavailable." });
+            setSnackbar({ open: true, text: t("myDocuments.errors.clipboard") });
         }
     };
 
@@ -167,7 +175,7 @@ const MyDocumentsPage: React.FC = () => {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        setSnackbar({ open: true, text: "Download started." });
+        setSnackbar({ open: true, text: t("myDocuments.success.download") });
     };
 
     const filteredDocs = useMemo(() => {
@@ -193,7 +201,7 @@ const MyDocumentsPage: React.FC = () => {
             <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
                 <CircularProgress />
                 <Typography mt={3} color="text.secondary">
-                    Checking your account…
+                    {t("myDocuments.loadingAuth")}
                 </Typography>
             </Container>
         );
@@ -214,10 +222,10 @@ const MyDocumentsPage: React.FC = () => {
                         </IconButton>
                         <Box>
                             <Typography variant="h4" fontWeight={900}>
-                                My Documents
+                                {t("myDocuments.hero.title")}
                             </Typography>
                             <Typography color="text.secondary">
-                                Download, copy, or delete any generated files.
+                                {t("myDocuments.hero.subtitle")}
                             </Typography>
                         </Box>
                     </Stack>
@@ -227,7 +235,7 @@ const MyDocumentsPage: React.FC = () => {
                         variant="contained"
                         sx={{ borderRadius: 3, width: { xs: "100%", sm: "auto" } }}
                     >
-                        New document
+                        {t("myDocuments.hero.new")}
                     </Button>
                 </Stack>
 
@@ -239,7 +247,7 @@ const MyDocumentsPage: React.FC = () => {
                             alignItems={{ xs: "stretch", md: "center" }}
                         >
                             <TextField
-                                label="Search"
+                                label={t("myDocuments.filters.search")}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 sx={{ flex: 1 }}
@@ -256,10 +264,10 @@ const MyDocumentsPage: React.FC = () => {
                                     justifyContent: { xs: "space-between", sm: "flex-start" },
                                 }}
                             >
-                                <ToggleButton value="all">All</ToggleButton>
-                                <ToggleButton value="pdf">PDF</ToggleButton>
-                                <ToggleButton value="images">Images</ToggleButton>
-                                <ToggleButton value="docs">Docs</ToggleButton>
+                                <ToggleButton value="all">{t("myDocuments.filters.all")}</ToggleButton>
+                                <ToggleButton value="pdf">{t("myDocuments.filters.pdf")}</ToggleButton>
+                                <ToggleButton value="images">{t("myDocuments.filters.images")}</ToggleButton>
+                                <ToggleButton value="docs">{t("myDocuments.filters.docs")}</ToggleButton>
                             </ToggleButtonGroup>
                             <Button
                                 variant="text"
@@ -268,7 +276,7 @@ const MyDocumentsPage: React.FC = () => {
                                 disabled={refreshing}
                                 sx={{ width: { xs: "100%", md: "auto" } }}
                             >
-                                Refresh
+                                {refreshing ? t("myDocuments.filters.refreshing") : t("myDocuments.filters.refresh")}
                             </Button>
                         </Stack>
                     </CardContent>
@@ -278,20 +286,20 @@ const MyDocumentsPage: React.FC = () => {
                     <Box textAlign="center" py={6}>
                         <CircularProgress />
                         <Typography mt={2} color="text.secondary">
-                            Loading your documents…
+                            {t("myDocuments.loadingDocs")}
                         </Typography>
                     </Box>
                 ) : filteredDocs.length === 0 ? (
                     <Card sx={{ borderRadius: 4 }}>
                         <CardContent sx={{ textAlign: "center" }}>
                             <Typography variant="h6" fontWeight={800}>
-                                No documents yet
+                                {t("myDocuments.empty.title")}
                             </Typography>
                             <Typography color="text.secondary" sx={{ mb: 2 }}>
-                                Generate a document or adjust your filters.
+                                {t("myDocuments.empty.subtitle")}
                             </Typography>
                             <Button component={RouterLink} to="/documents/generate" variant="contained">
-                                Generate document
+                                {t("myDocuments.empty.cta")}
                             </Button>
                         </CardContent>
                     </Card>
@@ -306,31 +314,31 @@ const MyDocumentsPage: React.FC = () => {
                                                 {item.fileName || "Untitled document"}
                                             </Typography>
                                             <Stack direction="row" spacing={1} flexWrap="wrap">
-                                                <Chip label={formatWhen(item.uploadedAt)} size="small" />
+                                                <Chip label={formatWhen(item.uploadedAt, (key, params) => t(`myDocuments.when.${key}`, params))} size="small" />
                                                 {item.mimeType && <Chip label={item.mimeType} size="small" />}
                                             </Stack>
-                                        </Stack>
-                                    </CardContent>
-                                    <CardActions sx={{ px: 3, pb: 3, mt: "auto" }}>
-                                        <Tooltip title="Open in new tab">
+                                       </Stack>
+                                   </CardContent>
+                                   <CardActions sx={{ px: 3, pb: 3, mt: "auto" }}>
+                                        <Tooltip title={t("myDocuments.actions.open")}>
                                             <IconButton onClick={() => window.open(item.url, "_blank")}>
                                                 <OpenInNewIcon />
                                             </IconButton>
                                         </Tooltip>
-                                        <Tooltip title="Download">
+                                        <Tooltip title={t("myDocuments.actions.download")}>
                                             <span>
                                                 <IconButton onClick={() => handleDownload(item)}>
                                                     <DownloadOutlinedIcon />
                                                 </IconButton>
                                             </span>
                                         </Tooltip>
-                                        <Tooltip title="Copy link">
+                                        <Tooltip title={t("myDocuments.actions.copy")}>
                                             <IconButton onClick={() => handleCopyLink(item.url)}>
                                                 <ContentCopyIcon />
                                             </IconButton>
                                         </Tooltip>
                                         <Box flex={1} />
-                                        <Tooltip title="Delete document">
+                                        <Tooltip title={t("myDocuments.actions.delete")}>
                                             <span>
                                                 <IconButton
                                                     color="error"

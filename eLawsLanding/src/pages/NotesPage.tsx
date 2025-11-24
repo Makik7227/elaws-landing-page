@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
     Avatar,
     Box,
@@ -41,6 +41,7 @@ import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
 import NoteOutlinedIcon from "@mui/icons-material/NoteOutlined";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type Note = {
     id: string;
@@ -54,6 +55,7 @@ type Note = {
 const NotesPage: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
     const [notes, setNotes] = useState<Note[]>([]);
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [search, setSearch] = useState("");
@@ -92,10 +94,14 @@ const NotesPage: React.FC = () => {
         setDeleteId(null);
     };
 
-    const filteredNotes = notes.filter(
-        (n) =>
-            n.title?.toLowerCase().includes(search.toLowerCase()) ||
-            n.content.toLowerCase().includes(search.toLowerCase())
+    const filteredNotes = useMemo(
+        () =>
+            notes.filter(
+                (n) =>
+                    n.title?.toLowerCase().includes(search.toLowerCase()) ||
+                    n.content.toLowerCase().includes(search.toLowerCase())
+            ),
+        [notes, search]
     );
 
     return (
@@ -116,14 +122,14 @@ const NotesPage: React.FC = () => {
                             <NoteOutlinedIcon fontSize="large" sx={{ color: theme.palette.primary.main }} />
                             <Box>
                                 <Typography variant="h5" fontWeight={900}>
-                                    My Notes
+                                    {t("notesPage.hero.title")}
                                 </Typography>
                                 <Typography color="text.secondary">
-                                    Save, search, and organize every answer from the AI.
+                                    {t("notesPage.hero.subtitle")}
                                 </Typography>
                             </Box>
                         </Stack>
-                        <Chip label={`${filteredNotes.length} notes`} color="primary" variant="outlined" />
+                        <Chip label={t("notesPage.hero.count", { count: filteredNotes.length })} color="primary" variant="outlined" />
                     </Stack>
                 </CardContent>
             </Card>
@@ -131,7 +137,7 @@ const NotesPage: React.FC = () => {
             <Stack direction={{ xs: "column", md: "row" }} spacing={2} mb={4}>
                 <OutlinedInput
                     fullWidth
-                    placeholder="Search notes..."
+                    placeholder={t("notesPage.search.placeholder")}
                     startAdornment={
                         <InputAdornment position="start">
                             <SearchRoundedIcon color="action" />
@@ -147,17 +153,17 @@ const NotesPage: React.FC = () => {
                     to="/ai/chat"
                     sx={{ minWidth: { md: 200 }, width: { xs: "100%", md: "auto" } }}
                 >
-                    Create from chat
+                    {t("notesPage.actions.createFromChat")}
                 </Button>
             </Stack>
 
             {loading ? (
-                <Typography>Loading notes...</Typography>
+                <Typography>{t("notesPage.loading")}</Typography>
             ) : filteredNotes.length === 0 ? (
                 <Stack alignItems="center" justifyContent="center" mt={6} sx={{ opacity: 0.8 }}>
                     <NoteOutlinedIcon fontSize="large" sx={{ color: "text.disabled" }} />
                     <Typography variant="body1" color="text.secondary" mt={1}>
-                        No notes found.
+                        {t("notesPage.empty")}
                     </Typography>
                 </Stack>
             ) : (
@@ -166,12 +172,12 @@ const NotesPage: React.FC = () => {
                         const expanded = expandedId === note.id;
                         const initials = note.title
                             ? note.title.charAt(0).toUpperCase()
-                            : "N";
+                            : t("notesPage.note.initialFallback");
                         const subtitle = [
-                            note.topic && `Topic: ${note.topic}`,
-                            note.country && `Jurisdiction: ${note.country}`,
+                            note.topic && t("notesPage.note.topic", { topic: note.topic }),
+                            note.country && t("notesPage.note.country", { country: note.country }),
                             note.createdAt &&
-                            new Date(note.createdAt.toDate()).toLocaleDateString(),
+                            new Date(note.createdAt.toDate()).toLocaleDateString(i18n.language),
                         ]
                             .filter(Boolean)
                             .join(" • ");
@@ -215,7 +221,7 @@ const NotesPage: React.FC = () => {
                                         }
                                         title={
                                             <Typography fontWeight={800} fontSize={17}>
-                                                {note.title ?? "Untitled Note"}
+                                                {note.title ?? t("notesPage.note.untitled")}
                                             </Typography>
                                         }
                                         subheader={subtitle}
@@ -241,17 +247,16 @@ const NotesPage: React.FC = () => {
 
             {/* Delete Dialog */}
             <Dialog open={!!deleteId} onClose={() => setDeleteId(null)}>
-                <DialogTitle>Delete Note</DialogTitle>
+                <DialogTitle>{t("notesPage.dialog.title")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete this note? This action cannot be
-                        undone.
+                        {t("notesPage.dialog.description")}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteId(null)}>Cancel</Button>
+                    <Button onClick={() => setDeleteId(null)}>{t("notesPage.dialog.cancel")}</Button>
                     <Button onClick={handleDelete} color="error" variant="contained">
-                        Delete
+                        {t("notesPage.dialog.confirm")}
                     </Button>
                 </DialogActions>
             </Dialog>

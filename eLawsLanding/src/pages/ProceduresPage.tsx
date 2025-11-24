@@ -10,12 +10,14 @@ import {
 } from "@mui/material";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const CARD_MAX_HEIGHT = 420;
 
 export default function ProceduresView() {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const location = useLocation();
     const state = location.state as
         | {
@@ -26,8 +28,8 @@ export default function ProceduresView() {
     }
         | undefined;
 
-    const procedures = state?.procedures || "No procedures found.";
-    const country = state?.country || "Unknown";
+    const procedures = state?.procedures || t("proceduresPage.empty");
+    const country = state?.country || t("proceduresPage.unknown");
 
     return (
         <Container maxWidth="sm" sx={{ py: { xs: 4, md: 6 } }}>
@@ -37,10 +39,10 @@ export default function ProceduresView() {
                 />
                 <Box>
                     <Typography variant="h5" fontWeight={800}>
-                        Police Stop Procedures
+                        {t("proceduresPage.title")}
                     </Typography>
                     <Typography variant="subtitle1" color="text.secondary">
-                        for <strong>{country}</strong>
+                        {t("proceduresPage.country", { country })}
                     </Typography>
                 </Box>
             </Box>
@@ -75,7 +77,7 @@ export default function ProceduresView() {
                     sx={{ borderRadius: 2, fontWeight: 700 }}
                     onClick={() => navigate("/dashboard")}
                 >
-                    Ok, got it!
+                    {t("proceduresPage.back")}
                 </Button>
             </Box>
         </Container>

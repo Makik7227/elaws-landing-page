@@ -265,7 +265,8 @@ const ManageAccount: React.FC = () => {
                                     options={COUNTRIES}
                                     value={country}
                                     onChange={(_, v) => setCountry(v)}
-                                    getOptionLabel={(o) => o.label}
+                                    getOptionLabel={(o) => t(`countries.${o.code}`, { defaultValue: o.label })}
+                                    isOptionEqualToValue={(option, value) => option.code === value.code}
                                     renderInput={(params) => <TextField {...params} label={t("manageAccount.profile.country")} fullWidth/>}
                                 />
 
