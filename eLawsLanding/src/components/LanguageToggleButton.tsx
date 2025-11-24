@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ButtonBase, Stack, Tooltip, Typography, alpha, useTheme } from "@mui/material";
+import { ButtonBase, Stack, Tooltip, alpha, useTheme } from "@mui/material";
 import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
 import { useTranslation } from "react-i18next";
 

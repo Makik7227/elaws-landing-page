@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { stripePromise } from "../lib/stripe.ts";
+import { useTranslation } from "react-i18next";
 
 export interface PaymentDialogState {
     clientSecret: string;
@@ -37,11 +38,12 @@ export const SubscriptionPaymentDialog: React.FC<SubscriptionPaymentDialogProps>
     onClose,
     onSuccess,
 }) => {
+    const { t } = useTranslation();
     if (!clientSecret) return null;
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle>Confirm payment</DialogTitle>
+            <DialogTitle>{t("components.subscriptionPayment.title")}</DialogTitle>
             <DialogContent>
                 <Elements key={clientSecret} stripe={stripePromise} options={{ clientSecret }}>
                     <PaymentDialogContent
@@ -79,6 +81,7 @@ const PaymentDialogContent: React.FC<PaymentDialogContentProps> = ({
     const elements = useElements();
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { t } = useTranslation();
 
     const handleSubmit = async () => {
         if (!stripe || !elements) return;
@@ -94,7 +97,7 @@ const PaymentDialogContent: React.FC<PaymentDialogContentProps> = ({
         });
 
         if (stripeError) {
-            setError(stripeError.message ?? "Payment failed. Try again.");
+            setError(stripeError.message ?? t("components.subscriptionPayment.error"));
             setSubmitting(false);
             return;
         }
@@ -108,7 +111,7 @@ const PaymentDialogContent: React.FC<PaymentDialogContentProps> = ({
         <Stack spacing={2} sx={{ pt: 1 }}>
             <Box>
                 <Typography variant="subtitle2" color="text.secondary">
-                    Plan
+                    {t("components.subscriptionPayment.planLabel")}
                 </Typography>
                 <Typography variant="h6">{planName}</Typography>
                 {amountLabel && (
@@ -124,14 +127,16 @@ const PaymentDialogContent: React.FC<PaymentDialogContentProps> = ({
 
             <DialogActions sx={{ px: 0 }}>
                 <Button onClick={onClose} disabled={submitting}>
-                    Cancel
+                    {t("components.subscriptionPayment.cancel")}
                 </Button>
                 <Button
                     variant="contained"
                     onClick={handleSubmit}
                     disabled={!stripe || !elements || submitting}
                 >
-                    {submitting ? "Processing…" : "Pay & Continue"}
+                    {submitting
+                        ? t("components.subscriptionPayment.processing")
+                        : t("components.subscriptionPayment.submit")}
                 </Button>
             </DialogActions>
             <Typography variant="caption" color="text.secondary" sx={{ textAlign: "center" }}>

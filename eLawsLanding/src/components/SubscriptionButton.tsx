@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type SubscriptionButtonProps = {
     subscriptionTier: "free" | "plus" | "premium";
@@ -8,13 +9,16 @@ type SubscriptionButtonProps = {
 
 const SubscriptionButton: React.FC<SubscriptionButtonProps> = ({ subscriptionTier }) => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleClick = () => {
         navigate("/dashboard/subscribe");
     };
 
     const label =
-        subscriptionTier === "free" ? "Upgrade" : "Manage Subscription";
+        subscriptionTier === "free"
+            ? t("components.subscriptionButton.upgrade")
+            : t("components.subscriptionButton.manage");
 
     const variant =
         subscriptionTier === "free" ? "contained" : "outlined";

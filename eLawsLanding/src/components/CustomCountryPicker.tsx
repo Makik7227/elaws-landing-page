@@ -20,6 +20,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { countries } from "../utils/contries.ts";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     country: string;
@@ -39,6 +40,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                                                  }) => {
     const [search, setSearch] = useState("");
     const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
 
     const filtered = countries.filter((c) =>
         c.name.toLowerCase().includes(search.toLowerCase())
@@ -89,7 +91,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                         )}
                     </Box>
                 ) : (
-                    "Select a Country"
+                    t("components.countryPicker.trigger")
                 )}
             </Button>
 
@@ -102,7 +104,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                         justifyContent: "space-between",
                     }}
                 >
-                    Select Country
+                    {t("components.countryPicker.dialogTitle")}
                     <IconButton onClick={() => setOpen(false)} size="small">
                         <CloseIcon />
                     </IconButton>
@@ -113,7 +115,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                         fullWidth
                         value={search}
                         onChange={handleSearch}
-                        placeholder="Search country..."
+                        placeholder={t("components.countryPicker.searchPlaceholder")}
                         size="small"
                         margin="normal"
                         InputProps={{
@@ -156,7 +158,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                                 color="text.secondary"
                                 sx={{ p: 2, textAlign: "center" }}
                             >
-                                No countries found.
+                                {t("components.countryPicker.empty")}
                             </Typography>
                         )}
                     </List>

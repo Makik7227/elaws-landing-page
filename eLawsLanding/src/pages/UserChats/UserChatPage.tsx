@@ -19,8 +19,9 @@ import { collection, addDoc, doc, onSnapshot, orderBy, query, serverTimestamp, u
 import { useNavigate, useParams } from "react-router-dom";
 import { getChatKey } from "../../utils/getChatKey";
 import { encryptMessage, decryptMessage } from "../../utils/encryption";
-import {auth, db} from "../../../firebase.ts";
+import { auth, db } from "../../../firebase.ts";
 import type { DocumentData, Timestamp } from "firebase/firestore";
+import { useTranslation } from "react-i18next";
 
 type Message = {
     id: string;
@@ -35,6 +36,7 @@ export default function UserChatWeb() {
     const theme = useTheme();
     const user = auth.currentUser;
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
@@ -104,7 +106,7 @@ export default function UserChatWeb() {
                     <ArrowBackRoundedIcon />
                 </IconButton>
                 <Typography variant="h6" fontWeight={800}>
-                    Chat
+                    {t("userChats.messages.title")}
                 </Typography>
             </Stack>
 
@@ -118,7 +120,9 @@ export default function UserChatWeb() {
                 }}
             >
                 {messages.length === 0 ? (
-                    <Typography align="center" color="text.secondary" sx={{ py: 4 }}>No messages yet…</Typography>
+                    <Typography align="center" color="text.secondary" sx={{ py: 4 }}>
+                        {t("userChats.messages.empty")}
+                    </Typography>
                 ) : (
                     messages.map((m) => (
                         <ListItem
@@ -133,7 +137,10 @@ export default function UserChatWeb() {
                             )}
                             <ListItemText
                                 primary={m.text}
-                                secondary={new Date(m.timestamp).toLocaleTimeString()}
+                                secondary={new Date(m.timestamp).toLocaleTimeString(i18n.language, {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                })}
                                 sx={{
                                     bgcolor: m.senderId === user?.uid ? theme.palette.primary.main : theme.palette.grey[300],
                                     color: m.senderId === user?.uid ? theme.palette.primary.contrastText : "inherit",
@@ -159,7 +166,7 @@ export default function UserChatWeb() {
             >
                 <TextField
                     fullWidth
-                    placeholder="Type your message…"
+                    placeholder={t("userChats.messages.placeholder")}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     multiline
@@ -172,7 +179,7 @@ export default function UserChatWeb() {
                     sx={{ borderRadius: 2, minWidth: { sm: 120 }, width: { xs: "100%", sm: "auto" } }}
                     type="submit"
                 >
-                    {sending ? <CircularProgress size={20} /> : "Send"}
+                    {sending ? <CircularProgress size={20} /> : t("userChats.messages.send")}
                 </Button>
             </Stack>
         </Container>

@@ -51,11 +51,12 @@ import {
     type QuerySnapshot,
     type QueryDocumentSnapshot,
 } from "firebase/firestore";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import caseProperties from "../utils/caseProperties.json";
+import { useTranslation } from "react-i18next";
 
 const popularProperties = caseProperties as { key: string; label: string }[];
 
@@ -122,6 +123,19 @@ const CasesPage: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const { t, i18n } = useTranslation();
+
+    const formatDateTime = (timestamp?: { seconds?: number } | string | number) => {
+        if (!timestamp) return "";
+        let date: Date;
+        if (typeof timestamp === "object") {
+            const seconds = typeof timestamp.seconds === "number" ? timestamp.seconds : 0;
+            date = new Date(seconds * 1000);
+        } else {
+            date = new Date(timestamp);
+        }
+        return Number.isNaN(date.getTime()) ? "" : date.toLocaleString(i18n.language);
+    };
 
     useEffect(() => {
         if (id && cases.length > 0) {
@@ -201,13 +215,13 @@ const CasesPage: React.FC = () => {
             },
             (err) => {
                 console.error(err);
-                setErrorMsg("Failed to load notes.");
+                setErrorMsg(t("casesPage.errors.loadNotes"));
                 setNotesLoading(false);
             }
         );
 
         return () => unsub();
-    }, [selectedCase]);
+    }, [selectedCase, t]);
 
     useEffect(() => {
         if (!selectedCase) {
@@ -232,13 +246,13 @@ const CasesPage: React.FC = () => {
             },
             (err) => {
                 console.error(err);
-                setErrorMsg("Failed to load properties.");
+                setErrorMsg(t("casesPage.errors.loadProperties"));
                 setPropertiesLoading(false);
             }
         );
 
         return () => unsub();
-    }, [selectedCase]);
+    }, [selectedCase, t]);
 
     const filteredCases = useMemo(() => {
         const q = search.trim().toLowerCase();
@@ -275,13 +289,13 @@ const CasesPage: React.FC = () => {
                 role: userRole,
             });
             setNewNote("");
-            setSuccessMsg("Note added.");
+            setSuccessMsg(t("casesPage.success.noteAdded"));
             const nextCount = notes.length + 1;
             setNotesPage(Math.floor((nextCount - 1) / NOTES_PAGE_SIZE));
             setSlide(1);
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to add note.");
+            setErrorMsg(t("casesPage.errors.addNote"));
         }
     };
 
@@ -302,11 +316,11 @@ const CasesPage: React.FC = () => {
             await updateDoc(doc(db, "cases", selectedCase.id, "notes", editingNoteId), {
                 text: editingText.trim(),
             });
-            setSuccessMsg("Note updated.");
+            setSuccessMsg(t("casesPage.success.noteUpdated"));
             cancelEditNote();
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to update note.");
+            setErrorMsg(t("casesPage.errors.updateNote"));
         }
     };
     const requestDeleteNote = (n: NoteDoc) => {
@@ -317,10 +331,10 @@ const CasesPage: React.FC = () => {
         if (!selectedCase || !deleteDialogNoteId) return;
         try {
             await deleteDoc(doc(db, "cases", selectedCase.id, "notes", deleteDialogNoteId));
-            setSuccessMsg("Note deleted.");
+            setSuccessMsg(t("casesPage.success.noteDeleted"));
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to delete note.");
+            setErrorMsg(t("casesPage.errors.deleteNote"));
         } finally {
             setDeleteDialogNoteId(null);
         }
@@ -337,13 +351,13 @@ const CasesPage: React.FC = () => {
             });
             setNewPropName("");
             setNewPropValue("");
-            setSuccessMsg("Property added.");
+            setSuccessMsg(t("casesPage.success.propertyAdded"));
             const nextCount = properties.length + 1;
             setPropsPage(Math.floor((nextCount - 1) / PROPS_PAGE_SIZE));
             setSlide(0);
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to add property.");
+            setErrorMsg(t("casesPage.errors.addProperty"));
         }
     };
 
@@ -365,11 +379,11 @@ const CasesPage: React.FC = () => {
                 name: editPropName.trim(),
                 value: editPropValue.trim(),
             });
-            setSuccessMsg("Property updated.");
+            setSuccessMsg(t("casesPage.success.propertyUpdated"));
             cancelEditProperty();
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to update property.");
+            setErrorMsg(t("casesPage.errors.updateProperty"));
         }
     };
     const requestDeleteProperty = (propId: string) => {
@@ -380,10 +394,10 @@ const CasesPage: React.FC = () => {
         if (!selectedCase || !deleteDialogPropId || !isLawyer) return;
         try {
             await deleteDoc(doc(db, "cases", selectedCase.id, "properties", deleteDialogPropId));
-            setSuccessMsg("Property deleted.");
+            setSuccessMsg(t("casesPage.success.propertyDeleted"));
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to delete property.");
+            setErrorMsg(t("casesPage.errors.deleteProperty"));
         } finally {
             setDeleteDialogPropId(null);
         }
@@ -395,10 +409,12 @@ const CasesPage: React.FC = () => {
         try {
             await updateDoc(doc(db, "cases", selectedCase.id), { status: newStatus });
             setSelectedCase({ ...selectedCase, status: newStatus });
-            setSuccessMsg(newStatus === "open" ? "Case reopened." : "Case closed.");
+            setSuccessMsg(
+                newStatus === "open" ? t("casesPage.success.caseReopened") : t("casesPage.success.caseClosed")
+            );
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to update case status.");
+            setErrorMsg(t("casesPage.errors.updateStatus"));
         }
     };
     const handleDeleteCase = async () => {
@@ -406,10 +422,10 @@ const CasesPage: React.FC = () => {
         try {
             await deleteDoc(doc(db, "cases", selectedCase.id));
             setSelectedCase(null);
-            setSuccessMsg("Case deleted.");
+            setSuccessMsg(t("casesPage.success.caseDeleted"));
         } catch (err) {
             console.error(err);
-            setErrorMsg("Failed to delete case.");
+            setErrorMsg(t("casesPage.errors.deleteCase"));
         }
     };
 
@@ -422,7 +438,7 @@ const CasesPage: React.FC = () => {
                 justifyContent="space-between"
                 mb={3}
             >
-                <Typography variant="h4" fontWeight={800}>Cases</Typography>
+                <Typography variant="h4" fontWeight={800}>{t("casesPage.title")}</Typography>
                 {isLawyer && (
                     <Button
                         variant="contained"
@@ -430,7 +446,7 @@ const CasesPage: React.FC = () => {
                         onClick={() => navigate("/cases/create")}
                         sx={{ width: { xs: "100%", sm: "auto" } }}
                     >
-                        New Case
+                        {t("casesPage.actions.newCase")}
                     </Button>
                 )}
             </Stack>
@@ -443,7 +459,7 @@ const CasesPage: React.FC = () => {
                         size="small"
                         sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
                     >
-                        All
+                        {t("casesPage.filters.all")}
                     </Button>
                     <Button
                         variant={filter === "open" ? "contained" : "outlined"}
@@ -451,7 +467,7 @@ const CasesPage: React.FC = () => {
                         size="small"
                         sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
                     >
-                        Open
+                        {t("casesPage.filters.open")}
                     </Button>
                     <Button
                         variant={filter === "closed" ? "contained" : "outlined"}
@@ -459,13 +475,13 @@ const CasesPage: React.FC = () => {
                         size="small"
                         sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
                     >
-                        Closed
+                        {t("casesPage.filters.closed")}
                     </Button>
                 </Stack>
 
                 <TextField
                     size="small"
-                    placeholder="Search…"
+                    placeholder={t("casesPage.filters.search")}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     InputProps={{
@@ -483,7 +499,7 @@ const CasesPage: React.FC = () => {
                 <Stack flex={1} spacing={2} sx={{ minWidth: 0 }}>
                     {loading && <CircularProgress />}
                     {!loading && filteredCases.length === 0 && (
-                        <Typography color="text.secondary">No cases found.</Typography>
+                        <Typography color="text.secondary">{t("casesPage.list.empty")}</Typography>
                     )}
                     <Box sx={{ overflowY: "auto", pr: 1, maxHeight: { xs: 400, md: "calc(100dvh - 260px)" } }}>
                         <AnimatePresence>
@@ -513,11 +529,11 @@ const CasesPage: React.FC = () => {
                                                 <Box sx={{ minWidth: 0 }}>
                                                     <Typography fontWeight={700} noWrap>{c.title}</Typography>
                                                     <Typography variant="body2" color="text.secondary" noWrap>
-                                                        {c.description || "No description"}
+                                                        {c.description || t("casesPage.details.noDescription")}
                                                     </Typography>
                                                 </Box>
-                                                <Chip
-                                                    label={c.status && c.status.toUpperCase()}
+                                                    <Chip
+                                                    label={c.status ? t(`casesPage.status.${c.status}`) : ""}
                                                     color={c.status === "open" ? "success" : "default"}
                                                     size="small"
                                                     sx={{
@@ -545,22 +561,34 @@ const CasesPage: React.FC = () => {
                             style={{ flex: 1.2, display: "flex" }}
                         >
                             <Card sx={{ flex: 1, borderRadius: 3, position: "relative", minHeight: 300, display: "flex", flexDirection: "column" }}>
-                                <IconButton size="small" onClick={() => setSelectedCase(null)} sx={{ position: "absolute", top: 8, right: 8 }} aria-label="Close case detail">
+                                <IconButton
+                                    size="small"
+                                    onClick={() => setSelectedCase(null)}
+                                    sx={{ position: "absolute", top: 8, right: 8 }}
+                                    aria-label={t("casesPage.aria.closeDetails")}
+                                >
                                     <CloseIcon />
                                 </IconButton>
 
                                 <CardContent sx={{ pb: 1 }}>
                                     <Typography variant="h6" fontWeight={800} mb={1}>{selectedCase.title}</Typography>
-                                    <Chip label={selectedCase.status && selectedCase.status.toUpperCase()} color={selectedCase.status === "open" ? "success" : "default"} size="small" sx={{ mb: 2 }} />
-                                    <Typography mb={2}>{selectedCase.description || "No description"}</Typography>
+                                    <Chip
+                                        label={selectedCase.status ? t(`casesPage.status.${selectedCase.status}`) : ""}
+                                        color={selectedCase.status === "open" ? "success" : "default"}
+                                        size="small"
+                                        sx={{ mb: 2 }}
+                                    />
+                                    <Typography mb={2}>{selectedCase.description || t("casesPage.details.noDescription")}</Typography>
 
                                     {isLawyer && (
                                         <Stack direction="row" spacing={1} mb={2} flexWrap="wrap" useFlexGap>
                                             <Button onClick={handleToggleStatus} variant="outlined">
-                                                {selectedCase.status === "open" ? "Close Case" : "Reopen Case"}
+                                                {selectedCase.status === "open"
+                                                    ? t("casesPage.actions.closeCase")
+                                                    : t("casesPage.actions.reopenCase")}
                                             </Button>
                                             <Button onClick={handleDeleteCase} variant="outlined" color="error">
-                                                Delete
+                                                {t("casesPage.actions.deleteCase")}
                                             </Button>
                                         </Stack>
                                     )}
@@ -571,21 +599,31 @@ const CasesPage: React.FC = () => {
                                         justifyContent="space-between"
                                         spacing={1}
                                     >
-                                        <IconButton size="small" onClick={() => setSlide(Math.max(0, slide - 1))} disabled={slide === 0} aria-label="Back">
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => setSlide(Math.max(0, slide - 1))}
+                                            disabled={slide === 0}
+                                            aria-label={t("casesPage.aria.slideBack")}
+                                        >
                                             <KeyboardArrowLeft />
                                         </IconButton>
-                                        <IconButton size="small" onClick={() => setSlide(Math.min(1, slide + 1))} disabled={slide === 1} aria-label="Next">
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => setSlide(Math.min(1, slide + 1))}
+                                            disabled={slide === 1}
+                                            aria-label={t("casesPage.aria.slideNext")}
+                                        >
                                             <KeyboardArrowRight />
                                         </IconButton>
                                     </Stack>
                                     {slide === 0 && (
                                         <Box>
-                                            <Typography fontWeight={700} mb={1}>Case Properties</Typography>
+                                            <Typography fontWeight={700} mb={1}>{t("casesPage.details.properties.title")}</Typography>
 
                                             {propertiesLoading && <CircularProgress size={20} />}
 
                                             {!propertiesLoading && properties.length === 0 && (
-                                                <Typography color="text.secondary">No properties yet.</Typography>
+                                                <Typography color="text.secondary">{t("casesPage.details.properties.empty")}</Typography>
                                             )}
 
                                             {/* Paginated list */}
@@ -608,12 +646,12 @@ const CasesPage: React.FC = () => {
                                                                     </Box>
                                                                     {isLawyer && (
                                                                         <Stack direction="row" spacing={0.5}>
-                                                                            <Tooltip title="Edit property">
+                                                                            <Tooltip title={t("casesPage.details.properties.edit")}>
                                                                                 <IconButton size="small" onClick={() => startEditProperty(p)}>
                                                                                     <EditIcon fontSize="small" />
                                                                                 </IconButton>
                                                                             </Tooltip>
-                                                                            <Tooltip title="Delete property">
+                                                                            <Tooltip title={t("casesPage.details.properties.delete")}>
                                                                                 <IconButton size="small" onClick={() => requestDeleteProperty(p.id!)}>
                                                                                     <DeleteIcon fontSize="small" />
                                                                                 </IconButton>
@@ -625,22 +663,22 @@ const CasesPage: React.FC = () => {
                                                                 <Stack spacing={1}>
                                                                     <TextField
                                                                         size="small"
-                                                                        label="Name"
+                                                                        label={t("casesPage.details.properties.nameLabel")}
                                                                         value={editPropName}
                                                                         onChange={(e) => setEditPropName(e.target.value)}
                                                                     />
                                                                     <TextField
                                                                         size="small"
-                                                                        label="Value"
+                                                                        label={t("casesPage.details.properties.valueLabel")}
                                                                         value={editPropValue}
                                                                         onChange={(e) => setEditPropValue(e.target.value)}
                                                                     />
                                                                     <Stack direction="row" spacing={1} justifyContent="flex-end">
                                                                         <Button startIcon={<ClearIcon />} onClick={cancelEditProperty} variant="outlined" color="inherit">
-                                                                            Cancel
+                                                                            {t("casesPage.common.cancel")}
                                                                         </Button>
                                                                         <Button startIcon={<SaveIcon />} onClick={saveEditProperty} variant="contained" disabled={!editPropName.trim()}>
-                                                                            Save
+                                                                            {t("casesPage.common.save")}
                                                                         </Button>
                                                                     </Stack>
                                                                 </Stack>
@@ -652,13 +690,13 @@ const CasesPage: React.FC = () => {
                                             {properties.length > PROPS_PAGE_SIZE && (
                                                 <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end" mt={1.5}>
                                                     <Typography variant="caption">
-                                                        Page {propsPage + 1} / {propsTotalPages}
+                                                        {t("casesPage.pagination.label", { page: propsPage + 1, total: propsTotalPages })}
                                                     </Typography>
                                                     <IconButton
                                                         size="small"
                                                         onClick={() => setPropsPage((p) => Math.max(0, p - 1))}
                                                         disabled={propsPage === 0}
-                                                        aria-label="Previous properties page"
+                                                        aria-label={t("casesPage.pagination.prevProperties")}
                                                     >
                                                         <KeyboardArrowLeft />
                                                     </IconButton>
@@ -666,7 +704,7 @@ const CasesPage: React.FC = () => {
                                                         size="small"
                                                         onClick={() => setPropsPage((p) => Math.min(propsTotalPages - 1, p + 1))}
                                                         disabled={propsPage >= propsTotalPages - 1}
-                                                        aria-label="Next properties page"
+                                                        aria-label={t("casesPage.pagination.nextProperties")}
                                                     >
                                                         <KeyboardArrowRight />
                                                     </IconButton>
@@ -713,7 +751,7 @@ const CasesPage: React.FC = () => {
                                                                 renderInput={(params) => (
                                                                     <TextField
                                                                         {...params}
-                                                                        label="Property name"
+                                                                        label={t("casesPage.details.properties.nameLabel")}
                                                                         size="small"
                                                                         value={newPropName}
                                                                         onChange={(e) => setNewPropName(e.target.value)}
@@ -722,7 +760,7 @@ const CasesPage: React.FC = () => {
                                                             />
                                                             <TextField
                                                                 size="small"
-                                                                label="Value"
+                                                                label={t("casesPage.details.properties.valueLabel")}
                                                                 value={newPropValue}
                                                                 onChange={(e) => setNewPropValue(e.target.value)}
                                                             />
@@ -734,7 +772,7 @@ const CasesPage: React.FC = () => {
                                                                     setSelectedProp(null);
                                                                 }}
                                                             >
-                                                                Add
+                                                                {t("casesPage.details.properties.add")}
                                                             </Button>
                                                             <Button
                                                                 variant="outlined"
@@ -746,7 +784,7 @@ const CasesPage: React.FC = () => {
                                                                     setSelectedProp(null);
                                                                 }}
                                                             >
-                                                                Cancel
+                                                                {t("casesPage.common.cancel")}
                                                             </Button>
                                                         </Stack>
                                                     )}
@@ -756,7 +794,7 @@ const CasesPage: React.FC = () => {
                                     )}
                                     {slide === 1 && (
                                         <Box>
-                                            <Typography fontWeight={700} mb={1}>Notes</Typography>
+                                            <Typography fontWeight={700} mb={1}>{t("casesPage.details.notes.title")}</Typography>
 
                                             <Box sx={{ borderRadius: 2, border: "1px solid", borderColor: "divider", p: 1, height: '100%', overflowY: "auto", pr: 1.5, backgroundColor: "background.paper" }}>
                                                 {notesLoading && (
@@ -766,7 +804,9 @@ const CasesPage: React.FC = () => {
                                                 )}
 
                                                 {!notesLoading && notes.length === 0 && (
-                                                    <Typography color="text.secondary" sx={{ px: 1, py: 0.5 }}>No notes yet.</Typography>
+                                                    <Typography color="text.secondary" sx={{ px: 1, py: 0.5 }}>
+                                                        {t("casesPage.details.notes.empty")}
+                                                    </Typography>
                                                 )}
 
                                                 <Stack spacing={1}>
@@ -785,13 +825,21 @@ const CasesPage: React.FC = () => {
                                                                                         </Box>
                                                                                         {canEditOrDeleteNote(n) && (
                                                                                             <Stack direction="row" spacing={0.5}>
-                                                                                                <Tooltip title="Edit">
-                                                                                                    <IconButton size="small" onClick={() => startEditNote(n)} aria-label="Edit note">
+                                                                                                <Tooltip title={t("casesPage.details.notes.edit")}>
+                                                                                                    <IconButton
+                                                                                                        size="small"
+                                                                                                        onClick={() => startEditNote(n)}
+                                                                                                        aria-label={t("casesPage.details.notes.edit")}
+                                                                                                    >
                                                                                                         <EditIcon fontSize="small" />
                                                                                                     </IconButton>
                                                                                                 </Tooltip>
-                                                                                                <Tooltip title="Delete">
-                                                                                                    <IconButton size="small" onClick={() => requestDeleteNote(n)} aria-label="Delete note">
+                                                                                                <Tooltip title={t("casesPage.details.notes.delete")}>
+                                                                                                    <IconButton
+                                                                                                        size="small"
+                                                                                                        onClick={() => requestDeleteNote(n)}
+                                                                                                        aria-label={t("casesPage.details.notes.delete")}
+                                                                                                    >
                                                                                                         <DeleteIcon fontSize="small" />
                                                                                                     </IconButton>
                                                                                                 </Tooltip>
@@ -799,9 +847,9 @@ const CasesPage: React.FC = () => {
                                                                                         )}
                                                                                     </Stack>
                                                                                     <Typography variant="caption" color="text.secondary" display="block" mt={0.5}>
-                                                                                        {n.role ?? "unknown"}{" "}
+                                                                                        {t(`casesPage.details.notes.roles.${n.role ?? "unknown"}`)}{" "}
                                                                                         {n.createdAt?.seconds
-                                                                                            ? "– " + new Date(n.createdAt.seconds * 1000).toLocaleString()
+                                                                                            ? "– " + formatDateTime({ seconds: n.createdAt.seconds })
                                                                                             : ""}
                                                                                     </Typography>
                                                                                 </>
@@ -809,8 +857,12 @@ const CasesPage: React.FC = () => {
                                                                                 <>
                                                                                     <TextField fullWidth multiline minRows={2} value={editingText} onChange={(e) => setEditingText(e.target.value)} size="small" />
                                                                                     <Stack direction="row" spacing={1} mt={1} justifyContent="flex-end">
-                                                                                        <Button startIcon={<ClearIcon />} onClick={cancelEditNote} variant="outlined" color="inherit">Cancel</Button>
-                                                                                        <Button startIcon={<SaveIcon />} onClick={saveEditNote} variant="contained" disabled={!editingText.trim()}>Save</Button>
+                                                                                        <Button startIcon={<ClearIcon />} onClick={cancelEditNote} variant="outlined" color="inherit">
+                                                                                            {t("casesPage.common.cancel")}
+                                                                                        </Button>
+                                                                                        <Button startIcon={<SaveIcon />} onClick={saveEditNote} variant="contained" disabled={!editingText.trim()}>
+                                                                                            {t("casesPage.common.save")}
+                                                                                        </Button>
                                                                                     </Stack>
                                                                                 </>
                                                                             )}
@@ -825,13 +877,13 @@ const CasesPage: React.FC = () => {
                                             {notes.length > NOTES_PAGE_SIZE && (
                                                 <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end" mt={1.5}>
                                                     <Typography variant="caption">
-                                                        Page {notesPage + 1} / {notesTotalPages}
+                                                        {t("casesPage.pagination.label", { page: notesPage + 1, total: notesTotalPages })}
                                                     </Typography>
                                                     <IconButton
                                                         size="small"
                                                         onClick={() => setNotesPage((p) => Math.max(0, p - 1))}
                                                         disabled={notesPage === 0}
-                                                        aria-label="Previous notes page"
+                                                        aria-label={t("casesPage.pagination.prevNotes")}
                                                     >
                                                         <KeyboardArrowLeft />
                                                     </IconButton>
@@ -839,7 +891,7 @@ const CasesPage: React.FC = () => {
                                                         size="small"
                                                         onClick={() => setNotesPage((p) => Math.min(notesTotalPages - 1, p + 1))}
                                                         disabled={notesPage >= notesTotalPages - 1}
-                                                        aria-label="Next notes page"
+                                                        aria-label={t("casesPage.pagination.nextNotes")}
                                                     >
                                                         <KeyboardArrowRight />
                                                     </IconButton>
@@ -848,8 +900,19 @@ const CasesPage: React.FC = () => {
 
                                             {canWriteNotes && (
                                                 <Stack direction="row" spacing={1} mt={2}>
-                                                    <TextField size="small" fullWidth placeholder="Add note…" value={newNote} onChange={(e) => setNewNote(e.target.value)} multiline minRows={1} maxRows={6} />
-                                                    <Button variant="contained" onClick={handleAddNote} disabled={!newNote.trim()}>Add</Button>
+                                                    <TextField
+                                                        size="small"
+                                                        fullWidth
+                                                        placeholder={t("casesPage.details.notes.placeholder")}
+                                                        value={newNote}
+                                                        onChange={(e) => setNewNote(e.target.value)}
+                                                        multiline
+                                                        minRows={1}
+                                                        maxRows={6}
+                                                    />
+                                                    <Button variant="contained" onClick={handleAddNote} disabled={!newNote.trim()}>
+                                                        {t("casesPage.details.notes.addAction")}
+                                                    </Button>
                                                 </Stack>
                                             )}
                                         </Box>
@@ -861,23 +924,27 @@ const CasesPage: React.FC = () => {
                 </AnimatePresence>
             </Stack>
             <Dialog open={Boolean(deleteDialogNoteId)} onClose={() => setDeleteDialogNoteId(null)}>
-                <DialogTitle>Delete note?</DialogTitle>
+                <DialogTitle>{t("casesPage.dialog.deleteNote.title")}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>This action can’t be undone. Do you really want to delete this note?</DialogContentText>
+                    <DialogContentText>{t("casesPage.dialog.deleteNote.description")}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteDialogNoteId(null)}>Cancel</Button>
-                    <Button color="error" variant="contained" onClick={confirmDeleteNote}>Delete</Button>
+                    <Button onClick={() => setDeleteDialogNoteId(null)}>{t("casesPage.common.cancel")}</Button>
+                    <Button color="error" variant="contained" onClick={confirmDeleteNote}>
+                        {t("casesPage.common.delete")}
+                    </Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={Boolean(deleteDialogPropId)} onClose={() => setDeleteDialogPropId(null)}>
-                <DialogTitle>Delete property?</DialogTitle>
+                <DialogTitle>{t("casesPage.dialog.deleteProperty.title")}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>This action can’t be undone. Do you really want to delete this property?</DialogContentText>
+                    <DialogContentText>{t("casesPage.dialog.deleteProperty.description")}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteDialogPropId(null)}>Cancel</Button>
-                    <Button color="error" variant="contained" onClick={confirmDeleteProperty}>Delete</Button>
+                    <Button onClick={() => setDeleteDialogPropId(null)}>{t("casesPage.common.cancel")}</Button>
+                    <Button color="error" variant="contained" onClick={confirmDeleteProperty}>
+                        {t("casesPage.common.delete")}
+                    </Button>
                 </DialogActions>
             </Dialog>
             <Snackbar open={Boolean(errorMsg)} autoHideDuration={4000} onClose={() => setErrorMsg(null)} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>

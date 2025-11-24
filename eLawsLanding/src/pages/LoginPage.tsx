@@ -17,11 +17,13 @@ import {
 import Grid from "@mui/material/Grid";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import {auth} from '../../firebase'
+import { auth } from "../../firebase";
+import { useTranslation } from "react-i18next";
 
 const LoginPage = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -33,7 +35,7 @@ const LoginPage = () => {
             navigate("/dashboard");
         } catch (error) {
             console.error("Failed to sign in", error);
-            setError("Invalid email or password");
+            setError(t("loginPage.errors.invalidCredentials"));
         }
     };
 
@@ -53,7 +55,7 @@ const LoginPage = () => {
                     >
                         <CardContent sx={{ p: { xs: 4, md: 5 } }}>
                             <Chip
-                                label="Security-first"
+                                label={t("loginPage.hero.badge")}
                                 variant="outlined"
                                 sx={{
                                     color: "inherit",
@@ -63,19 +65,14 @@ const LoginPage = () => {
                                 }}
                             />
                             <Typography variant="h4" fontWeight={900} gutterBottom>
-                                Welcome back 👋
+                                {t("loginPage.hero.title")}
                             </Typography>
                             <Typography sx={{ opacity: 0.8 }}>
-                                Pick up any case, chat thread, or document exactly where you left it.
-                                Your workspace syncs instantly across devices.
+                                {t("loginPage.hero.subtitle")}
                             </Typography>
 
                             <Stack spacing={2.5} mt={5}>
-                                {[
-                                    "Access AI chat, docs, cases, and notes",
-                                    "Stay in sync with real-time collaboration",
-                                    "SOC2-friendly architecture with audit trails",
-                                ].map((item) => (
+                                {["featureOne", "featureTwo", "featureThree"].map((item) => (
                                     <Stack direction="row" spacing={1.5} alignItems="center" key={item}>
                                         <Box
                                             sx={{
@@ -90,7 +87,7 @@ const LoginPage = () => {
                                         >
                                             •
                                         </Box>
-                                        <Typography>{item}</Typography>
+                                        <Typography>{t(`loginPage.hero.features.${item}`)}</Typography>
                                     </Stack>
                                 ))}
                             </Stack>
@@ -103,25 +100,25 @@ const LoginPage = () => {
                         <CardContent sx={{ p: { xs: 4, md: 5 } }}>
                             <Stack spacing={3}>
                                 <Box>
-                                    <Chip label="Sign in" color="primary" variant="outlined" sx={{ mb: 1 }} />
+                                    <Chip label={t("loginPage.form.badge")} color="primary" variant="outlined" sx={{ mb: 1 }} />
                                     <Typography variant="h5" fontWeight={800}>
-                                        Enter your workspace
+                                        {t("loginPage.form.title")}
                                     </Typography>
                                     <Typography color="text.secondary">
-                                        Use your account email and password. Two-factor kicks in automatically if enabled.
+                                        {t("loginPage.form.subtitle")}
                                     </Typography>
                                 </Box>
 
                                 <Stack spacing={1.5}>
                                     <TextField
-                                        label="Email"
+                                        label={t("loginPage.form.emailLabel")}
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         fullWidth
                                     />
                                     <TextField
-                                        label="Password"
+                                        label={t("loginPage.form.passwordLabel")}
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -132,23 +129,23 @@ const LoginPage = () => {
                                 {error && <Alert severity="error">{error}</Alert>}
 
                                 <Button size="large" variant="contained" onClick={handleSignIn}>
-                                    Sign in
+                                    {t("loginPage.form.submit")}
                                 </Button>
 
                                 <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" spacing={1}>
                                     <Link component={RouterLink} to="/forgot-password" underline="hover">
-                                        Forgot password?
+                                        {t("loginPage.links.forgotPassword")}
                                     </Link>
                                     <Typography variant="body2">
-                                        New here? {" "}
+                                        {t("loginPage.links.newHere")}{" "}
                                         <Link component={RouterLink} to="/signup" underline="hover" fontWeight={600}>
-                                            Create account
+                                            {t("loginPage.links.createAccount")}
                                         </Link>
                                     </Typography>
                                 </Stack>
 
                                 <Button component={RouterLink} to="/" variant="text">
-                                    ← Back to site
+                                    {t("loginPage.links.backToSite")}
                                 </Button>
                             </Stack>
                         </CardContent>

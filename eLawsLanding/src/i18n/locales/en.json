@@ -270,6 +270,102 @@
             "createAccountButton": "Create your account"
         }
     },
+    "loginPage": {
+        "hero": {
+            "badge": "Security-first",
+            "title": "Welcome back 👋",
+            "subtitle": "Pick up any case, chat thread, or document exactly where you left it. Your workspace syncs instantly across devices.",
+            "features": {
+                "featureOne": "Access AI chat, docs, cases, and notes",
+                "featureTwo": "Stay in sync with real-time collaboration",
+                "featureThree": "SOC2-friendly architecture with audit trails"
+            }
+        },
+        "form": {
+            "badge": "Sign in",
+            "title": "Enter your workspace",
+            "subtitle": "Use your account email and password. Two-factor kicks in automatically if enabled.",
+            "emailLabel": "Email",
+            "passwordLabel": "Password",
+            "submit": "Sign in"
+        },
+        "links": {
+            "forgotPassword": "Forgot password?",
+            "newHere": "New here?",
+            "createAccount": "Create account",
+            "backToSite": "← Back to site"
+        },
+        "errors": {
+            "invalidCredentials": "Invalid email or password"
+        }
+    },
+    "signupPage": {
+        "hero": {
+            "badge": "Create an account",
+            "title": "Onboard in minutes, not weeks.",
+            "subtitle": "Your AI legal workspace with SaaS-level polish. Start on the free tier and invite teammates when you’re ready.",
+            "benefits": {
+                "benefitOne": "Unlimited saved notes on every plan",
+                "benefitTwo": "Country-specific procedures included",
+                "benefitThree": "Downgrade anytime right inside the app"
+            }
+        },
+        "expect": {
+            "title": "What to expect",
+            "subtitle": "Answer a few basics, pick your jurisdiction, and you’re inside the dashboard with a guided tour.",
+            "steps": {
+                "stepOne": {
+                    "title": "Tell us who you are",
+                    "description": "We use your name and username for workspace personalization."
+                },
+                "stepTwo": {
+                    "title": "Add your jurisdiction",
+                    "description": "Country selection unlocks localized procedures and regulations."
+                },
+                "stepThree": {
+                    "title": "Secure your credentials",
+                    "description": "Strong passwords + optional 2FA keep everything safe."
+                }
+            }
+        },
+        "form": {
+            "badge": "Your details",
+            "title": "Create your workspace",
+            "subtitle": "All fields are required so we can generate the right legal context.",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Email",
+            "username": "Username",
+            "usernameHelper": "Starts with @, letters/numbers/._- only",
+            "country": "Country",
+            "password": "Password",
+            "confirmPassword": "Confirm password",
+            "passwordHelper": "Min 8 chars, include a number or special character"
+        },
+        "cta": {
+            "submit": "Create account",
+            "loading": "Creating..."
+        },
+        "links": {
+            "existing": "Already have an account?",
+            "login": "Log in",
+            "backToSite": "← Back to site"
+        },
+        "errors": {
+            "missingName": "First and last name are required.",
+            "invalidEmailFormat": "Invalid email format.",
+            "passwordMismatch": "Passwords do not match.",
+            "passwordWeak": "Password must be at least 8 chars, with a number or special char.",
+            "usernameLength": "Username must be at least 2 characters after @.",
+            "usernameChars": "Username can only use a-z, 0-9, dots, underscores, and dashes.",
+            "usernameTaken": "Username is already taken. Pick another.",
+            "usernameJustTaken": "Username just got taken — try another.",
+            "emailInUse": "That email is already registered. Try logging in.",
+            "passwordTooWeak": "Password too weak. Use a longer or stronger one.",
+            "invalidEmail": "Invalid email.",
+            "generic": "Something went wrong. Please try again."
+        }
+    },
     "about": {
         "hero": {
             "badge": "About",
@@ -326,6 +422,209 @@
             "subtitle": "We collaborate with lawyers and organizations to make legal help accessible.",
             "primary": "Contact us",
             "secondary": "See pricing"
+        }
+    },
+    "aiChat": {
+        "topics": {
+            "civil": "Civil Law",
+            "criminal": "Criminal Law",
+            "business": "Business Law",
+            "labor": "Labor Law",
+            "tax": "Tax Law",
+            "other": "Other"
+        },
+        "context": {
+            "title": "Context",
+            "description": "Country-aware AI with topic presets and quick prompt suggestions."
+        },
+        "labels": {
+            "topic": "Topic",
+            "country": "Country",
+            "topicPlaceholder": "Choose a topic",
+            "anyCountry": "Any country"
+        },
+        "buttons": {
+            "changeTopic": "Change topic",
+            "saveToNotes": "Save to Notes",
+            "send": "Send"
+        },
+        "inputs": {
+            "questionPlaceholder": "Type your legal question…"
+        },
+        "dialog": {
+            "title": "Title your note",
+            "generating": "Generating suggestions…",
+            "suggestions": "Suggestions",
+            "customTitle": "Or write your own",
+            "placeholder": "Enter a custom title",
+            "cancel": "Cancel",
+            "save": "Save",
+            "untitled": "Untitled Note"
+        },
+        "snackbar": {
+            "profileError": "Could not load your profile. Refresh and try again.",
+            "sendError": "Failed to send message.",
+            "saveSuccess": "Saved to My Notes ✅",
+            "saveError": "Failed to save note."
+        },
+        "loading": {
+            "preparing": "Preparing your workspace…"
+        },
+        "empty": {
+            "countryTitle": "Choose your jurisdiction",
+            "countryDescription": "We preload relevant regulations and forms the moment you confirm the country.",
+            "topicTitle": "What do you need help with?",
+            "topicDescription": "Pick a preset to tailor the AI prompt. You can always switch later."
+        }
+    },
+    "components": {
+        "countryPicker": {
+            "trigger": "Select a country",
+            "dialogTitle": "Select country",
+            "searchPlaceholder": "Search country...",
+            "empty": "No countries found."
+        },
+        "datePicker": {
+            "today": "Today",
+            "close": "Close"
+        },
+        "panicButton": {
+            "trigger": "Stopped by the police",
+            "dialogTitle": "Police stop emergency",
+            "dialogDescription": "Pick your country to get the most accurate procedures.",
+            "submit": "Get procedures",
+            "cancel": "Cancel"
+        },
+        "subscriptionButton": {
+            "upgrade": "Upgrade",
+            "manage": "Manage subscription"
+        },
+        "subscriptionPayment": {
+            "title": "Confirm payment",
+            "planLabel": "Plan",
+            "cancel": "Cancel",
+            "processing": "Processing…",
+            "submit": "Pay & Continue",
+            "error": "Payment failed. Try again."
+        }
+    },
+    "userChats": {
+        "list": {
+            "title": "Your chats",
+            "startNew": "Start new",
+            "empty": "No chats yet. Start a conversation!",
+            "dialogTitle": "Start a new chat",
+            "searchPlaceholder": "Search friends...",
+            "noFriends": "No friends found.",
+            "unknownUser": "Unknown"
+        },
+        "messages": {
+            "title": "Chat",
+            "placeholder": "Type your message…",
+            "send": "Send",
+            "empty": "No messages yet…",
+            "decryptError": "Failed to decrypt"
+        },
+        "confirm": {
+            "deleteChat": "Delete chat permanently?",
+            "clearChat": "Clear all messages in this chat?"
+        }
+    },
+    "casesPage": {
+        "title": "Cases",
+        "actions": {
+            "newCase": "New case",
+            "closeCase": "Close case",
+            "reopenCase": "Reopen case",
+            "deleteCase": "Delete"
+        },
+        "filters": {
+            "all": "All",
+            "open": "Open",
+            "closed": "Closed",
+            "search": "Search…"
+        },
+        "list": {
+            "empty": "No cases found."
+        },
+        "status": {
+            "open": "Open",
+            "closed": "Closed"
+        },
+        "details": {
+            "noDescription": "No description",
+            "properties": {
+                "title": "Case properties",
+                "empty": "No properties yet.",
+                "edit": "Edit property",
+                "delete": "Delete property",
+                "nameLabel": "Name",
+                "valueLabel": "Value",
+                "add": "Add property"
+            },
+            "notes": {
+                "title": "Notes",
+                "empty": "No notes yet.",
+                "placeholder": "Add note…",
+                "addAction": "Add",
+                "edit": "Edit",
+                "delete": "Delete",
+                "roles": {
+                    "lawyer": "Lawyer",
+                    "client": "Client",
+                    "unknown": "Unknown"
+                }
+            }
+        },
+        "pagination": {
+            "label": "Page {{page}} / {{total}}",
+            "prevProperties": "Previous properties page",
+            "nextProperties": "Next properties page",
+            "prevNotes": "Previous notes page",
+            "nextNotes": "Next notes page"
+        },
+        "dialog": {
+            "deleteNote": {
+                "title": "Delete note?",
+                "description": "This action can’t be undone. Do you really want to delete this note?"
+            },
+            "deleteProperty": {
+                "title": "Delete property?",
+                "description": "This action can’t be undone. Do you really want to delete this property?"
+            }
+        },
+        "common": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "delete": "Delete"
+        },
+        "errors": {
+            "loadNotes": "Failed to load notes.",
+            "loadProperties": "Failed to load properties.",
+            "addNote": "Failed to add note.",
+            "updateNote": "Failed to update note.",
+            "deleteNote": "Failed to delete note.",
+            "addProperty": "Failed to add property.",
+            "updateProperty": "Failed to update property.",
+            "deleteProperty": "Failed to delete property.",
+            "updateStatus": "Failed to update case status.",
+            "deleteCase": "Failed to delete case."
+        },
+        "success": {
+            "noteAdded": "Note added.",
+            "noteUpdated": "Note updated.",
+            "noteDeleted": "Note deleted.",
+            "propertyAdded": "Property added.",
+            "propertyUpdated": "Property updated.",
+            "propertyDeleted": "Property deleted.",
+            "caseReopened": "Case reopened.",
+            "caseClosed": "Case closed.",
+            "caseDeleted": "Case deleted."
+        },
+        "aria": {
+            "closeDetails": "Close case detail",
+            "slideBack": "Back",
+            "slideNext": "Next"
         }
     }
 }

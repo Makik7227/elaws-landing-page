@@ -21,8 +21,9 @@ import Grid from "@mui/material/Grid";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import {auth, db} from "../../firebase";
-import {COUNTRIES, type CountryOption} from "../utils/CountryOption.ts";
+import { auth, db } from "../../firebase";
+import { COUNTRIES, type CountryOption } from "../utils/CountryOption.ts";
+import { useTranslation } from "react-i18next";
 
 const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -47,15 +48,13 @@ const getCountryFromBrowser = (): CountryOption => {
     }
 };
 
-const SIGNUP_BENEFITS = [
-    "Unlimited saved notes on every plan",
-    "Country-specific procedures included",
-    "Downgrade anytime right inside the app",
-];
+const SIGNUP_BENEFITS = ["benefitOne", "benefitTwo", "benefitThree"] as const;
+const SIGNUP_STEPS = ["stepOne", "stepTwo", "stepThree"] as const;
 
 const SignUp = () =>  {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName]   = useState("");
@@ -82,33 +81,33 @@ const SignUp = () =>  {
     const handleSignUp = async () => {
         setError("");
         if (!firstName.trim() || !lastName.trim()) {
-            setError("First and last name are required.");
+            setError(t("signupPage.errors.missingName"));
             return;
         }
         if (!validateEmail(email.trim())) {
-            setError("Invalid email format.");
+            setError(t("signupPage.errors.invalidEmailFormat"));
             emailRef.current?.focus();
             return;
         }
         if (password !== confirmPassword) {
-            setError("Passwords do not match.");
+            setError(t("signupPage.errors.passwordMismatch"));
             passRef.current?.focus();
             return;
         }
         if (!validatePassword(password)) {
-            setError("Password must be at least 8 chars, with a number or special char.");
+            setError(t("signupPage.errors.passwordWeak"));
             passRef.current?.focus();
             return;
         }
 
         const usernameRaw = username.replace(/^@/, "");
         if (usernameRaw.length < 2) {
-            setError("Username must be at least 2 characters after @.");
+            setError(t("signupPage.errors.usernameLength"));
             usernameRef.current?.focus();
             return;
         }
         if (!/^[a-zA-Z0-9._-]+$/.test(usernameRaw)) {
-            setError("Username can only use a-z, 0-9, dots, underscores, and dashes.");
+            setError(t("signupPage.errors.usernameChars"));
             usernameRef.current?.focus();
             return;
         }
@@ -120,7 +119,7 @@ const SignUp = () =>  {
         try {
             const existing = await getDoc(usernameRefDoc);
             if (existing.exists()) {
-                setError("Username is already taken. Pick another.");
+                setError(t("signupPage.errors.usernameTaken"));
                 setLoading(false);
                 usernameRef.current?.focus();
                 return;
@@ -141,7 +140,7 @@ const SignUp = () =>  {
                 } catch {
                     // ignore rollback failure
                 }
-                setError("Username just got taken — try another.");
+                setError(t("signupPage.errors.usernameJustTaken"));
                 setLoading(false);
                 usernameRef.current?.focus();
                 return;
@@ -167,11 +166,11 @@ const SignUp = () =>  {
             navigate("/dashboard/subscribe");
         } catch (err: unknown) {
             setLoading(false);
-            let msg = String(err);
-            if (msg.includes("auth/email-already-in-use")) msg = "That email is already registered. Try logging in.";
-            else if (msg.includes("auth/weak-password")) msg = "Password too weak. Use a longer or stronger one.";
-            else if (msg.includes("auth/invalid-email")) msg = "Invalid email.";
-            setError(msg);
+            const msg = String(err);
+            if (msg.includes("auth/email-already-in-use")) setError(t("signupPage.errors.emailInUse"));
+            else if (msg.includes("auth/weak-password")) setError(t("signupPage.errors.passwordTooWeak"));
+            else if (msg.includes("auth/invalid-email")) setError(t("signupPage.errors.invalidEmail"));
+            else setError(t("signupPage.errors.generic"));
         }
     };
 
@@ -190,7 +189,7 @@ const SignUp = () =>  {
                 <Container maxWidth="md">
                     <Stack spacing={2} alignItems="center">
                         <Chip
-                            label="Create an account"
+                            label={t("signupPage.hero.badge")}
                             variant="outlined"
                             sx={{
                                 color: "inherit",
@@ -199,16 +198,16 @@ const SignUp = () =>  {
                             }}
                         />
                         <Typography variant="h3" fontWeight={900}>
-                            Onboard in minutes, not weeks.
+                            {t("signupPage.hero.title")}
                         </Typography>
                         <Typography sx={{ opacity: 0.9, maxWidth: 600 }}>
-                            Your AI legal workspace with SaaS-level polish. Start on the free tier and invite teammates when you’re ready.
+                            {t("signupPage.hero.subtitle")}
                         </Typography>
                         <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                            {SIGNUP_BENEFITS.map((text) => (
+                            {SIGNUP_BENEFITS.map((key) => (
                                 <Chip
-                                    key={text}
-                                    label={text}
+                                    key={key}
+                                    label={t(`signupPage.hero.benefits.${key}`)}
                                     variant="outlined"
                                     sx={{
                                         color: "inherit",
@@ -234,15 +233,15 @@ const SignUp = () =>  {
                         >
                             <CardContent sx={{ p: { xs: 4, md: 5 } }}>
                                 <Typography variant="h5" fontWeight={800} gutterBottom>
-                                    What to expect
+                                    {t("signupPage.expect.title")}
                                 </Typography>
                                 <Typography color="text.secondary" sx={{ mb: 3 }}>
-                                    Answer a few basics, pick your jurisdiction, and you’re inside the dashboard with a guided tour.
+                                    {t("signupPage.expect.subtitle")}
                                 </Typography>
                                 <Divider sx={{ my: 3 }} />
                                 <Stack spacing={3}>
-                                    {["Tell us who you are", "Add your jurisdiction", "Secure your credentials"].map((title, idx) => (
-                                        <Stack key={title} direction="row" spacing={2} alignItems="flex-start">
+                                    {SIGNUP_STEPS.map((stepKey, idx) => (
+                                        <Stack key={stepKey} direction="row" spacing={2} alignItems="flex-start">
                                             <Box
                                                 sx={{
                                                     width: 40,
@@ -257,11 +256,11 @@ const SignUp = () =>  {
                                                 {idx + 1}
                                             </Box>
                                             <Box>
-                                                <Typography fontWeight={700}>{title}</Typography>
+                                                <Typography fontWeight={700}>
+                                                    {t(`signupPage.expect.steps.${stepKey}.title`)}
+                                                </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {idx === 0 && "We use your name and username for workspace personalization."}
-                                                    {idx === 1 && "Country selection unlocks localized procedures and regulations."}
-                                                    {idx === 2 && "Strong passwords + optional 2FA keep everything safe."}
+                                                    {t(`signupPage.expect.steps.${stepKey}.description`)}
                                                 </Typography>
                                             </Box>
                                         </Stack>
@@ -276,12 +275,12 @@ const SignUp = () =>  {
                             <CardContent sx={{ p: { xs: 4, md: 5 } }}>
                                 <Stack spacing={3}>
                                     <Box>
-                                        <Chip label="Your details" color="primary" variant="outlined" sx={{ mb: 1 }} />
+                                        <Chip label={t("signupPage.form.badge")} color="primary" variant="outlined" sx={{ mb: 1 }} />
                                         <Typography variant="h5" fontWeight={800}>
-                                            Create your workspace
+                                            {t("signupPage.form.title")}
                                         </Typography>
                                         <Typography color="text.secondary">
-                                            All fields are required so we can generate the right legal context.
+                                            {t("signupPage.form.subtitle")}
                                         </Typography>
                                     </Box>
 
@@ -289,14 +288,14 @@ const SignUp = () =>  {
 
                                     <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                                         <TextField
-                                            label="First name"
+                                            label={t("signupPage.form.firstName")}
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                             fullWidth
                                             autoComplete="given-name"
                                         />
                                         <TextField
-                                            label="Last name"
+                                            label={t("signupPage.form.lastName")}
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                             fullWidth
@@ -306,7 +305,7 @@ const SignUp = () =>  {
 
                                     <TextField
                                         inputRef={emailRef}
-                                        label="Email"
+                                        label={t("signupPage.form.email")}
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -315,11 +314,11 @@ const SignUp = () =>  {
                                     />
 
                                     <TextField
-                                        label="Username"
+                                        label={t("signupPage.form.username")}
                                         value={username}
                                         onChange={(e) => onChangeUsername(e.target.value)}
                                         fullWidth
-                                        helperText="Starts with @, letters/numbers/._- only"
+                                        helperText={t("signupPage.form.usernameHelper")}
                                         slotProps={{ input: { sx: { maxLength: 24 } } }}
                                     />
 
@@ -328,7 +327,7 @@ const SignUp = () =>  {
                                         value={country}
                                         onChange={(_, val) => val && setCountry(val)}
                                         getOptionLabel={(o) => o.label}
-                                        renderInput={(params) => <TextField {...params} label="Country" />}
+                                        renderInput={(params) => <TextField {...params} label={t("signupPage.form.country")} />}
                                     />
 
                                     <Divider />
@@ -336,15 +335,15 @@ const SignUp = () =>  {
                                     <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                                         <TextField
                                             inputRef={passRef}
-                                            label="Password"
+                                            label={t("signupPage.form.password")}
                                             type="password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             fullWidth
-                                            helperText="Min 8 chars, include a number or special character"
+                                            helperText={t("signupPage.form.passwordHelper")}
                                         />
                                         <TextField
-                                            label="Confirm password"
+                                            label={t("signupPage.form.confirmPassword")}
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -359,13 +358,13 @@ const SignUp = () =>  {
                                         disabled={loading}
                                         startIcon={loading ? <CircularProgress size={18} /> : undefined}
                                     >
-                                        {loading ? "Creating..." : "Create account"}
+                                        {loading ? t("signupPage.cta.loading") : t("signupPage.cta.submit")}
                                     </Button>
 
                                     <Typography variant="body2" textAlign="center">
-                                        Already have an account?{" "}
+                                        {t("signupPage.links.existing")}{" "}
                                         <Link component={RouterLink} to="/login" underline="hover" fontWeight={700}>
-                                            Log in
+                                            {t("signupPage.links.login")}
                                         </Link>
                                     </Typography>
                                 </Stack>
@@ -376,7 +375,7 @@ const SignUp = () =>  {
 
                 <Box textAlign="center" mt={3}>
                     <Button component={RouterLink} to="/" variant="text">
-                        ← Back to site
+                        {t("signupPage.links.backToSite")}
                     </Button>
                 </Box>
             </Container>

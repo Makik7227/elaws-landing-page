@@ -270,6 +270,102 @@
             "createAccountButton": "Utwórz konto"
         }
     },
+    "loginPage": {
+        "hero": {
+            "badge": "Bezpieczeństwo przede wszystkim",
+            "title": "Witamy ponownie 👋",
+            "subtitle": "Wracaj do spraw, czatów i dokumentów dokładnie tam, gdzie skończyłeś. Workspace synchronizuje się natychmiast na wszystkich urządzeniach.",
+            "features": {
+                "featureOne": "Dostęp do czatu AI, dokumentów, spraw i notatek",
+                "featureTwo": "Synchronizacja w czasie rzeczywistym",
+                "featureThree": "Architektura zgodna z SOC2 i dziennikami audytu"
+            }
+        },
+        "form": {
+            "badge": "Zaloguj się",
+            "title": "Wejdź do swojego panelu",
+            "subtitle": "Użyj firmowego e-maila i hasła. Jeśli masz 2FA, włączy się automatycznie.",
+            "emailLabel": "E-mail",
+            "passwordLabel": "Hasło",
+            "submit": "Zaloguj się"
+        },
+        "links": {
+            "forgotPassword": "Zapomniałeś hasła?",
+            "newHere": "Nowy użytkownik?",
+            "createAccount": "Utwórz konto",
+            "backToSite": "← Wróć na stronę"
+        },
+        "errors": {
+            "invalidCredentials": "Nieprawidłowy e-mail lub hasło"
+        }
+    },
+    "signupPage": {
+        "hero": {
+            "badge": "Utwórz konto",
+            "title": "Wdrażaj się w minuty, nie tygodnie.",
+            "subtitle": "Twoje środowisko prawne AI z dopracowaną warstwą SaaS. Zacznij na darmowym planie i zaproś zespół, gdy będziesz gotów.",
+            "benefits": {
+                "benefitOne": "Nielimitowane notatki na każdym planie",
+                "benefitTwo": "Procedury dla konkretnego kraju w zestawie",
+                "benefitThree": "Możesz obniżyć plan z poziomu aplikacji"
+            }
+        },
+        "expect": {
+            "title": "Czego się spodziewać",
+            "subtitle": "Odpowiedz na kilka pytań, wybierz jurysdykcję i trafiasz do panelu z przewodnikiem.",
+            "steps": {
+                "stepOne": {
+                    "title": "Powiedz nam, kim jesteś",
+                    "description": "Imię i nazwa użytkownika personalizują workspace."
+                },
+                "stepTwo": {
+                    "title": "Dodaj jurysdykcję",
+                    "description": "Wybór kraju odblokowuje lokalne procedury i przepisy."
+                },
+                "stepThree": {
+                    "title": "Zabezpiecz dane logowania",
+                    "description": "Silne hasła + opcjonalne 2FA chronią workspace."
+                }
+            }
+        },
+        "form": {
+            "badge": "Twoje dane",
+            "title": "Stwórz workspace",
+            "subtitle": "Wymagamy wszystkich pól, aby dobrać właściwy kontekst prawny.",
+            "firstName": "Imię",
+            "lastName": "Nazwisko",
+            "email": "E-mail",
+            "username": "Nazwa użytkownika",
+            "usernameHelper": "Zaczyna się od @, tylko litery/cyfry/._-",
+            "country": "Kraj",
+            "password": "Hasło",
+            "confirmPassword": "Potwierdź hasło",
+            "passwordHelper": "Min. 8 znaków, w tym cyfra lub znak specjalny"
+        },
+        "cta": {
+            "submit": "Utwórz konto",
+            "loading": "Tworzymy..."
+        },
+        "links": {
+            "existing": "Masz już konto?",
+            "login": "Zaloguj się",
+            "backToSite": "← Wróć na stronę"
+        },
+        "errors": {
+            "missingName": "Imię i nazwisko są wymagane.",
+            "invalidEmailFormat": "Nieprawidłowy format e-mail.",
+            "passwordMismatch": "Hasła nie są takie same.",
+            "passwordWeak": "Hasło musi mieć min. 8 znaków oraz cyfrę lub znak specjalny.",
+            "usernameLength": "Nazwa po @ musi mieć co najmniej 2 znaki.",
+            "usernameChars": "Dozwolone są tylko litery, cyfry, kropki, podkreślenia i myślniki.",
+            "usernameTaken": "Ta nazwa użytkownika jest zajęta. Wybierz inną.",
+            "usernameJustTaken": "Nazwa właśnie została zajęta — spróbuj innej.",
+            "emailInUse": "Ten e-mail jest już zarejestrowany. Zaloguj się.",
+            "passwordTooWeak": "Hasło jest za słabe. Użyj dłuższego lub mocniejszego.",
+            "invalidEmail": "Nieprawidłowy e-mail.",
+            "generic": "Coś poszło nie tak. Spróbuj ponownie."
+        }
+    },
     "about": {
         "hero": {
             "badge": "O nas",
@@ -326,6 +422,209 @@
             "subtitle": "Współtworzymy rozwiązania z prawnikami i organizacjami, by ułatwiać dostęp do prawa.",
             "primary": "Skontaktuj się",
             "secondary": "Sprawdź ceny"
+        }
+    },
+    "aiChat": {
+        "topics": {
+            "civil": "Prawo cywilne",
+            "criminal": "Prawo karne",
+            "business": "Prawo gospodarcze",
+            "labor": "Prawo pracy",
+            "tax": "Prawo podatkowe",
+            "other": "Inne"
+        },
+        "context": {
+            "title": "Kontekst",
+            "description": "AI świadome kraju z presetami tematów i szybkimi podpowiedziami."
+        },
+        "labels": {
+            "topic": "Temat",
+            "country": "Kraj",
+            "topicPlaceholder": "Wybierz temat",
+            "anyCountry": "Dowolny kraj"
+        },
+        "buttons": {
+            "changeTopic": "Zmień temat",
+            "saveToNotes": "Zapisz do notatek",
+            "send": "Wyślij"
+        },
+        "inputs": {
+            "questionPlaceholder": "Wpisz swoje pytanie prawne…"
+        },
+        "dialog": {
+            "title": "Tytuł dla notatki",
+            "generating": "Tworzenie propozycji…",
+            "suggestions": "Podpowiedzi",
+            "customTitle": "Lub wpisz własny",
+            "placeholder": "Wpisz własny tytuł",
+            "cancel": "Anuluj",
+            "save": "Zapisz",
+            "untitled": "Notatka bez tytułu"
+        },
+        "snackbar": {
+            "profileError": "Nie udało się pobrać profilu. Odśwież i spróbuj ponownie.",
+            "sendError": "Nie udało się wysłać wiadomości.",
+            "saveSuccess": "Zapisano w Moich notatkach ✅",
+            "saveError": "Nie udało się zapisać notatki."
+        },
+        "loading": {
+            "preparing": "Przygotowujemy Twoje środowisko…"
+        },
+        "empty": {
+            "countryTitle": "Wybierz jurysdykcję",
+            "countryDescription": "Ładujemy właściwe przepisy i formularze, gdy tylko potwierdzisz kraj.",
+            "topicTitle": "Czego potrzebujesz?",
+            "topicDescription": "Wybierz preset, aby dopasować prompt AI. Zawsze możesz zmienić później."
+        }
+    },
+    "components": {
+        "countryPicker": {
+            "trigger": "Wybierz kraj",
+            "dialogTitle": "Wybierz kraj",
+            "searchPlaceholder": "Szukaj kraju...",
+            "empty": "Nie znaleziono krajów."
+        },
+        "datePicker": {
+            "today": "Dziś",
+            "close": "Zamknij"
+        },
+        "panicButton": {
+            "trigger": "Zatrzymała mnie policja",
+            "dialogTitle": "Procedura zatrzymania",
+            "dialogDescription": "Wybierz kraj, aby otrzymać możliwie najdokładniejsze wskazówki.",
+            "submit": "Pobierz procedury",
+            "cancel": "Anuluj"
+        },
+        "subscriptionButton": {
+            "upgrade": "Ulepsz plan",
+            "manage": "Zarządzaj subskrypcją"
+        },
+        "subscriptionPayment": {
+            "title": "Potwierdź płatność",
+            "planLabel": "Plan",
+            "cancel": "Anuluj",
+            "processing": "Przetwarzanie…",
+            "submit": "Zapłać i kontynuuj",
+            "error": "Płatność nie powiodła się. Spróbuj ponownie."
+        }
+    },
+    "userChats": {
+        "list": {
+            "title": "Twoje czaty",
+            "startNew": "Nowa rozmowa",
+            "empty": "Brak rozmów. Zacznij konwersację!",
+            "dialogTitle": "Rozpocznij nowy czat",
+            "searchPlaceholder": "Szukaj znajomych...",
+            "noFriends": "Nie znaleziono znajomych.",
+            "unknownUser": "Nieznany użytkownik"
+        },
+        "messages": {
+            "title": "Czat",
+            "placeholder": "Napisz wiadomość…",
+            "send": "Wyślij",
+            "empty": "Brak wiadomości…",
+            "decryptError": "Nie udało się odszyfrować"
+        },
+        "confirm": {
+            "deleteChat": "Usunąć rozmowę na stałe?",
+            "clearChat": "Wyczyścić wszystkie wiadomości w tej rozmowie?"
+        }
+    },
+    "casesPage": {
+        "title": "Sprawy",
+        "actions": {
+            "newCase": "Nowa sprawa",
+            "closeCase": "Zamknij sprawę",
+            "reopenCase": "Otwórz ponownie",
+            "deleteCase": "Usuń"
+        },
+        "filters": {
+            "all": "Wszystkie",
+            "open": "Otwarte",
+            "closed": "Zamknięte",
+            "search": "Szukaj…"
+        },
+        "list": {
+            "empty": "Brak spraw."
+        },
+        "status": {
+            "open": "Otwarte",
+            "closed": "Zamknięte"
+        },
+        "details": {
+            "noDescription": "Brak opisu",
+            "properties": {
+                "title": "Właściwości sprawy",
+                "empty": "Brak właściwości.",
+                "edit": "Edytuj właściwość",
+                "delete": "Usuń właściwość",
+                "nameLabel": "Nazwa",
+                "valueLabel": "Wartość",
+                "add": "Dodaj właściwość"
+            },
+            "notes": {
+                "title": "Notatki",
+                "empty": "Brak notatek.",
+                "placeholder": "Dodaj notatkę…",
+                "addAction": "Dodaj",
+                "edit": "Edytuj",
+                "delete": "Usuń",
+                "roles": {
+                    "lawyer": "Prawnik",
+                    "client": "Klient",
+                    "unknown": "Nieznany"
+                }
+            }
+        },
+        "pagination": {
+            "label": "Strona {{page}} / {{total}}",
+            "prevProperties": "Poprzednie właściwości",
+            "nextProperties": "Następne właściwości",
+            "prevNotes": "Poprzednie notatki",
+            "nextNotes": "Następne notatki"
+        },
+        "dialog": {
+            "deleteNote": {
+                "title": "Usunąć notatkę?",
+                "description": "Tej czynności nie można cofnąć. Na pewno chcesz usunąć tę notatkę?"
+            },
+            "deleteProperty": {
+                "title": "Usunąć właściwość?",
+                "description": "Tej czynności nie można cofnąć. Na pewno chcesz usunąć tę właściwość?"
+            }
+        },
+        "common": {
+            "cancel": "Anuluj",
+            "save": "Zapisz",
+            "delete": "Usuń"
+        },
+        "errors": {
+            "loadNotes": "Nie udało się wczytać notatek.",
+            "loadProperties": "Nie udało się wczytać właściwości.",
+            "addNote": "Nie udało się dodać notatki.",
+            "updateNote": "Nie udało się zaktualizować notatki.",
+            "deleteNote": "Nie udało się usunąć notatki.",
+            "addProperty": "Nie udało się dodać właściwości.",
+            "updateProperty": "Nie udało się zaktualizować właściwości.",
+            "deleteProperty": "Nie udało się usunąć właściwości.",
+            "updateStatus": "Nie udało się zaktualizować statusu sprawy.",
+            "deleteCase": "Nie udało się usunąć sprawy."
+        },
+        "success": {
+            "noteAdded": "Dodano notatkę.",
+            "noteUpdated": "Zaktualizowano notatkę.",
+            "noteDeleted": "Usunięto notatkę.",
+            "propertyAdded": "Dodano właściwość.",
+            "propertyUpdated": "Zaktualizowano właściwość.",
+            "propertyDeleted": "Usunięto właściwość.",
+            "caseReopened": "Sprawa została ponownie otwarta.",
+            "caseClosed": "Sprawa została zamknięta.",
+            "caseDeleted": "Sprawa została usunięta."
+        },
+        "aria": {
+            "closeDetails": "Zamknij szczegóły sprawy",
+            "slideBack": "Poprzedni widok",
+            "slideNext": "Następny widok"
         }
     }
 }

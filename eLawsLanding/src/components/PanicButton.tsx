@@ -24,7 +24,8 @@ import {
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import CustomCountryPicker from "./CustomCountryPicker";
-import {sendMessageToGPT} from "../api/chat.ts"; // ✅ reuse your picker
+import { sendMessageToGPT } from "../api/chat.ts"; // ✅ reuse your picker
+import { useTranslation } from "react-i18next";
 
 type ChatRole = "system" | "user" | "assistant";
 type ChatMessage = { role: ChatRole; content: string };
@@ -45,6 +46,7 @@ export default function PanicButtonWeb({
     const [countryCode, setCountryCode] = useState(defaultCode);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleStart = async () => {
         setLoading(true);
@@ -146,17 +148,17 @@ export default function PanicButtonWeb({
                 }}
                 onClick={() => setOpen(true)}
             >
-                STOPPED BY THE POLICE
+                {t("components.panicButton.trigger")}
             </Button>
 
             <Dialog open={open} onClose={() => !loading && setOpen(false)} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <LocalPoliceRoundedIcon color="primary" />
-                    Police Stop Emergency
+                    {t("components.panicButton.dialogTitle")}
                 </DialogTitle>
                 <DialogContent dividers>
                     <Typography variant="body2" sx={{ mb: 2 }}>
-                        Pick your country to get the most accurate procedures.
+                        {t("components.panicButton.dialogDescription")}
                     </Typography>
                     <CustomCountryPicker
                         country={country}
@@ -176,10 +178,10 @@ export default function PanicButtonWeb({
                         startIcon={!loading ? <ShieldIcon /> : undefined}
                         disabled={loading}
                     >
-                        {loading ? <CircularProgress size={22} /> : "Get Procedures"}
+                        {loading ? <CircularProgress size={22} /> : t("components.panicButton.submit")}
                     </Button>
                     <Button onClick={() => setOpen(false)} disabled={loading}>
-                        Cancel
+                        {t("components.panicButton.cancel")}
                     </Button>
                 </DialogActions>
             </Dialog>

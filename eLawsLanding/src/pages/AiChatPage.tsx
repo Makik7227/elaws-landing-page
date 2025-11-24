@@ -30,6 +30,7 @@ import { sendMessageToGPT } from "../api/chat";
 import CustomCountryPickerWeb from "../components/CustomCountryPicker";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface Message {
     id: string;
@@ -42,10 +43,29 @@ interface ChatMessage {
     content: string;
 }
 
-const topics = ["Civil Law", "Criminal Law", "Business Law", "Labor Law", "Tax Law", "Other"];
+const TOPIC_KEYS = ["civil", "criminal", "business", "labor", "tax", "other"] as const;
+type TopicKey = (typeof TOPIC_KEYS)[number];
+
+const LEGACY_TOPIC_LABELS: Record<TopicKey, string> = {
+    civil: "Civil Law",
+    criminal: "Criminal Law",
+    business: "Business Law",
+    labor: "Labor Law",
+    tax: "Tax Law",
+    other: "Other",
+};
+
+const resolveTopicKey = (value?: string | null): TopicKey | null => {
+    if (!value) return null;
+    if (TOPIC_KEYS.includes(value as TopicKey)) {
+        return value as TopicKey;
+    }
+    const entry = Object.entries(LEGACY_TOPIC_LABELS).find(([, label]) => label === value);
+    return entry ? (entry[0] as TopicKey) : null;
+};
 
 interface PersistedChatState {
-    topic: string | null;
+    topic: TopicKey | null;
     messages: Message[];
     country: string;
     countryCode: string;
@@ -56,7 +76,8 @@ const STORAGE_KEY = "elaws_ai_chat_v1";
 const AiChatPage: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
-    const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+    const { t } = useTranslation();
+    const [selectedTopic, setSelectedTopic] = useState<TopicKey | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [country, setCountry] = useState<string>("");
@@ -91,7 +112,7 @@ const AiChatPage: React.FC = () => {
         if (raw) {
             try {
                 const parsed = JSON.parse(raw) as PersistedChatState;
-                if (parsed.topic) setSelectedTopic(parsed.topic);
+                if (parsed.topic) setSelectedTopic(resolveTopicKey(parsed.topic));
                 if (Array.isArray(parsed.messages)) setMessages(parsed.messages);
                 if (parsed.country) setCountry(parsed.country);
                 if (parsed.countryCode) setCountryCode(parsed.countryCode);
@@ -121,13 +142,13 @@ const AiChatPage: React.FC = () => {
                 }
             } catch (error) {
                 console.error("Failed to load profile", error);
-                setSnackbar({ visible: true, text: "Could not load your profile. Refresh and try again." });
+                setSnackbar({ visible: true, text: t("aiChat.snackbar.profileError") });
             } finally {
                 setProfileLoading(false);
             }
         });
         return () => unsub();
-    }, [navigate]);
+    }, [navigate, t]);
 
     useEffect(() => {
         if (!persistHydrated) return;
@@ -159,7 +180,7 @@ const AiChatPage: React.FC = () => {
             const sys: ChatMessage = {
                 role: "system",
                 content: `You are a legal assistant specializing in ${country || "general"} ${
-                    selectedTopic || "law"
+                    selectedTopic ? LEGACY_TOPIC_LABELS[selectedTopic] : "law"
                 }. Answer concisely and clearly.`,
             };
 
@@ -186,7 +207,7 @@ const AiChatPage: React.FC = () => {
             setMessages((prev) => [...prev.filter((m) => m.id !== "typing"), botMsg]);
         } catch (err) {
             console.error(err);
-            setSnackbar({ visible: true, text: "Failed to send message." });
+            setSnackbar({ visible: true, text: t("aiChat.snackbar.sendError") });
         } finally {
             setSendingMessage(false);
         }
@@ -209,7 +230,7 @@ const AiChatPage: React.FC = () => {
             };
 
             const prompt = `Context:
-Topic: ${selectedTopic ?? "General"}
+Topic: ${selectedTopic ? LEGACY_TOPIC_LABELS[selectedTopic] : "General"}
 Country: ${country || "Unknown"}
 
 Message:
@@ -235,7 +256,7 @@ Instructions:
             const defaultTitle =
                 suggestions[0] ||
                 msg.content.replace(/\n+/g, " ").slice(0, 80) ||
-                "Untitled Note";
+                t("aiChat.dialog.untitled");
 
             setNoteDialog({
                 open: true,
@@ -254,7 +275,7 @@ Instructions:
                 title: msg.content.slice(0, 80),
             });
         }
-    }, [country, selectedTopic]);
+    }, [country, selectedTopic, t]);
 
     const saveNote = async () => {
         const user = auth.currentUser;
@@ -265,16 +286,16 @@ Instructions:
             await addDoc(collection(db, "users", user.uid, "notes"), {
                 title: noteDialog.title || msg.content.slice(0, 80),
                 content: msg.content,
-                topic: selectedTopic ?? "Other",
+                topic: selectedTopic ? LEGACY_TOPIC_LABELS[selectedTopic] : LEGACY_TOPIC_LABELS.other,
                 country: country ?? "",
                 createdAt: serverTimestamp(),
                 messageId: msg.id,
                 source: "chat",
             });
-            setSnackbar({ visible: true, text: "Saved to My Notes ✅" });
+            setSnackbar({ visible: true, text: t("aiChat.snackbar.saveSuccess") });
         } catch (err) {
             console.error("Error saving note:", err);
-            setSnackbar({ visible: true, text: "Failed to save note." });
+            setSnackbar({ visible: true, text: t("aiChat.snackbar.saveError") });
         } finally {
             setNoteDialog({
                 open: false,
@@ -308,10 +329,10 @@ Instructions:
                 }}
             >
                 <Typography variant={compact ? "subtitle1" : "h6"} fontWeight={800}>
-                    Context
+                    {t("aiChat.context.title")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Country-aware AI with topic presets and quick prompt suggestions.
+                    {t("aiChat.context.description")}
                 </Typography>
                 <Box display="flex" justifyContent={compact ? "flex-start" : "center"}>
                     <CustomCountryPickerWeb
@@ -327,28 +348,38 @@ Instructions:
                 </Box>
                 <Divider sx={{ my: compact ? 1 : 2 }} />
                 <Typography variant="subtitle2" gutterBottom>
-                    Topic
+                    {t("aiChat.labels.topic")}
                 </Typography>
                 {compact ? (
                     <Stack direction="row" spacing={1.2} flexWrap="wrap">
-                        {topics.map((topic) => {
-                            const active = topic === selectedTopic;
+                        {TOPIC_KEYS.map((topicKey) => {
+                            const active = topicKey === selectedTopic;
                             return (
                                 <Chip
-                                    key={topic}
-                                    label={topic}
+                                    key={topicKey}
+                                    label={t(`aiChat.topics.${topicKey}`)}
                                     size="small"
                                     color={active ? "primary" : "default"}
                                     variant={active ? "filled" : "outlined"}
-                                    onClick={() => setSelectedTopic(topic)}
+                                    onClick={() => setSelectedTopic(topicKey)}
                                 />
                             );
                         })}
                     </Stack>
                 ) : (
                     <Stack direction="row" spacing={1.5} flexWrap="wrap">
-                        <Chip label={selectedTopic ?? "Choose"} color="primary" sx={{ fontWeight: 700 }} />
-                        <Chip label="Change" variant="outlined" onClick={() => setSelectedTopic(null)} />
+                        <Chip
+                            label={
+                                selectedTopic ? t(`aiChat.topics.${selectedTopic}`) : t("aiChat.labels.topicPlaceholder")
+                            }
+                            color="primary"
+                            sx={{ fontWeight: 700 }}
+                        />
+                        <Chip
+                            label={t("aiChat.buttons.changeTopic")}
+                            variant="outlined"
+                            onClick={() => setSelectedTopic(null)}
+                        />
                     </Stack>
                 )}
             </CardContent>
@@ -388,17 +419,17 @@ Instructions:
                 >
                     <Box>
                         <Typography variant="subtitle2" color="text.secondary">
-                            Topic
+                            {t("aiChat.labels.topic")}
                         </Typography>
                         <Typography variant={compact ? "body1" : "h6"} fontWeight={800}>
-                            {selectedTopic}
+                            {selectedTopic ? t(`aiChat.topics.${selectedTopic}`) : t("aiChat.labels.topicPlaceholder")}
                         </Typography>
                     </Box>
                     <Box textAlign={{ xs: "left", sm: "right" }}>
                         <Typography variant="subtitle2" color="text.secondary">
-                            Country
+                            {t("aiChat.labels.country")}
                         </Typography>
-                        <Typography variant="body2">{country || "Any country"}</Typography>
+                        <Typography variant="body2">{country || t("aiChat.labels.anyCountry")}</Typography>
                     </Box>
                 </Stack>
 
@@ -456,7 +487,7 @@ Instructions:
                                                 size="small"
                                                 sx={{ mt: 1 }}
                                             >
-                                                Save to Notes
+                                                {t("aiChat.buttons.saveToNotes")}
                                             </Button>
                                         )}
                                     </Box>
@@ -475,7 +506,7 @@ Instructions:
                     <TextField
                         fullWidth
                         size={compact ? "small" : "medium"}
-                        placeholder="Type your legal question…"
+                        placeholder={t("aiChat.inputs.questionPlaceholder")}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         multiline
@@ -489,7 +520,7 @@ Instructions:
                         sx={{ minWidth: compact ? undefined : { sm: 140 } }}
                         fullWidth={compact}
                     >
-                        Send
+                        {t("aiChat.buttons.send")}
                     </Button>
                 </Stack>
             </CardContent>
@@ -499,17 +530,17 @@ Instructions:
     const overlayElements = (
         <>
             <Dialog open={noteDialog.open} onClose={() => setNoteDialog({ ...noteDialog, open: false })} fullWidth maxWidth="sm">
-                <DialogTitle>Title your note</DialogTitle>
+                <DialogTitle>{t("aiChat.dialog.title")}</DialogTitle>
                 <DialogContent>
                     {noteDialog.loading ? (
                         <Box textAlign="center" py={3}>
                             <CircularProgress size={28} />
-                            <Typography mt={2}>Generating suggestions…</Typography>
+                            <Typography mt={2}>{t("aiChat.dialog.generating")}</Typography>
                         </Box>
                     ) : (
                         <>
                             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                Suggestions
+                                {t("aiChat.dialog.suggestions")}
                             </Typography>
                             <Stack direction="row" spacing={1.5} flexWrap="wrap" sx={{ mb: 2 }}>
                                 {noteDialog.suggestions.map((sug, i) => (
@@ -524,26 +555,26 @@ Instructions:
                             </Stack>
 
                             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                Or write your own
+                                {t("aiChat.dialog.customTitle")}
                             </Typography>
                             <TextField
                                 fullWidth
                                 value={noteDialog.title}
                                 onChange={(e) => setNoteDialog((d) => ({ ...d, title: e.target.value.slice(0, 90) }))}
-                                placeholder="Enter a custom title"
+                                placeholder={t("aiChat.dialog.placeholder")}
                                 inputProps={{ maxLength: 90 }}
                             />
                         </>
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setNoteDialog({ ...noteDialog, open: false })}>Cancel</Button>
+                    <Button onClick={() => setNoteDialog({ ...noteDialog, open: false })}>{t("aiChat.dialog.cancel")}</Button>
                     <Button
                         onClick={saveNote}
                         variant="contained"
                         disabled={noteDialog.loading || !noteDialog.title.trim()}
                     >
-                        Save
+                        {t("aiChat.dialog.save")}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -564,7 +595,7 @@ Instructions:
             <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
                 <CircularProgress />
                 <Typography mt={3} color="text.secondary">
-                    Preparing your workspace…
+                    {t("aiChat.loading.preparing")}
                 </Typography>
             </Container>
         );
@@ -579,10 +610,10 @@ Instructions:
                             <Card sx={{ height: "100%", borderRadius: 4 }}>
                                 <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                                     <Typography variant="h5" fontWeight={900} gutterBottom>
-                                        Choose your jurisdiction
+                                        {t("aiChat.empty.countryTitle")}
                                     </Typography>
                                     <Typography color="text.secondary" sx={{ mb: 3 }}>
-                                        We preload relevant regulations and forms the moment you confirm the country.
+                                        {t("aiChat.empty.countryDescription")}
                                     </Typography>
                                     <Box display="flex" justifyContent="center">
                                         <CustomCountryPickerWeb
@@ -603,21 +634,21 @@ Instructions:
                             <Card sx={{ borderRadius: 4 }}>
                                 <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                                     <Typography variant="h5" fontWeight={900} gutterBottom>
-                                        What do you need help with?
+                                        {t("aiChat.empty.topicTitle")}
                                     </Typography>
                                     <Typography color="text.secondary" sx={{ mb: 3 }}>
-                                        Pick a preset to tailor the AI prompt. You can always switch later.
+                                        {t("aiChat.empty.topicDescription")}
                                     </Typography>
                                     <Grid container spacing={2}>
-                                        {topics.map((t) => (
-                                            <Grid size={{ xs: 12, sm: 6 }} key={t}>
+                                        {TOPIC_KEYS.map((topicKey) => (
+                                            <Grid size={{ xs: 12, sm: 6 }} key={topicKey}>
                                                 <Button
                                                     fullWidth
                                                     variant="outlined"
-                                                    onClick={() => setSelectedTopic(t)}
+                                                    onClick={() => setSelectedTopic(topicKey)}
                                                     sx={{ borderRadius: 3, py: 1.5, fontWeight: 700 }}
                                                 >
-                                                    {t}
+                                                    {t(`aiChat.topics.${topicKey}`)}
                                                 </Button>
                                             </Grid>
                                         ))}

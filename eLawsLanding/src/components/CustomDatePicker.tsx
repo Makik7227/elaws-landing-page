@@ -11,6 +11,7 @@ import {
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { useTranslation } from "react-i18next";
 
 interface CustomDatePickerProps {
     label: string;
@@ -19,23 +20,6 @@ interface CustomDatePickerProps {
     required?: boolean;
     disabled?: boolean;
 }
-
-const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-];
-
-const weekdayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 const toInputValue = (date: Date) => {
     const year = date.getFullYear();
@@ -77,8 +61,22 @@ const buildCalendar = (year: number, month: number) => {
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ label, value, onChange, required, disabled }) => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [viewDate, setViewDate] = useState<Date>(() => parseValue(value));
+    const { i18n, t } = useTranslation();
 
     const weeks = useMemo(() => buildCalendar(viewDate.getFullYear(), viewDate.getMonth()), [viewDate]);
+    const monthFormatter = useMemo(
+        () => new Intl.DateTimeFormat(i18n.language, { month: "long" }),
+        [i18n.language]
+    );
+    const weekdayLabels = useMemo(() => {
+        const formatter = new Intl.DateTimeFormat(i18n.language, { weekday: "short" });
+        const start = new Date(2021, 7, 1); // Sunday reference
+        return Array.from({ length: 7 }, (_, idx) => {
+            const date = new Date(start);
+            date.setDate(start.getDate() + idx);
+            return formatter.format(date);
+        });
+    }, [i18n.language]);
 
     const handleSelect = (date: Date | null) => {
         if (!date) return;
@@ -86,7 +84,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ label, value, onCha
         setAnchorEl(null);
     };
 
-    const displayValue = value ? new Date(value).toLocaleDateString() : "";
+    const displayValue = value ? new Date(value).toLocaleDateString(i18n.language) : "";
 
     const open = Boolean(anchorEl);
 
@@ -125,7 +123,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ label, value, onCha
                             <ChevronLeftIcon />
                         </IconButton>
                         <Typography fontWeight={700}>
-                            {monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}
+                            {monthFormatter.format(viewDate)} {viewDate.getFullYear()}
                         </Typography>
                         <IconButton
                             onClick={() =>
@@ -136,9 +134,9 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ label, value, onCha
                         </IconButton>
                     </Stack>
                     <Box display="grid" gridTemplateColumns="repeat(7, 1fr)" mb={1} gap={0.5}>
-                        {weekdayNames.map((day) => (
+                        {weekdayLabels.map((day, index) => (
                             <Typography
-                                key={day}
+                                key={`${day}-${index}`}
                                 variant="caption"
                                 textAlign="center"
                                 color="text.secondary"
@@ -183,10 +181,10 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ label, value, onCha
                                 handleSelect(today);
                             }}
                         >
-                            Today
+                            {t("components.datePicker.today")}
                         </Button>
                         <Button variant="text" onClick={() => setAnchorEl(null)} sx={{ ml: "auto" }}>
-                            Close
+                            {t("components.datePicker.close")}
                         </Button>
                     </Stack>
                 </Box>
