@@ -530,6 +530,244 @@
             "clearChat": "Wyczyścić wszystkie wiadomości w tej rozmowie?"
         }
     },
+    "createCasePage": {
+        "title": "Utwórz sprawę",
+        "breadcrumbs": "Panel / Sprawy",
+        "auth": {
+            "title": "Wymagane logowanie",
+            "description": "Zaloguj się, aby utworzyć sprawę.",
+            "cta": "Przejdź do logowania"
+        },
+        "actions": {
+            "back": "Powrót do spraw",
+            "cancel": "Anuluj",
+            "submit": "Utwórz sprawę",
+            "submitting": "Tworzenie..."
+        },
+        "form": {
+            "titleLabel": "Tytuł sprawy",
+            "descriptionLabel": "Opis",
+            "descriptionPlaceholder": "Dodaj dodatkowe informacje o tej sprawie...",
+            "clientLabel": "Przypisz do klienta",
+            "clientPlaceholder": "Zacznij wpisywać imię klienta...",
+            "clientHelper": "Dodaj klientów przed utworzeniem sprawy."
+        },
+        "errors": {
+            "profileIncomplete": "Uzupełnij profil, zanim utworzysz sprawę.",
+            "profileLoad": "Nie udało się wczytać profilu.",
+            "clientsLoad": "Nie udało się wczytać klientów.",
+            "lawyerOnly": "Tylko prawnicy mogą tworzyć nowe sprawy.",
+            "titleRequired": "Podaj tytuł sprawy.",
+            "clientRequired": "Przypisz sprawę do klienta.",
+            "createFailed": "Nie udało się utworzyć sprawy."
+        },
+        "clients": {
+            "unnamed": "Klient bez nazwy"
+        }
+    },
+    "documentsLanding": {
+        "hero": {
+            "title": "Dokumenty prawne, uporządkowane",
+            "subtitle": "Generuj umowy z pomocą AI i przechowuj każdy PDF w jednym bezpiecznym miejscu."
+        },
+        "generate": {
+            "title": "Wygeneruj dokument",
+            "description": "Wybierz szablon, uzupełnij pola i otrzymaj gotowy kontrakt w kilka sekund.",
+            "primaryCta": "Zacznij generować",
+            "secondaryCta": "Zobacz zapisane dokumenty"
+        },
+        "library": {
+            "title": "Przeglądaj swoje pliki",
+            "description": "Wszystko, co tworzysz lub przesyłasz, synchronizuje się tutaj. Pobieraj, kopiuj lub usuwaj jednym kliknięciem.",
+            "primaryCta": "Moje dokumenty",
+            "secondaryCta": "Generuj nowy"
+        }
+    },
+    "generateDoc": {
+        "loading": "Przygotowujemy Twoje środowisko…",
+        "hero": {
+            "title": "Wygeneruj dokument",
+            "subtitle": "Wybierz schemat, uzupełnij dane i pozwól AI stworzyć wersję roboczą.",
+            "savedCta": "Zobacz zapisane dokumenty →"
+        },
+        "templates": {
+            "title": "Szablony",
+            "description": "Szablony synchronizują się z aplikacji mobilnej i są buforowane lokalnie dla szybkości.",
+            "loading": "Pobieranie szablonów…",
+            "inputLabel": "Wybierz szablon",
+            "missingIntro": "Brakujące pola wymagane:",
+            "emptyState": "Wybierz szablon po lewej, aby rozpocząć wypełnianie formularza."
+        },
+        "form": {
+            "list": {
+                "add": "Dodaj"
+            },
+            "dropdownPlaceholder": "Wybierz…"
+        },
+        "actions": {
+            "generating": "Generowanie…",
+            "generate": "Wygeneruj dokument"
+        },
+        "preview": {
+            "title": "Podgląd",
+            "cached": "Wynik z pamięci podręcznej",
+            "tokens": "{{count}} tokenów"
+        },
+        "save": {
+            "fileNameLabel": "Nazwa dokumentu",
+            "fileNamePlaceholder": "np. Umowa_Konsultingowa",
+            "saving": "Zapisywanie…",
+            "cta": "Zapisz w Moich dokumentach",
+            "success": "Zapisano w Moich dokumentach."
+        },
+        "errors": {
+            "schemasLoad": "Nie udało się wczytać szablonów.",
+            "selectTemplate": "Wybierz szablon, aby kontynuować.",
+            "missingFieldsInline": "Brakujące pola wymagane: {{fields}}",
+            "generateFailed": "Nie udało się wygenerować dokumentu.",
+            "authRequired": "Musisz być zalogowany.",
+            "noOutput": "Najpierw wygeneruj dokument.",
+            "saveFailed": "Nie udało się zapisać dokumentu."
+        }
+    },
+    "manageAccount": {
+        "loading": "Ładowanie konta…",
+        "hero": {
+            "title": "Zarządzaj kontem",
+            "meta": "{{email}} • {{tier}}"
+        },
+        "profile": {
+            "chip": "Profil",
+            "title": "Dane osobowe",
+            "firstName": "Imię",
+            "lastName": "Nazwisko",
+            "email": "Email",
+            "emailHelper": "Adres e-mail jest powiązany z logowaniem. Skontaktuj się z pomocą, aby go zmienić.",
+            "username": "Nazwa użytkownika",
+            "usernameHelper": "Zaczyna się od @ · tylko litery/cyfry/._-",
+            "country": "Kraj",
+            "roleLabel": "Rola konta",
+            "roleField": "Rola",
+            "roleHelper": "Ulepsz do Premium, aby zmienić rolę.",
+            "save": "Zapisz zmiany",
+            "manageSubscription": "Zarządzaj subskrypcją"
+        },
+        "role": {
+            "client": "Klient",
+            "lawyer": "Prawnik"
+        },
+        "security": {
+            "chip": "Bezpieczeństwo",
+            "title": "Zmień hasło",
+            "current": "Obecne hasło",
+            "new": "Nowe hasło",
+            "newHelper": "Min. 8 znaków oraz liczba lub symbol",
+            "confirm": "Potwierdź nowe hasło",
+            "change": "Zmień hasło",
+            "changing": "Trwa zmiana…",
+            "help": "Potrzebujesz pomocy?"
+        },
+        "shortcuts": {
+            "title": "Skróty",
+            "cases": "Przejdź do spraw",
+            "notes": "Zapisane notatki",
+            "procedures": "Procedury",
+            "footer": "Szukasz kontaktów? Ta funkcja jest dostępna w aplikacji mobilnej."
+        },
+        "errors": {
+            "profileLoad": "Nie udało się wczytać profilu.",
+            "nameRequired": "Imię i nazwisko są wymagane.",
+            "invalidEmail": "Adres e-mail wygląda niepoprawnie.",
+            "usernameInvalid": "Nazwa użytkownika musi mieć co najmniej 2 znaki i używać tylko a-z, 0-9, kropki, podkreślenia lub myślnika.",
+            "profileSave": "Nie udało się zapisać profilu. Spróbuj ponownie.",
+            "passwordFields": "Wypełnij wszystkie pola hasła.",
+            "passwordMismatch": "Nowe hasła nie są takie same.",
+            "passwordWeak": "Hasło musi mieć co najmniej 8 znaków i zawierać liczbę lub symbol.",
+            "passwordSame": "Nowe hasło musi różnić się od obecnego.",
+            "passwordChange": "Nie udało się zmienić hasła. Sprawdź obecne hasło."
+        },
+        "success": {
+            "profileSaved": "Profil zapisany.",
+            "passwordChanged": "Hasło zostało zmienione."
+        }
+    },
+    "dashboard": {
+        "loading": "Ładowanie panelu…",
+        "hero": {
+            "welcome": "Witaj, {{name}}",
+            "anonymous": "tam",
+            "roles": {
+                "lawyer": "Prawnik",
+                "client": "Klient"
+            },
+            "meta": "{{tier}} • {{role}}",
+            "metaWithCountry": "{{tier}} • {{role}} • {{country}}"
+        },
+        "subscription": {
+            "tiers": {
+                "free": "Free",
+                "plus": "Plus",
+                "premium": "Premium"
+            },
+            "downgrade": {
+                "title": "Zaplanowane obniżenie planu",
+                "messageWithDate": "Przejdziesz na plan {{tier}} w dniu {{date}}.",
+                "messageNoDate": "Przejdziesz na plan {{tier}} pod koniec okresu rozliczeniowego.",
+                "help": "Użyj „Zarządzaj subskrypcją”, jeśli chcesz cofnąć lub zmienić plan.",
+                "cta": "Przejrzyj plan"
+            }
+        },
+        "usage": {
+            "tokenLabel": "Miesięczne tokeny"
+        },
+        "panic": {
+            "title": "Zatrzymała Cię policja",
+            "subtitle": "Szybki dostęp do lokalnych wskazówek"
+        },
+        "quickActions": {
+            "chats": "Czaty",
+            "aiChat": "AI czat prawny",
+            "createDoc": "Utwórz dokument",
+            "cases": "Sprawy",
+            "stopProcedures": "Procedury stop",
+            "notes": "Notatki"
+        },
+        "info": {
+            "chats": {
+                "title": "Nieprzeczytane czaty",
+                "loading": "Sprawdzanie czatów…",
+                "unread_zero": "Brak nieprzeczytanych czatów.",
+                "unread_one": "Masz {{count}} nieprzeczytany czat.",
+                "unread_few": "Masz {{count}} nieprzeczytane czaty.",
+                "unread_many": "Masz {{count}} nieprzeczytanych czatów.",
+                "unread_other": "Masz {{count}} nieprzeczytanych czatów."
+            },
+            "lastCase": {
+                "title": "Ostatnia sprawa",
+                "loading": "Ładowanie ostatniej sprawy…",
+                "summary": "{{title}} ({{status}})",
+                "empty": "Brak spraw."
+            }
+        },
+        "cases": {
+            "untitled": "Bez tytułu",
+            "statusUnknown": "Nieznany status"
+        },
+        "common": {
+            "open": "Otwórz"
+        },
+        "menu": {
+            "account": "Konto",
+            "documents": "Dokumenty",
+            "cases": "Moje sprawy"
+        },
+        "upgrade": {
+            "title": "Odblokuj dokumenty, sprawy i więcej",
+            "description": "Ulepsz do Plus lub Premium, aby zyskać pełen zestaw funkcji.",
+            "seePricing": "Zobacz ceny",
+            "cta": "Ulepsz"
+        }
+    },
     "casesPage": {
         "title": "Sprawy",
         "actions": {

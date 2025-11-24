@@ -5,17 +5,20 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const DocumentsLandingPage: React.FC = () => {
+    const { t } = useTranslation();
+
     return (
         <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
             <Stack spacing={4}>
                 <Box textAlign="center">
                     <Typography variant="h3" fontWeight={900}>
-                        Legal documents, organized
+                        {t("documentsLanding.hero.title")}
                     </Typography>
                     <Typography color="text.secondary" sx={{ mt: 1.5 }}>
-                        Generate AI-powered contracts and store every PDF in one secure workspace.
+                        {t("documentsLanding.hero.subtitle")}
                     </Typography>
                 </Box>
                 <Grid container spacing={{ xs: 3, md: 4 }}>
@@ -26,11 +29,11 @@ const DocumentsLandingPage: React.FC = () => {
                                     <Box display="flex" alignItems="center" gap={1.5}>
                                         <AddCircleOutlineIcon color="primary" fontSize="large" />
                                         <Typography variant="h5" fontWeight={800}>
-                                            Generate a document
+                                            {t("documentsLanding.generate.title")}
                                         </Typography>
                                     </Box>
                                     <Typography color="text.secondary">
-                                        Pick a template, fill the fields, and produce a production-ready contract in seconds.
+                                        {t("documentsLanding.generate.description")}
                                     </Typography>
                                     <Stack direction="row" spacing={1} flexWrap="wrap">
                                         <Button
@@ -40,10 +43,10 @@ const DocumentsLandingPage: React.FC = () => {
                                             startIcon={<DescriptionOutlinedIcon />}
                                             sx={{ borderRadius: 3, fontWeight: 700 }}
                                         >
-                                            Start generating
+                                            {t("documentsLanding.generate.primaryCta")}
                                         </Button>
                                         <Button component={RouterLink} to="/documents/my" variant="text">
-                                            View saved documents
+                                            {t("documentsLanding.generate.secondaryCta")}
                                         </Button>
                                     </Stack>
                                 </Stack>
@@ -57,18 +60,18 @@ const DocumentsLandingPage: React.FC = () => {
                                     <Box display="flex" alignItems="center" gap={1.5}>
                                         <FolderOpenIcon color="primary" fontSize="large" />
                                         <Typography variant="h5" fontWeight={800}>
-                                            Browse your files
+                                            {t("documentsLanding.library.title")}
                                         </Typography>
                                     </Box>
                                     <Typography color="text.secondary">
-                                        Everything you create or upload syncs here. Download, copy, or delete with one click.
+                                        {t("documentsLanding.library.description")}
                                     </Typography>
                                     <Stack direction="row" spacing={1} flexWrap="wrap">
                                         <Button component={RouterLink} to="/documents/my" variant="contained" sx={{ borderRadius: 3 }}>
-                                            My documents
+                                            {t("documentsLanding.library.primaryCta")}
                                         </Button>
                                         <Button component={RouterLink} to="/documents/generate" variant="outlined" sx={{ borderRadius: 3 }}>
-                                            Generate new
+                                            {t("documentsLanding.library.secondaryCta")}
                                         </Button>
                                     </Stack>
                                 </Stack>

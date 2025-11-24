@@ -530,6 +530,242 @@
             "clearChat": "Clear all messages in this chat?"
         }
     },
+    "createCasePage": {
+        "title": "Create Case",
+        "breadcrumbs": "Dashboard / Cases",
+        "auth": {
+            "title": "Sign in required",
+            "description": "Please sign in to create a case.",
+            "cta": "Go to Login"
+        },
+        "actions": {
+            "back": "Back to Cases",
+            "cancel": "Cancel",
+            "submit": "Create Case",
+            "submitting": "Creating..."
+        },
+        "form": {
+            "titleLabel": "Case title",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Add additional context for this case...",
+            "clientLabel": "Assign to client",
+            "clientPlaceholder": "Start typing a client's name...",
+            "clientHelper": "You need to add clients before creating a case."
+        },
+        "errors": {
+            "profileIncomplete": "Complete your profile before creating cases.",
+            "profileLoad": "Failed to load your profile.",
+            "clientsLoad": "Failed to load clients.",
+            "lawyerOnly": "Only lawyers can create new cases.",
+            "titleRequired": "Please enter a case title.",
+            "clientRequired": "Please assign the case to a client.",
+            "createFailed": "Failed to create case."
+        },
+        "clients": {
+            "unnamed": "Unnamed client"
+        }
+    },
+    "documentsLanding": {
+        "hero": {
+            "title": "Legal documents, organized",
+            "subtitle": "Generate AI-powered contracts and store every PDF in one secure workspace."
+        },
+        "generate": {
+            "title": "Generate a document",
+            "description": "Pick a template, fill the fields, and produce a production-ready contract in seconds.",
+            "primaryCta": "Start generating",
+            "secondaryCta": "View saved documents"
+        },
+        "library": {
+            "title": "Browse your files",
+            "description": "Everything you create or upload syncs here. Download, copy, or delete with one click.",
+            "primaryCta": "My documents",
+            "secondaryCta": "Generate new"
+        }
+    },
+    "generateDoc": {
+        "loading": "Preparing your workspace…",
+        "hero": {
+            "title": "Generate a document",
+            "subtitle": "Choose a schema, fill in the required data, and let AI craft the draft.",
+            "savedCta": "View saved docs →"
+        },
+        "templates": {
+            "title": "Templates",
+            "description": "Templates sync from your mobile workspace and are cached locally for faster loads.",
+            "loading": "Fetching templates…",
+            "inputLabel": "Choose a template",
+            "missingIntro": "Missing required fields:",
+            "emptyState": "Select a template from the left to start filling the form."
+        },
+        "form": {
+            "list": {
+                "add": "Add"
+            },
+            "dropdownPlaceholder": "Select…"
+        },
+        "actions": {
+            "generating": "Generating…",
+            "generate": "Generate document"
+        },
+        "preview": {
+            "title": "Preview",
+            "cached": "Cached result",
+            "tokens": "{{count}} tokens"
+        },
+        "save": {
+            "fileNameLabel": "Document name",
+            "fileNamePlaceholder": "e.g. Consulting_Agreement",
+            "saving": "Saving…",
+            "cta": "Save to My Documents",
+            "success": "Saved to My Documents."
+        },
+        "errors": {
+            "schemasLoad": "Failed to load templates.",
+            "selectTemplate": "Select a template to continue.",
+            "missingFieldsInline": "Missing required fields: {{fields}}",
+            "generateFailed": "Failed to generate document.",
+            "authRequired": "You must be signed in.",
+            "noOutput": "Generate a document first.",
+            "saveFailed": "Failed to save document."
+        }
+    },
+    "manageAccount": {
+        "loading": "Loading your account…",
+        "hero": {
+            "title": "Manage Account",
+            "meta": "{{email}} • {{tier}}"
+        },
+        "profile": {
+            "chip": "Profile",
+            "title": "Personal info",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Email",
+            "emailHelper": "Email is managed by your login. Contact support to change.",
+            "username": "Username",
+            "usernameHelper": "Starts with @ · letters/numbers/._- only",
+            "country": "Country",
+            "roleLabel": "Account role",
+            "roleField": "Role",
+            "roleHelper": "Upgrade to Premium to change your role.",
+            "save": "Save changes",
+            "manageSubscription": "Manage subscription"
+        },
+        "role": {
+            "client": "Client",
+            "lawyer": "Lawyer"
+        },
+        "security": {
+            "chip": "Security",
+            "title": "Change password",
+            "current": "Current password",
+            "new": "New password",
+            "newHelper": "Min 8 chars and include a number or symbol",
+            "confirm": "Confirm new password",
+            "change": "Change password",
+            "changing": "Changing…",
+            "help": "Need help?"
+        },
+        "shortcuts": {
+            "title": "Shortcuts",
+            "cases": "Go to My Cases",
+            "notes": "Saved Notes",
+            "procedures": "Procedures",
+            "footer": "Looking for connections? That feature is in the mobile app right now."
+        },
+        "errors": {
+            "profileLoad": "Failed to load your profile.",
+            "nameRequired": "First and last name are required.",
+            "invalidEmail": "Your account email looks invalid.",
+            "usernameInvalid": "Username must be at least 2 chars and use only a-z, 0-9, dot, underscore, dash.",
+            "profileSave": "Could not save your profile. Try again.",
+            "passwordFields": "Fill all password fields.",
+            "passwordMismatch": "New passwords do not match.",
+            "passwordWeak": "Password must be at least 8 chars and include a number or symbol.",
+            "passwordSame": "New password must be different from current password.",
+            "passwordChange": "Failed to change password. Check your current password."
+        },
+        "success": {
+            "profileSaved": "Profile saved.",
+            "passwordChanged": "Password changed successfully."
+        }
+    },
+    "dashboard": {
+        "loading": "Loading your dashboard…",
+        "hero": {
+            "welcome": "Welcome, {{name}}",
+            "anonymous": "there",
+            "roles": {
+                "lawyer": "Lawyer",
+                "client": "Client"
+            },
+            "meta": "{{tier}} • {{role}}",
+            "metaWithCountry": "{{tier}} • {{role}} • {{country}}"
+        },
+        "subscription": {
+            "tiers": {
+                "free": "Free",
+                "plus": "Plus",
+                "premium": "Premium"
+            },
+            "downgrade": {
+                "title": "Downgrade scheduled",
+                "messageWithDate": "You’ll move to {{tier}} on {{date}}.",
+                "messageNoDate": "You’ll move to {{tier}} at period end.",
+                "help": "Use “Manage subscription” if you want to undo or change your plan.",
+                "cta": "Review plan"
+            }
+        },
+        "usage": {
+            "tokenLabel": "Monthly Tokens"
+        },
+        "panic": {
+            "title": "Stopped by the Police",
+            "subtitle": "Quick access to local guidance"
+        },
+        "quickActions": {
+            "chats": "Chats",
+            "aiChat": "AI Legal Chat",
+            "createDoc": "Create Doc",
+            "cases": "Cases",
+            "stopProcedures": "Stop Procedures",
+            "notes": "Notes"
+        },
+        "info": {
+            "chats": {
+                "title": "Unread chats",
+                "loading": "Checking chats…",
+                "unread_zero": "No unread chats.",
+                "unread_one": "You have {{count}} unread chat.",
+                "unread_other": "You have {{count}} unread chats."
+            },
+            "lastCase": {
+                "title": "Last case",
+                "loading": "Loading your last case…",
+                "summary": "{{title}} ({{status}})",
+                "empty": "No cases found."
+            }
+        },
+        "cases": {
+            "untitled": "Untitled",
+            "statusUnknown": "Unknown status"
+        },
+        "common": {
+            "open": "Open"
+        },
+        "menu": {
+            "account": "Account",
+            "documents": "Documents",
+            "cases": "My Cases"
+        },
+        "upgrade": {
+            "title": "Unlock documents, cases and more",
+            "description": "Upgrade to Plus or Premium for end-to-end features.",
+            "seePricing": "See Pricing",
+            "cta": "Upgrade"
+        }
+    },
     "casesPage": {
         "title": "Cases",
         "actions": {

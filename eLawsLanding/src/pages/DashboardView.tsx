@@ -42,6 +42,7 @@ import {
 import { auth, db } from "../../firebase";
 import PanicButtonWeb from "../components/PanicButton.tsx";
 import SubscriptionButton from "../components/SubscriptionButton.tsx";
+import { useTranslation } from "react-i18next";
 
 type Tier = "free" | "plus" | "premium";
 type Role = "client" | "lawyer";
@@ -84,6 +85,7 @@ const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 const Dashboard: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     const [uid, setUid] = useState<string | null>(null);
     const [user, setUser] = useState<UserDoc | null>(null);
@@ -231,7 +233,7 @@ const Dashboard: React.FC = () => {
         return (
             <Container maxWidth="md" sx={{ py: 10, textAlign: "center" }}>
                 <Typography variant="h6" color="text.secondary">
-                    Loading your dashboard…
+                    {t("dashboard.loading")}
                 </Typography>
             </Container>
         );
@@ -251,23 +253,62 @@ const Dashboard: React.FC = () => {
         subscriptionCancelDate = null,
     } = user;
 
-    const formatTierLabel = (tier: Tier | "free") => tier.charAt(0).toUpperCase() + tier.slice(1);
+    const formatTierLabel = (tier: Tier | "free") => t(`dashboard.subscription.tiers.${tier}`);
 
     const pendingDowngradeTarget = pendingDowngradeTier ?? (subscriptionCancelAtPeriodEnd ? "free" : null);
     const pendingDowngradeLabel = pendingDowngradeTarget ? formatTierLabel(pendingDowngradeTarget) : null;
     const pendingDowngradeEffectiveDate =
         pendingDowngradeTarget === "free" ? subscriptionCancelDate : pendingDowngradeDate;
+    const locale = i18n.language || undefined;
     const pendingDowngradeDateLabel = pendingDowngradeEffectiveDate
-        ? new Date(pendingDowngradeEffectiveDate).toLocaleDateString(undefined, {
+        ? new Date(pendingDowngradeEffectiveDate).toLocaleDateString(locale, {
               year: "numeric",
               month: "long",
               day: "numeric",
           })
         : null;
+    const downgradeMessage =
+        pendingDowngradeTarget && pendingDowngradeLabel
+            ? pendingDowngradeDateLabel
+                ? t("dashboard.subscription.downgrade.messageWithDate", {
+                      tier: pendingDowngradeLabel,
+                      date: pendingDowngradeDateLabel,
+                  })
+                : t("dashboard.subscription.downgrade.messageNoDate", {
+                      tier: pendingDowngradeLabel,
+                  })
+            : null;
+    const downgradeHelp = t("dashboard.subscription.downgrade.help");
 
+    const heroName = firstName || t("dashboard.hero.anonymous");
+    const heroRoleLabel = t(`dashboard.hero.roles.${role}`);
+    const heroMeta = country
+        ? t("dashboard.hero.metaWithCountry", {
+              tier: subscriptionTier?.toUpperCase(),
+              role: heroRoleLabel,
+              country,
+          })
+        : t("dashboard.hero.meta", {
+              tier: subscriptionTier?.toUpperCase(),
+              role: heroRoleLabel,
+          });
     const initials = ((firstName?.[0] || "") + (lastName?.[0] || "") || "U").toUpperCase();
     const tokenPct = clamp(tokenLimit ? monthlyTokensUsed / tokenLimit : 0);
     const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
+    const unreadText = loading
+        ? t("dashboard.info.chats.loading")
+        : t("dashboard.info.chats.unread", { count: unreadCount });
+    const lastCaseStatusLabel = lastCase?.status
+        ? t(`casesPage.status.${lastCase.status}`)
+        : t("dashboard.cases.statusUnknown");
+    const lastCaseSummary = loading
+        ? t("dashboard.info.lastCase.loading")
+        : lastCase
+            ? t("dashboard.info.lastCase.summary", {
+                  title: lastCase.title ?? t("dashboard.cases.untitled"),
+                  status: lastCaseStatusLabel,
+              })
+            : t("dashboard.info.lastCase.empty");
 
     return (
         <>
@@ -292,11 +333,10 @@ const Dashboard: React.FC = () => {
                             </Avatar>
                             <Box>
                                 <Typography variant="h5" fontWeight={900} lineHeight={1.2}>
-                                    Welcome, {firstName || "there"}
+                                    {t("dashboard.hero.welcome", { name: heroName })}
                                 </Typography>
                                 <Typography sx={{ opacity: 0.9 }}>
-                                    {subscriptionTier?.toUpperCase()} • {role === "lawyer" ? "Lawyer" : "Client"}
-                                    {country ? ` • ${country}` : ""}
+                                    {heroMeta}
                                 </Typography>
                             </Box>
                         </Stack>
@@ -326,14 +366,13 @@ const Dashboard: React.FC = () => {
                         >
                             <Box>
                                 <Typography variant="subtitle2" sx={{ textTransform: "uppercase", fontWeight: 700 }}>
-                                    Downgrade scheduled
+                                    {t("dashboard.subscription.downgrade.title")}
                                 </Typography>
                                 <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                                    You’ll move to {pendingDowngradeLabel}{" "}
-                                    {pendingDowngradeDateLabel ? `on ${pendingDowngradeDateLabel}` : "at period end"}.
+                                    {downgradeMessage}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Use “Manage subscription” if you want to undo or change your plan.
+                                    {downgradeHelp}
                                 </Typography>
                             </Box>
                             <Button
@@ -343,7 +382,7 @@ const Dashboard: React.FC = () => {
                                 color="warning"
                                 sx={{ fontWeight: 700, borderRadius: 2 }}
                             >
-                                Review plan
+                                {t("dashboard.subscription.downgrade.cta")}
                             </Button>
                         </Stack>
                     </Box>
@@ -367,7 +406,7 @@ const Dashboard: React.FC = () => {
                                     ) : (
                                         <Stack spacing={1}>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
+                                                <Chip icon={<GavelRoundedIcon />} label={t("dashboard.usage.tokenLabel")} size="small" />
                                                 <Typography variant="body2" sx={{ opacity: 0.8 }}>
                                                     {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
                                                 </Typography>
@@ -390,10 +429,10 @@ const Dashboard: React.FC = () => {
                                 <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
                                     <Box>
                                         <Typography fontWeight={800} display="flex" alignItems="center" gap={1}>
-                                            <LocalPoliceRoundedIcon /> Stopped by the Police
+                                            <LocalPoliceRoundedIcon /> {t("dashboard.panic.title")}
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary">
-                                            Quick access to local guidance
+                                            {t("dashboard.panic.subtitle")}
                                         </Typography>
                                     </Box>
                                     {loading ? (
@@ -423,14 +462,14 @@ const Dashboard: React.FC = () => {
                                         useFlexGap
                                         alignItems="center"
                                     >
-                                        <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
-                                        <QuickAction to="/ai/chat" icon={<GavelRoundedIcon />} title="AI Legal Chat" />
-                                        <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
+                                        <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title={t("dashboard.quickActions.chats")} />
+                                        <QuickAction to="/ai/chat" icon={<GavelRoundedIcon />} title={t("dashboard.quickActions.aiChat")} />
+                                        <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title={t("dashboard.quickActions.createDoc")} />
                                         {role === "lawyer" && (
-                                            <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
+                                            <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title={t("dashboard.quickActions.cases")} />
                                         )}
-                                        <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title="Stop Procedures" />
-                                        <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon />} title="Notes" />
+                                        <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title={t("dashboard.quickActions.stopProcedures")} />
+                                        <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon />} title={t("dashboard.quickActions.notes")} />
                                     </Stack>
                                 </CardContent>
 
@@ -445,27 +484,17 @@ const Dashboard: React.FC = () => {
                                         <InfoCard
                                             to="/userChats"
                                             icon={<ForumRoundedIcon />}
-                                            title="Unread chats"
-                                            text={
-                                                loading
-                                                    ? "Checking chats…"
-                                                    : unreadCount > 0
-                                                        ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
-                                                        : "No unread chats."
-                                            }
+                                            title={t("dashboard.info.chats.title")}
+                                            text={unreadText}
+                                            actionLabel={t("dashboard.common.open")}
                                         />
                                         <InfoCard
                                             to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
                                             icon={<AssignmentTurnedInRoundedIcon />}
-                                            title="Last case"
-                                            text={
-                                                loading
-                                                    ? "Loading your last case…"
-                                                    : lastCase
-                                                        ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
-                                                        : "No cases found."
-                                            }
+                                            title={t("dashboard.info.lastCase.title")}
+                                            text={lastCaseSummary}
                                             disabled={!lastCase}
+                                            actionLabel={t("dashboard.common.open")}
                                         />
                                     </Stack>
                                 </CardContent>
@@ -481,11 +510,11 @@ const Dashboard: React.FC = () => {
                                 alignItems="stretch"
                                 justifyContent="space-between"
                             >
-                                <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title="Account" />
+                                <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title={t("dashboard.menu.account")} />
                                 {subscriptionTier !== "free" && (
                                     <>
-                                        <MenuTile to="/documents" icon={<DescriptionRoundedIcon />} title="Documents" />
-                                        <MenuTile to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="My Cases" />
+                                        <MenuTile to="/documents" icon={<DescriptionRoundedIcon />} title={t("dashboard.menu.documents")} />
+                                        <MenuTile to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title={t("dashboard.menu.cases")} />
                                     </>
                                 )}
                             </Stack>
@@ -510,18 +539,18 @@ const Dashboard: React.FC = () => {
                                 >
                                     <Box>
                                         <Typography variant="h6" fontWeight={900}>
-                                            Unlock documents, cases and more
+                                            {t("dashboard.upgrade.title")}
                                         </Typography>
                                         <Typography color="text.secondary">
-                                            Upgrade to Plus or Premium for end-to-end features.
+                                            {t("dashboard.upgrade.description")}
                                         </Typography>
                                     </Box>
                                     <Stack direction="row" spacing={1.25} flexWrap="wrap">
                                         <Button component={RouterLink} to="/pricing" variant="outlined" sx={{ borderRadius: 2 }}>
-                                            See Pricing
+                                            {t("dashboard.upgrade.seePricing")}
                                         </Button>
                                         <Button component={RouterLink} to="/subscribe" variant="contained" sx={{ borderRadius: 2, fontWeight: 800 }}>
-                                            Upgrade
+                                            {t("dashboard.upgrade.cta")}
                                         </Button>
                                     </Stack>
                                 </Stack>
@@ -574,12 +603,14 @@ function InfoCard({
                       title,
                       text,
                       disabled,
+                      actionLabel,
                   }: {
     to: string;
     icon: React.ReactNode;
     title: string;
     text: string;
     disabled?: boolean;
+    actionLabel?: string;
 }) {
     return (
         <Card
@@ -616,7 +647,7 @@ function InfoCard({
                         {text}
                     </Typography>
                     <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
-                        Open
+                        {actionLabel ?? "Open"}
                     </Button>
                 </Stack>
             </CardContent>

@@ -24,6 +24,7 @@ import {doc, getDoc, updateDoc} from "firebase/firestore";
 import {auth, db} from "../../firebase.ts";
 import {COUNTRIES, type CountryOption} from "../utils/CountryOption.ts";
 import SubscriptionButton from "../components/SubscriptionButton.tsx";
+import {useTranslation} from "react-i18next";
 
 type Role = "client" | "lawyer";
 
@@ -39,6 +40,7 @@ const strongPassword = (password: string) =>
 const ManageAccount: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const {t} = useTranslation();
 
     const [loading, setLoading] = useState(true);
 
@@ -93,13 +95,13 @@ const ManageAccount: React.FC = () => {
                     setSubscriptionTier((data.subscriptionTier as "free" | "plus" | "premium") ?? "free");
                 }
             } catch {
-                setError("Failed to load your profile.");
+                setError(t("manageAccount.errors.profileLoad"));
             } finally {
                 setLoading(false);
             }
         });
         return () => unsub();
-    }, [navigate]);
+    }, [navigate, t]);
 
     const handleSaveProfile = async () => {
         if (!uid) return;
@@ -107,16 +109,16 @@ const ManageAccount: React.FC = () => {
         setSuccess("");
 
         if (!firstName.trim() || !lastName.trim()) {
-            setError("First and last name are required.");
+            setError(t("manageAccount.errors.nameRequired"));
             return;
         }
         if (!validateEmail(email)) {
-            setError("Your account email looks invalid.");
+            setError(t("manageAccount.errors.invalidEmail"));
             return;
         }
         const raw = username.replace(/^@/, "");
         if (raw.length < 2 || !/^[a-zA-Z0-9._-]+$/.test(raw)) {
-            setError("Username must be at least 2 chars and use only a-z, 0-9, dot, underscore, dash.");
+            setError(t("manageAccount.errors.usernameInvalid"));
             return;
         }
         try {
@@ -128,9 +130,9 @@ const ManageAccount: React.FC = () => {
                 countryCode: country?.code ?? null,
                 role, // editable fully only if premium (UI enforces below)
             });
-            setSnack({open: true, msg: "Profile saved."});
+            setSnack({open: true, msg: t("manageAccount.success.profileSaved")});
         } catch {
-            setError("Could not save your profile. Try again.");
+            setError(t("manageAccount.errors.profileSave"));
         }
     };
 
@@ -140,19 +142,19 @@ const ManageAccount: React.FC = () => {
         setSuccess("");
 
         if (!currentPassword || !newPassword || !confirmPassword) {
-            setError("Fill all password fields.");
+            setError(t("manageAccount.errors.passwordFields"));
             return;
         }
         if (newPassword !== confirmPassword) {
-            setError("New passwords do not match.");
+            setError(t("manageAccount.errors.passwordMismatch"));
             return;
         }
         if (!strongPassword(newPassword)) {
-            setError("Password must be at least 8 chars and include a number or symbol.");
+            setError(t("manageAccount.errors.passwordWeak"));
             return;
         }
         if (newPassword === currentPassword) {
-            setError("New password must be different from current password.");
+            setError(t("manageAccount.errors.passwordSame"));
             return;
         }
 
@@ -164,9 +166,9 @@ const ManageAccount: React.FC = () => {
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
-            setSuccess("Password changed successfully.");
+            setSuccess(t("manageAccount.success.passwordChanged"));
         } catch {
-            setError("Failed to change password. Check your current password.");
+            setError(t("manageAccount.errors.passwordChange"));
         } finally {
             setChangingPass(false);
         }
@@ -176,7 +178,7 @@ const ManageAccount: React.FC = () => {
         return (
             <Container maxWidth="sm" sx={{py: 10, textAlign: "center"}}>
                 <Typography variant="h6" color="text.secondary">
-                    Loading your account…
+                    {t("manageAccount.loading")}
                 </Typography>
             </Container>
         );
@@ -199,10 +201,10 @@ const ManageAccount: React.FC = () => {
                         </Avatar>
                         <Box>
                             <Typography variant="h4" fontWeight={900} lineHeight={1.2}>
-                                Manage Account
+                                {t("manageAccount.hero.title")}
                             </Typography>
                             <Typography sx={{opacity: 0.9}}>
-                                {email} • {subscriptionTier.toUpperCase()}
+                                {t("manageAccount.hero.meta", {email, tier: subscriptionTier.toUpperCase()})}
                             </Typography>
                         </Box>
                         <Box sx={{flex: 1}}/>
@@ -218,9 +220,9 @@ const ManageAccount: React.FC = () => {
                         <CardContent sx={{p: {xs: 3, md: 4}}}>
                             <Stack spacing={2.25}>
                                 <Stack direction="row" spacing={1.5} alignItems="center">
-                                    <Chip label="Profile" color="primary" variant="outlined"/>
+                                    <Chip label={t("manageAccount.profile.chip")} color="primary" variant="outlined"/>
                                     <Typography variant="h6" fontWeight={900}>
-                                        Personal info
+                                        {t("manageAccount.profile.title")}
                                     </Typography>
                                 </Stack>
 
@@ -229,13 +231,13 @@ const ManageAccount: React.FC = () => {
 
                                 <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
                                     <TextField
-                                        label="First name"
+                                        label={t("manageAccount.profile.firstName")}
                                         value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)}
                                         fullWidth
                                     />
                                     <TextField
-                                        label="Last name"
+                                        label={t("manageAccount.profile.lastName")}
                                         value={lastName}
                                         onChange={(e) => setLastName(e.target.value)}
                                         fullWidth
@@ -243,19 +245,19 @@ const ManageAccount: React.FC = () => {
                                 </Stack>
 
                                 <TextField
-                                    label="Email"
+                                    label={t("manageAccount.profile.email")}
                                     value={email}
                                     fullWidth
                                     disabled
-                                    helperText="Email is managed by your login. Contact support to change."
+                                    helperText={t("manageAccount.profile.emailHelper")}
                                 />
 
                                 <TextField
-                                    label="Username"
+                                    label={t("manageAccount.profile.username")}
                                     value={username}
                                     onChange={(e) => setUsername(sanitizeUsername(e.target.value))}
                                     fullWidth
-                                    helperText="Starts with @ · letters/numbers/._- only"
+                                    helperText={t("manageAccount.profile.usernameHelper")}
                                     slotProps={{input: {sx: {maxLength: 24}}}}
                                 />
 
@@ -264,20 +266,20 @@ const ManageAccount: React.FC = () => {
                                     value={country}
                                     onChange={(_, v) => setCountry(v)}
                                     getOptionLabel={(o) => o.label}
-                                    renderInput={(params) => <TextField {...params} label="Country" fullWidth/>}
+                                    renderInput={(params) => <TextField {...params} label={t("manageAccount.profile.country")} fullWidth/>}
                                 />
 
                                 <Box>
                                     <Typography variant="subtitle2" color="text.secondary" sx={{mb: 0.5}}>
-                                        Account Role
+                                        {t("manageAccount.profile.roleLabel")}
                                     </Typography>
                                     {subscriptionTier !== "premium" ? (
                                         <TextField
-                                            value={role === "lawyer" ? "Lawyer" : "Client"}
-                                            label="Role"
+                                            value={role === "lawyer" ? t("manageAccount.role.lawyer") : t("manageAccount.role.client")}
+                                            label={t("manageAccount.profile.roleField")}
                                             fullWidth
                                             disabled
-                                            helperText="Upgrade to Premium to change your role."
+                                            helperText={t("manageAccount.profile.roleHelper")}
                                         />
                                     ) : (
                                         <ToggleButtonGroup
@@ -287,10 +289,10 @@ const ManageAccount: React.FC = () => {
                                             sx={{gap: 1, flexWrap: "wrap"}}
                                         >
                                             <ToggleButton value="client" sx={{borderRadius: 2}}>
-                                                Client
+                                                {t("manageAccount.role.client")}
                                             </ToggleButton>
                                             <ToggleButton value="lawyer" sx={{borderRadius: 2}}>
-                                                Lawyer
+                                                {t("manageAccount.role.lawyer")}
                                             </ToggleButton>
                                         </ToggleButtonGroup>
                                     )}
@@ -302,7 +304,7 @@ const ManageAccount: React.FC = () => {
                                         onClick={handleSaveProfile}
                                         sx={{borderRadius: 3, fontWeight: 800}}
                                     >
-                                        Save changes
+                                        {t("manageAccount.profile.save")}
                                     </Button>
                                     <Button
                                         component={RouterLink}
@@ -310,7 +312,7 @@ const ManageAccount: React.FC = () => {
                                         variant="outlined"
                                         sx={{borderRadius: 3}}
                                     >
-                                        Manage subscription
+                                        {t("manageAccount.profile.manageSubscription")}
                                     </Button>
                                 </Stack>
                             </Stack>
@@ -322,30 +324,30 @@ const ManageAccount: React.FC = () => {
                         <CardContent sx={{p: {xs: 3, md: 4}}}>
                             <Stack spacing={2.25}>
                                 <Stack direction="row" spacing={1.5} alignItems="center">
-                                    <Chip label="Security" color="primary" variant="outlined"/>
+                                    <Chip label={t("manageAccount.security.chip")} color="primary" variant="outlined"/>
                                     <Typography variant="h6" fontWeight={900}>
-                                        Change password
+                                        {t("manageAccount.security.title")}
                                     </Typography>
                                 </Stack>
 
                                 <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
                                     <TextField
-                                        label="Current password"
+                                        label={t("manageAccount.security.current")}
                                         type="password"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
                                         fullWidth
                                     />
                                     <TextField
-                                        label="New password"
+                                        label={t("manageAccount.security.new")}
                                         type="password"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
                                         fullWidth
-                                        helperText="Min 8 chars and include a number or symbol"
+                                        helperText={t("manageAccount.security.newHelper")}
                                     />
                                     <TextField
-                                        label="Confirm new password"
+                                        label={t("manageAccount.security.confirm")}
                                         type="password"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -360,7 +362,7 @@ const ManageAccount: React.FC = () => {
                                         disabled={changingPass}
                                         sx={{borderRadius: 3, fontWeight: 800}}
                                     >
-                                        {changingPass ? "Changing…" : "Change password"}
+                                        {changingPass ? t("manageAccount.security.changing") : t("manageAccount.security.change")}
                                     </Button>
                                     <Button
                                         component={RouterLink}
@@ -368,7 +370,7 @@ const ManageAccount: React.FC = () => {
                                         variant="text"
                                         sx={{borderRadius: 3}}
                                     >
-                                        Need help?
+                                        {t("manageAccount.security.help")}
                                     </Button>
                                 </Stack>
                             </Stack>
@@ -379,23 +381,23 @@ const ManageAccount: React.FC = () => {
                     <Card elevation={2} sx={{borderRadius: 3}}>
                         <CardContent sx={{p: {xs: 3, md: 4}}}>
                             <Typography variant="subtitle1" fontWeight={800} gutterBottom>
-                                Shortcuts
+                                {t("manageAccount.shortcuts.title")}
                             </Typography>
                             <Stack direction={{xs: "column", sm: "row"}} spacing={1.5} useFlexGap flexWrap="wrap">
                                 <Button component={RouterLink} to="/dashboard/cases" variant="outlined" sx={{borderRadius: 3}}>
-                                    Go to My Cases
+                                    {t("manageAccount.shortcuts.cases")}
                                 </Button>
                                 <Button component={RouterLink} to="/notes" variant="outlined" sx={{borderRadius: 3}}>
-                                    Saved Notes
+                                    {t("manageAccount.shortcuts.notes")}
                                 </Button>
                                 <Button component={RouterLink} to="/procedures/saved-procedures" variant="outlined"
                                         sx={{borderRadius: 3}}>
-                                    Procedures
+                                    {t("manageAccount.shortcuts.procedures")}
                                 </Button>
                             </Stack>
                             <Divider sx={{my: 2}}/>
                             <Typography variant="body2" color="text.secondary">
-                                Looking for connections? That feature is in the mobile app right now.
+                                {t("manageAccount.shortcuts.footer")}
                             </Typography>
                         </CardContent>
                     </Card>

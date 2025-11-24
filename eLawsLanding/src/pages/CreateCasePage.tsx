@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     Alert,
     Box,
@@ -25,6 +25,7 @@ import {
     where,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
+import { useTranslation } from "react-i18next";
 
 type ClientProfile = {
     uid: string;
@@ -34,6 +35,7 @@ type ClientProfile = {
 
 const CreateCasePage = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -45,43 +47,7 @@ const CreateCasePage = () => {
     const [error, setError] = useState<string | null>(null);
     const [isLawyer, setIsLawyer] = useState(false);
 
-    useEffect(() => {
-        const unsub = onAuthStateChanged(auth, async (user) => {
-            setCurrentUser(user);
-            if (!user) {
-                setIsLawyer(false);
-                setLoading(false);
-                setClients([]);
-                setSelectedClient(null);
-                return;
-            }
-
-            try {
-                setLoading(true);
-                const profileSnap = await getDoc(doc(db, "users", user.uid));
-                if (!profileSnap.exists()) {
-                    throw new Error("Complete your profile before creating cases.");
-                }
-                const role = profileSnap.data().role;
-                const isUserLawyer = role === "lawyer";
-                setIsLawyer(isUserLawyer);
-                if (!isUserLawyer) {
-                    setClients([]);
-                    setSelectedClient(null);
-                    return;
-                }
-                await loadClients(user.uid);
-            } catch (err) {
-                console.error(err);
-                setError(err instanceof Error ? err.message : "Failed to load your profile.");
-            } finally {
-                setLoading(false);
-            }
-        });
-        return () => unsub();
-    }, []);
-
-    const loadClients = async (uid: string) => {
+    const loadClients = useCallback(async (uid: string) => {
         setClientsLoading(true);
         setError(null);
         try {
@@ -102,7 +68,11 @@ const CreateCasePage = () => {
                     const displayName = [userData.firstName, userData.lastName].filter(Boolean).join(" ").trim();
                     return {
                         uid: clientId,
-                        displayName: displayName || userData.username || userData.email || "Unnamed client",
+                        displayName:
+                            displayName ||
+                            userData.username ||
+                            userData.email ||
+                            t("createCasePage.clients.unnamed"),
                         email: userData.email || "",
                     };
                 })
@@ -110,25 +80,61 @@ const CreateCasePage = () => {
             setClients(resolvedClients.filter(Boolean) as ClientProfile[]);
         } catch (err) {
             console.error(err);
-            setError(err instanceof Error ? err.message : "Failed to load clients.");
+            setError(err instanceof Error ? err.message : t("createCasePage.errors.clientsLoad"));
         } finally {
             setClientsLoading(false);
         }
-    };
+    }, [t]);
+
+    useEffect(() => {
+        const unsub = onAuthStateChanged(auth, async (user) => {
+            setCurrentUser(user);
+            if (!user) {
+                setIsLawyer(false);
+                setLoading(false);
+                setClients([]);
+                setSelectedClient(null);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                const profileSnap = await getDoc(doc(db, "users", user.uid));
+                if (!profileSnap.exists()) {
+                    throw new Error(t("createCasePage.errors.profileIncomplete"));
+                }
+                const role = profileSnap.data().role;
+                const isUserLawyer = role === "lawyer";
+                setIsLawyer(isUserLawyer);
+                if (!isUserLawyer) {
+                    setClients([]);
+                    setSelectedClient(null);
+                    return;
+                }
+                await loadClients(user.uid);
+            } catch (err) {
+                console.error(err);
+                setError(err instanceof Error ? err.message : t("createCasePage.errors.profileLoad"));
+            } finally {
+                setLoading(false);
+            }
+        });
+        return () => unsub();
+    }, [loadClients, t]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError(null);
         if (!currentUser || !isLawyer) {
-            setError("You must be logged in as a lawyer to create cases.");
+            setError(t("createCasePage.errors.lawyerOnly"));
             return;
         }
         if (!title.trim()) {
-            setError("Please enter a case title.");
+            setError(t("createCasePage.errors.titleRequired"));
             return;
         }
         if (!selectedClient) {
-            setError("Please assign the case to a client.");
+            setError(t("createCasePage.errors.clientRequired"));
             return;
         }
 
@@ -146,7 +152,7 @@ const CreateCasePage = () => {
             navigate("/dashboard/cases");
         } catch (err) {
             console.error(err);
-            setError(err instanceof Error ? err.message : "Failed to create case.");
+            setError(err instanceof Error ? err.message : t("createCasePage.errors.createFailed"));
         } finally {
             setSubmitting(false);
         }
@@ -165,13 +171,13 @@ const CreateCasePage = () => {
             <Container maxWidth="sm" sx={{ py: 6 }}>
                 <Stack spacing={2} alignItems="center">
                     <Typography variant="h5" fontWeight={800}>
-                        Sign in required
+                        {t("createCasePage.auth.title")}
                     </Typography>
                     <Typography color="text.secondary" textAlign="center">
-                        Please sign in to create a case.
+                        {t("createCasePage.auth.description")}
                     </Typography>
                     <Button variant="contained" onClick={() => navigate("/login")}>
-                        Go to Login
+                        {t("createCasePage.auth.cta")}
                     </Button>
                 </Stack>
             </Container>
@@ -184,14 +190,14 @@ const CreateCasePage = () => {
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }}>
                     <Box>
                         <Typography variant="overline" color="text.secondary">
-                            Dashboard / Cases
+                            {t("createCasePage.breadcrumbs")}
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
-                            Create Case
+                            {t("createCasePage.title")}
                         </Typography>
                     </Box>
                     <Button variant="text" onClick={() => navigate("/dashboard/cases")}>
-                        Back to Cases
+                        {t("createCasePage.actions.back")}
                     </Button>
                 </Stack>
 
@@ -200,11 +206,11 @@ const CreateCasePage = () => {
                         <Stack component="form" spacing={3} onSubmit={handleSubmit}>
                             {!isLawyer && (
                                 <Alert severity="warning">
-                                    Only lawyers can create new cases.
+                                    {t("createCasePage.errors.lawyerOnly")}
                                 </Alert>
                             )}
                             <TextField
-                                label="Case title"
+                                label={t("createCasePage.form.titleLabel")}
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 required
@@ -212,13 +218,13 @@ const CreateCasePage = () => {
                                 disabled={!isLawyer}
                             />
                             <TextField
-                                label="Description"
+                                label={t("createCasePage.form.descriptionLabel")}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 fullWidth
                                 multiline
                                 minRows={4}
-                                placeholder="Add additional context for this case..."
+                                placeholder={t("createCasePage.form.descriptionPlaceholder")}
                                 disabled={!isLawyer}
                             />
                             <Autocomplete<ClientProfile, false, false, false>
@@ -232,9 +238,13 @@ const CreateCasePage = () => {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        label="Assign to client"
-                                        placeholder="Start typing a client's name..."
-                                        helperText={!clients.length && !clientsLoading ? "You need to add clients before creating a case." : undefined}
+                                        label={t("createCasePage.form.clientLabel")}
+                                        placeholder={t("createCasePage.form.clientPlaceholder")}
+                                        helperText={
+                                            !clients.length && !clientsLoading
+                                                ? t("createCasePage.form.clientHelper")
+                                                : undefined
+                                        }
                                     />
                                 )}
                             />
@@ -250,14 +260,16 @@ const CreateCasePage = () => {
                                     onClick={() => navigate("/dashboard/cases")}
                                     disabled={submitting}
                                 >
-                                    Cancel
+                                    {t("createCasePage.actions.cancel")}
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
                                     disabled={submitting || clientsLoading || !isLawyer}
                                 >
-                                    {submitting ? "Creating..." : "Create Case"}
+                                    {submitting
+                                        ? t("createCasePage.actions.submitting")
+                                        : t("createCasePage.actions.submit")}
                                 </Button>
                             </Stack>
                         </Stack>
