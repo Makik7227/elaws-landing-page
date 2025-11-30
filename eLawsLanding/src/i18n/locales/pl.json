@@ -754,7 +754,8 @@
             "placeholder": "Szukaj notatek..."
         },
         "actions": {
-            "createFromChat": "Utwórz z czatu"
+            "createFromChat": "Utwórz z czatu",
+            "createManual": "Dodaj notatkę ręcznie"
         },
         "loading": "Ładowanie notatek...",
         "empty": "Brak notatek.",
@@ -762,13 +763,34 @@
             "untitled": "Notatka bez tytułu",
             "initialFallback": "N",
             "topic": "Temat: {{topic}}",
-            "country": "Jurysdykcja: {{country}}"
+            "country": "Jurysdykcja: {{country}}",
+            "linkedCase": "Powiązana ze sprawą: {{case}}",
+            "unknownCase": "Sprawa bez tytułu",
+            "viewCase": "Otwórz sprawę"
         },
         "dialog": {
             "title": "Usunąć notatkę",
             "description": "Czy na pewno chcesz usunąć tę notatkę? Tej operacji nie można cofnąć.",
             "cancel": "Anuluj",
             "confirm": "Usuń"
+        },
+        "manualDialog": {
+            "title": "Dodaj notatkę ręcznie",
+            "description": "Zapisz notatkę własnoręcznie i opcjonalnie powiąż ją ze sprawą.",
+            "titleLabel": "Tytuł",
+            "contentLabel": "Treść",
+            "caseLabel": "Powiąż ze sprawą",
+            "caseHelper": "Wybierz sprawę, aby przypisać do niej tę notatkę.",
+            "caseEmpty": "Nie masz jeszcze żadnych aktywnych spraw.",
+            "caseNone": "Nie łącz tej notatki",
+            "cancel": "Anuluj",
+            "save": "Zapisz notatkę",
+            "saving": "Zapisywanie...",
+            "success": "Notatka zapisana.",
+            "errors": {
+                "content": "Treść jest wymagana.",
+                "save": "Nie udało się zapisać notatki. Spróbuj ponownie."
+            }
         }
     },
     "proceduresPage": {

@@ -754,7 +754,8 @@
             "placeholder": "Search notes..."
         },
         "actions": {
-            "createFromChat": "Create from chat"
+            "createFromChat": "Create from chat",
+            "createManual": "Add manual note"
         },
         "loading": "Loading notes...",
         "empty": "No notes found.",
@@ -762,13 +763,34 @@
             "untitled": "Untitled Note",
             "initialFallback": "N",
             "topic": "Topic: {{topic}}",
-            "country": "Jurisdiction: {{country}}"
+            "country": "Jurisdiction: {{country}}",
+            "linkedCase": "Linked to case: {{case}}",
+            "unknownCase": "Untitled case",
+            "viewCase": "Open case"
         },
         "dialog": {
             "title": "Delete Note",
             "description": "Are you sure you want to delete this note? This action cannot be undone.",
             "cancel": "Cancel",
             "confirm": "Delete"
+        },
+        "manualDialog": {
+            "title": "Add manual note",
+            "description": "Write a note manually and optionally link it to one of your cases.",
+            "titleLabel": "Title",
+            "contentLabel": "Content",
+            "caseLabel": "Link to case",
+            "caseHelper": "Select a case to keep this note attached to it.",
+            "caseEmpty": "You don't have any active cases yet.",
+            "caseNone": "Don't link this note",
+            "cancel": "Cancel",
+            "save": "Save note",
+            "saving": "Saving...",
+            "success": "Note saved.",
+            "errors": {
+                "content": "Content is required.",
+                "save": "Failed to save note. Please try again."
+            }
         }
     },
     "proceduresPage": {
