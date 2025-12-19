@@ -753,6 +753,19 @@
         "search": {
             "placeholder": "Szukaj notatek..."
         },
+        "filters": {
+            "menu": "Filtry",
+            "created": "Utworzone",
+            "time": {
+                "any": "Cały czas",
+                "7d": "Ostatnie 7 dni",
+                "30d": "Ostatnie 30 dni"
+            },
+            "case": "Powiązana sprawa",
+            "caseAll": "Wszystkie sprawy",
+            "noCases": "Brak dostępnych spraw.",
+            "clear": "Wyczyść filtry"
+        },
         "actions": {
             "createFromChat": "Utwórz z czatu",
             "createManual": "Dodaj notatkę ręcznie"
@@ -1127,6 +1140,17 @@
             "closed": "Zamknięte",
             "search": "Szukaj…"
         },
+        "filtersMenu": {
+            "button": "Filtry",
+            "status": "Status",
+            "updated": "Zaktualizowane w",
+            "time": {
+                "any": "Cały czas",
+                "7d": "Ostatnie 7 dni",
+                "30d": "Ostatnie 30 dni"
+            },
+            "clear": "Wyczyść filtry"
+        },
         "list": {
             "empty": "Brak spraw."
         },
@@ -1182,6 +1206,7 @@
             "delete": "Usuń"
         },
         "errors": {
+            "loadCases": "Nie udało się wczytać spraw.",
             "loadNotes": "Nie udało się wczytać notatek.",
             "loadProperties": "Nie udało się wczytać właściwości.",
             "addNote": "Nie udało się dodać notatki.",

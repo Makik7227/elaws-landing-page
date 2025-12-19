@@ -753,6 +753,19 @@
         "search": {
             "placeholder": "Search notes..."
         },
+        "filters": {
+            "menu": "Filters",
+            "created": "Created",
+            "time": {
+                "any": "Any time",
+                "7d": "Last 7 days",
+                "30d": "Last 30 days"
+            },
+            "case": "Linked case",
+            "caseAll": "All cases",
+            "noCases": "No cases available yet.",
+            "clear": "Clear filters"
+        },
         "actions": {
             "createFromChat": "Create from chat",
             "createManual": "Add manual note"
@@ -1125,6 +1138,17 @@
             "closed": "Closed",
             "search": "Search…"
         },
+        "filtersMenu": {
+            "button": "Filters",
+            "status": "Status",
+            "updated": "Updated within",
+            "time": {
+                "any": "Any time",
+                "7d": "Last 7 days",
+                "30d": "Last 30 days"
+            },
+            "clear": "Clear filters"
+        },
         "list": {
             "empty": "No cases found."
         },
@@ -1180,6 +1204,7 @@
             "delete": "Delete"
         },
         "errors": {
+            "loadCases": "Failed to load cases.",
             "loadNotes": "Failed to load notes.",
             "loadProperties": "Failed to load properties.",
             "addNote": "Failed to add note.",

@@ -7,6 +7,11 @@ import {
     Card,
     CardContent,
     Chip,
+    ListItemIcon,
+    ListItemText,
+    ListSubheader,
+    Menu,
+    MenuItem,
     CircularProgress,
     Container,
     Dialog,
@@ -33,6 +38,8 @@ import {
     Clear as ClearIcon,
     KeyboardArrowLeft,
     KeyboardArrowRight,
+    TuneRounded as TuneRoundedIcon,
+    CheckRounded as CheckRoundedIcon,
 } from "@mui/icons-material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { auth, db } from "../../firebase";
@@ -91,13 +98,28 @@ type CasePropertyDoc = {
     createdBy?: string;
 };
 
+type CaseFilters = {
+    status: "all" | "open" | "closed";
+    timeframe: "any" | "7d" | "30d";
+};
+
+const getTimestampForRange = (range: CaseFilters["timeframe"]) => {
+    if (range === "any") return null;
+    const days = range === "7d" ? 7 : 30;
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    return Timestamp.fromDate(cutoff);
+};
+
 const CasesPage: React.FC = () => {
     const [cases, setCases] = useState<CaseDoc[]>([]);
     const { id } = useParams<{ id: string }>();
     const [loading, setLoading] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
-    const [filter, setFilter] = useState<"all" | "open" | "closed">("all");
+    const [caseFilters, setCaseFilters] = useState<CaseFilters>({ status: "all", timeframe: "any" });
+    const [caseFilterAnchorEl, setCaseFilterAnchorEl] = useState<null | HTMLElement>(null);
+    const caseFilterMenuOpen = Boolean(caseFilterAnchorEl);
     const [search, setSearch] = useState("");
     const [selectedCase, setSelectedCase] = useState<CaseDoc | null>(null);
     const [notes, setNotes] = useState<NoteDoc[]>([]);
@@ -164,8 +186,13 @@ const CasesPage: React.FC = () => {
     }, [location.search, cases, navigate, id]);
 
     useEffect(() => {
+        let unsubRole: (() => void) | null = null;
         const unsubAuth = onAuthStateChanged(auth, (u) => {
             setUser(u ?? null);
+            if (unsubRole) {
+                unsubRole();
+                unsubRole = null;
+            }
             if (!u) {
                 setCases([]);
                 setUserRole(null);
@@ -173,7 +200,7 @@ const CasesPage: React.FC = () => {
                 return;
             }
 
-            const unsubRole = onSnapshot(doc(db, "users", u.uid), (snap) => {
+            unsubRole = onSnapshot(doc(db, "users", u.uid), (snap) => {
                 if (snap.exists()) {
                     const role = snap.data().role as "lawyer" | "client" | undefined;
                     if (role === "lawyer" || role === "client") setUserRole(role);
@@ -182,33 +209,45 @@ const CasesPage: React.FC = () => {
                     setUserRole(null);
                 }
             });
-
-            const clientQ = query(collection(db, "cases"), where("clientId", "==", u.uid));
-            const lawyerQ = query(collection(db, "cases"), where("lawyerId", "==", u.uid));
-
-            const casesMap = new Map<string, CaseDoc>();
-
-            const pushSnapshot = (ss: QuerySnapshot) => {
-                ss.forEach((d: QueryDocumentSnapshot) => {
-                    const data = d.data() as Partial<CaseDoc>;
-                    casesMap.set(d.id, { id: d.id, ...data });
-                });
-                setCases(Array.from(casesMap.values()));
-                setLoading(false);
-            };
-
-            const unsubClient = onSnapshot(clientQ, (ss) => pushSnapshot(ss));
-            const unsubLawyer = onSnapshot(lawyerQ, (ss) => pushSnapshot(ss));
-
-            return () => {
-                unsubRole();
-                unsubClient();
-                unsubLawyer();
-            };
         });
 
-        return () => unsubAuth();
+        return () => {
+            unsubAuth();
+            if (unsubRole) unsubRole();
+        };
     }, []);
+
+    useEffect(() => {
+        if (!user) return;
+        setLoading(true);
+        const roleField = userRole === "lawyer" ? "lawyerId" : "clientId";
+        const constraints = [
+            where(roleField, "==", user.uid),
+        ];
+        if (caseFilters.status !== "all") {
+            constraints.push(where("status", "==", caseFilters.status));
+        }
+        const cutoff = getTimestampForRange(caseFilters.timeframe);
+        if (cutoff) {
+            constraints.push(where("updatedAt", ">=", cutoff));
+        }
+        constraints.push(orderBy("updatedAt", "desc"));
+
+        const casesQuery = query(collection(db, "cases"), ...constraints);
+        const unsub = onSnapshot(
+            casesQuery,
+            (ss) => {
+                setCases(ss.docs.map((d) => ({ id: d.id, ...(d.data() as Partial<CaseDoc>) })));
+                setLoading(false);
+            },
+            (err) => {
+                console.error(err);
+                setErrorMsg(t("casesPage.errors.loadCases"));
+                setLoading(false);
+            }
+        );
+        return () => unsub();
+    }, [user, userRole, caseFilters, t]);
 
     useEffect(() => {
         if (!selectedCase) {
@@ -237,6 +276,12 @@ const CasesPage: React.FC = () => {
 
         return () => unsub();
     }, [selectedCase, t]);
+
+    useEffect(() => {
+        if (selectedCase && !cases.find((c) => c.id === selectedCase.id)) {
+            setSelectedCase(null);
+        }
+    }, [cases, selectedCase]);
 
     useEffect(() => {
         if (!selectedCase) {
@@ -269,19 +314,38 @@ const CasesPage: React.FC = () => {
         return () => unsub();
     }, [selectedCase, t]);
 
-    const filteredCases = useMemo(() => {
+    const visibleCases = useMemo(() => {
         const q = search.trim().toLowerCase();
-        return cases.filter((c) => {
-            if (filter !== "all" && c.status !== filter) return false;
-            return !(q && !c.title?.toLowerCase().includes(q));
-        });
-    }, [cases, filter, search]);
+        if (!q) return cases;
+        return cases.filter((c) => c.title?.toLowerCase().includes(q));
+    }, [cases, search]);
 
     const canWriteNotes = userRole === "lawyer" && selectedCase?.status === "open";
     const canEditOrDeleteNote = (n: NoteDoc) =>
         userRole === "lawyer" && user && n.createdBy === user.uid;
 
     const isLawyer = userRole === "lawyer";
+    const clearCaseFilter = (key: "status" | "time") => {
+        setCaseFilters((prev) =>
+            key === "status" ? { ...prev, status: "all" } : { ...prev, timeframe: "any" }
+        );
+    };
+    const openCaseFilterMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setCaseFilterAnchorEl(event.currentTarget);
+    };
+    const closeCaseFilterMenu = () => setCaseFilterAnchorEl(null);
+    const handleCaseStatusChange = (status: CaseFilters["status"]) => {
+        setCaseFilters((prev) => ({ ...prev, status }));
+        closeCaseFilterMenu();
+    };
+    const handleCaseTimeChange = (timeframe: CaseFilters["timeframe"]) => {
+        setCaseFilters((prev) => ({ ...prev, timeframe }));
+        closeCaseFilterMenu();
+    };
+    const resetCaseFilters = () => {
+        setCaseFilters({ status: "all", timeframe: "any" });
+        closeCaseFilterMenu();
+    };
 
     const propsTotalPages = Math.max(1, Math.ceil(properties.length / PROPS_PAGE_SIZE));
     const notesTotalPages = Math.max(1, Math.ceil(notes.length / NOTES_PAGE_SIZE));
@@ -292,6 +356,32 @@ const CasesPage: React.FC = () => {
     const pagedNotes = notes.slice(
         notesPage * NOTES_PAGE_SIZE,
         notesPage * NOTES_PAGE_SIZE + NOTES_PAGE_SIZE
+    );
+    const caseFilterChips = useMemo(() => {
+        const chips: { key: "status" | "time"; label: string }[] = [];
+        if (caseFilters.status !== "all") {
+            chips.push({ key: "status", label: t(`casesPage.filters.${caseFilters.status}`) });
+        }
+        if (caseFilters.timeframe !== "any") {
+            chips.push({ key: "time", label: t(`casesPage.filtersMenu.time.${caseFilters.timeframe}`) });
+        }
+        return chips;
+    }, [caseFilters, t]);
+    const caseStatusOptions = useMemo(
+        () => [
+            { value: "all", label: t("casesPage.filters.all") },
+            { value: "open", label: t("casesPage.filters.open") },
+            { value: "closed", label: t("casesPage.filters.closed") },
+        ],
+        [t]
+    );
+    const caseTimeOptions = useMemo(
+        () => [
+            { value: "any", label: t("casesPage.filtersMenu.time.any") },
+            { value: "7d", label: t("casesPage.filtersMenu.time.7d") },
+            { value: "30d", label: t("casesPage.filtersMenu.time.30d") },
+        ],
+        [t]
     );
 
     const handleAddNote = async () => {
@@ -467,34 +557,7 @@ const CasesPage: React.FC = () => {
                 )}
             </Stack>
 
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3}>
-                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                    <Button
-                        variant={filter === "all" ? "contained" : "outlined"}
-                        onClick={() => setFilter("all")}
-                        size="small"
-                        sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
-                    >
-                        {t("casesPage.filters.all")}
-                    </Button>
-                    <Button
-                        variant={filter === "open" ? "contained" : "outlined"}
-                        onClick={() => setFilter("open")}
-                        size="small"
-                        sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
-                    >
-                        {t("casesPage.filters.open")}
-                    </Button>
-                    <Button
-                        variant={filter === "closed" ? "contained" : "outlined"}
-                        onClick={() => setFilter("closed")}
-                        size="small"
-                        sx={{ flex: { xs: "1 1 30%", sm: "0 0 auto" } }}
-                    >
-                        {t("casesPage.filters.closed")}
-                    </Button>
-                </Stack>
-
+            <Stack direction={{ xs: "column", md: "row" }} spacing={2} mb={1.5}>
                 <TextField
                     size="small"
                     placeholder={t("casesPage.filters.search")}
@@ -507,19 +570,74 @@ const CasesPage: React.FC = () => {
                             </InputAdornment>
                         ),
                     }}
-                    sx={{ width: { xs: "100%", sm: 320 } }}
+                    sx={{ width: { xs: "100%", md: 320 } }}
                 />
+                <Button
+                    startIcon={<TuneRoundedIcon />}
+                    variant="outlined"
+                    onClick={openCaseFilterMenu}
+                    sx={{ alignSelf: { xs: "stretch", md: "flex-start" } }}
+                >
+                    {t("casesPage.filtersMenu.button")}
+                </Button>
             </Stack>
+
+            {caseFilterChips.length > 0 && (
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap mb={3}>
+                    {caseFilterChips.map((chip) => (
+                        <Chip
+                            key={chip.key}
+                            label={chip.label}
+                            onDelete={() => clearCaseFilter(chip.key)}
+                            size="small"
+                        />
+                    ))}
+                </Stack>
+            )}
+            <Menu anchorEl={caseFilterAnchorEl} open={caseFilterMenuOpen} onClose={closeCaseFilterMenu} keepMounted>
+                <ListSubheader disableSticky>{t("casesPage.filtersMenu.status")}</ListSubheader>
+                {caseStatusOptions.map((option) => {
+                    const selected = caseFilters.status === option.value;
+                    return (
+                        <MenuItem key={option.value} selected={selected} onClick={() => handleCaseStatusChange(option.value as CaseFilters["status"])}>
+                            <ListItemIcon>
+                                {selected ? <CheckRoundedIcon fontSize="small" /> : <Box sx={{ width: 12 }} />}
+                            </ListItemIcon>
+                            <ListItemText primary={option.label} />
+                        </MenuItem>
+                    );
+                })}
+                <Divider />
+                <ListSubheader disableSticky>{t("casesPage.filtersMenu.updated")}</ListSubheader>
+                {caseTimeOptions.map((option) => {
+                    const selected = caseFilters.timeframe === option.value;
+                    return (
+                        <MenuItem key={option.value} selected={selected} onClick={() => handleCaseTimeChange(option.value as CaseFilters["timeframe"])}>
+                            <ListItemIcon>
+                                {selected ? <CheckRoundedIcon fontSize="small" /> : <Box sx={{ width: 12 }} />}
+                            </ListItemIcon>
+                            <ListItemText primary={option.label} />
+                        </MenuItem>
+                    );
+                })}
+                <Divider />
+                <MenuItem
+                    onClick={resetCaseFilters}
+                    disabled={caseFilters.status === "all" && caseFilters.timeframe === "any"}
+                >
+                    <ListItemText primary={t("casesPage.filtersMenu.clear")} />
+                </MenuItem>
+            </Menu>
 
             <Stack direction={{ xs: "column", md: "row" }} spacing={3} alignItems="stretch" sx={{ flex: 1, minHeight: 0 }}>
                 <Stack flex={1} spacing={2} sx={{ minWidth: 0 }}>
                     {loading && <CircularProgress />}
-                    {!loading && filteredCases.length === 0 && (
+                    {!loading && visibleCases.length === 0 && (
                         <Typography color="text.secondary">{t("casesPage.list.empty")}</Typography>
                     )}
                     <Box sx={{ overflowY: "auto", pr: 1, maxHeight: { xs: 400, md: "calc(100dvh - 260px)" } }}>
                         <AnimatePresence>
-                            {filteredCases.map((c) => (
+                            {visibleCases.map((c) => (
                                 <motion.div key={c.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }} transition={{ duration: 0.3 }}>
                                     <Card
                                         onClick={() => {
