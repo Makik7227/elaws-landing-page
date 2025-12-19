@@ -102,7 +102,6 @@ const AboutPage: React.FC = () => {
 
     return (
         <>
-            {/* HERO */}
             <Box
                 sx={{
                     background: gradient,

@@ -30,7 +30,7 @@ interface Plan {
     priceLabel: string;
     priceMonthly: number;
     tokens: string;
-    badge?: "Recommended" | "Best value";
+    badge?: string;
     priceId?: string | null;
     features: string[];
     cta: string;

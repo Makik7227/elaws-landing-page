@@ -143,7 +143,10 @@ const NotesPage: React.FC = () => {
         }
         const q = query(collection(db, "cases"), where("lawyerId", "==", uid));
         const unsub = onSnapshot(q, (snap) => {
-            const next = snap.docs.map((d) => ({ id: d.id, ...(d.data() as CaseSummary) }));
+            const next = snap.docs.map((d) => {
+                const data = d.data() as CaseSummary;
+                return { ...data, id: d.id };
+            });
             setLawyerCases(next);
         });
         return () => unsub();
