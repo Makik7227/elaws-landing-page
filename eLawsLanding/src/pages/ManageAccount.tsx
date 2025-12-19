@@ -186,9 +186,16 @@ const ManageAccount: React.FC = () => {
 
     return (
         <>
+            <Box
+                sx={{
+                    height: { xs: "64px", md: "80px" },
+                    background: gradient,
+                }}
+            />
             {/* HERO */}
             <Box
                 sx={{
+                    mt: { xs: -8, md: -10 },
                     background: gradient,
                     color: theme.palette.getContrastText(theme.palette.primary.main),
                     py: {xs: 6, md: 8},

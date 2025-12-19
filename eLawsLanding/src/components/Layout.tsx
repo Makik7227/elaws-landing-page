@@ -15,6 +15,7 @@ const Layout = () => {
                     flexDirection: "column",
                     minWidth: 0,
                     overflowX: "hidden",
+                    pt: { xs: "64px", md: "80px" },
                 }}
             >
                 <Outlet />

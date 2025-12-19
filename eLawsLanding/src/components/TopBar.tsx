@@ -419,7 +419,6 @@ const TopBar = () => {
                 </Box>
             </Drawer>
         </AppBar>
-        <Box sx={{ height: { xs: 64, md: 80 } }} />
         </>
     );
 };

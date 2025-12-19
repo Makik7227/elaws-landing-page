@@ -200,10 +200,17 @@ const HomePage: React.FC = () => {
 
     return (
         <>
+            <Box
+                sx={{
+                    height: { xs: "64px", md: "80px" },
+                    background: gradient,
+                }}
+            />
             {/* HERO */}
             <Box
                 component="section"
                 sx={{
+                    mt: { xs: -8, md: -10 },
                     pt: { xs: 8, md: 12 },
                     pb: { xs: 8, md: 12 },
                     background: gradient,
