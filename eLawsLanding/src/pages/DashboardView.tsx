@@ -24,6 +24,7 @@ import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -478,7 +479,8 @@ const Dashboard: React.FC = () => {
                                         {role === "lawyer" && (
                                             <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title={t("dashboard.quickActions.cases")} />
                                         )}
-                                        <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title={t("dashboard.quickActions.stopProcedures")} />
+                                        <QuickAction to="/dashboard/procedures/saved" icon={<LocalPoliceRoundedIcon />} title={t("dashboard.quickActions.stopProcedures")} />
+                                        <QuickAction to="/connections" icon={<PeopleAltRoundedIcon />} title={t("dashboard.quickActions.connections")} />
                                         <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon />} title={t("dashboard.quickActions.notes")} />
                                     </Stack>
                                 </CardContent>
@@ -521,6 +523,7 @@ const Dashboard: React.FC = () => {
                                 justifyContent="space-between"
                             >
                                 <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title={t("dashboard.menu.account")} />
+                                <MenuTile to="/connections" icon={<PeopleAltRoundedIcon />} title={t("dashboard.menu.connections")} />
                                 {subscriptionTier !== "free" && (
                                     <>
                                         <MenuTile to="/documents" icon={<DescriptionRoundedIcon />} title={t("dashboard.menu.documents")} />

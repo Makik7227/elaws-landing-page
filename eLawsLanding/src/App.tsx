@@ -21,6 +21,7 @@ import DocumentsLandingPage from "./pages/DocumentsLandingPage.tsx";
 import MyDocumentsPage from "./pages/MyDocumentsPage.tsx";
 import GenerateDocumentPage from "./pages/GenerateDocumentPage.tsx";
 import CreateCasePage from "./pages/CreateCasePage.tsx";
+import ConnectionsPage from "./pages/ConnectionsPage.tsx";
 
 function App() {
     return (
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/documents" element={<DocumentsLandingPage/>}/>
                 <Route path="/documents/my" element={<MyDocumentsPage/>}/>
                 <Route path="/documents/generate" element={<GenerateDocumentPage/>}/>
+                <Route path="/connections" element={<ConnectionsPage/>}/>
             </Route>
         </Routes>
     )

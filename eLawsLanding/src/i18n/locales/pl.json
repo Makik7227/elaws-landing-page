@@ -11,7 +11,8 @@
                 "pl": "PL"
             },
             "aria": "Przełącz język"
-        }
+        },
+        "backToDashboard": "Powrót do panelu"
     },
     "nav": {
         "home": "Strona główna",
@@ -22,7 +23,8 @@
         "aiChat": "Czat AI",
         "documents": "Dokumenty",
         "procedures": "Procedury",
-        "notes": "Notatki"
+        "notes": "Notatki",
+        "connections": "Kontakty"
     },
     "auth": {
         "account": "Konto",
@@ -55,7 +57,42 @@
                 "localization": "Wiedza o krajowych przepisach",
                 "citations": "Odpowiedzi z przypisami"
             },
-            "trustedBy": "Zaufali nam nowoczesni prawnicy:"
+            "trustedBy": "Zaufali nam nowoczesni prawnicy:",
+            "widget": {
+                "title": "Centrum spraw na żywo",
+                "subtitle": "Pakiet umów pracowniczych · Hiszpania",
+                "headline": "Wszyscy interesariusze w jednym widoku",
+                "progressLabel": "Ukończone dokumenty",
+                "status": {
+                    "cases": "Otwarte sprawy",
+                    "tasks": "Sugestie AI",
+                    "sla": "Śr. SLA"
+                },
+                "supportTitle": "Recenzenci zgodności online",
+                "supportDesc": "Lokalni eksperci dołączają od razu, gdy zaprosisz ich do przestrzeni roboczej.",
+                "supportStatus": "Gotowe w 5 min"
+            }
+        },
+        "benefits": {
+            "overline": "Dlaczego zespoły przechodzą",
+            "title": "Nowoczesny interfejs z prawniczną precyzją.",
+            "subtitle": "Przemyślane warstwy UI skracają wdrożenie, a AI utrzymuje workflow szybki, zgodny i przyjazny dla każdego interesariusza.",
+            "compliance": {
+                "title": "Gotowe na regulacje",
+                "desc": "Pakiety krajowe, historia przypisów i logi audytu czynią odpowiedzi obronnymi."
+            },
+            "workspace": {
+                "title": "Jedna przestrzeń robocza",
+                "desc": "Sprawy, dokumenty, notatki i czat współdzielą kontekst, więc nic nie ginie."
+            },
+            "guidance": {
+                "title": "Prowadzone decyzje",
+                "desc": "Podkreślaj ryzyka, sugeruj formularze i zbieraj brakujące dane dynamicznie."
+            },
+            "speed": {
+                "title": "Szybciej niż e-mail",
+                "desc": "Powiadomienia, podsumowania i szablony pozwalają zamykać sprawy 3× szybciej."
+            }
         },
         "features": {
             "overline": "Co otrzymujesz",
@@ -118,6 +155,32 @@
                 "footerDesc": "Włączaj w dowolnym momencie z poziomu nawigacji."
             }
         },
+        "timeline": {
+            "badge": "Czas realizacji",
+            "title": "Od intake do gotowych plików w kilka minut",
+            "subtitle": "Ustrukturyzowane bloki i wsparcie AI prowadzą każdą sprawę bez chaosu.",
+            "etaLabel": "Średni czas zaoszczędzony na sprawie",
+            "primaryCta": "Przeglądaj procedury",
+            "secondaryCta": "Otwórz aplikację",
+            "steps": {
+                "intake": {
+                    "title": "Sprytny intake",
+                    "desc": "Zbieraj fakty pytaniami dopasowanymi do lokalnych przepisów."
+                },
+                "drafting": {
+                    "title": "Tworzenie i cytaty",
+                    "desc": "Generuj pisma z edytowalnymi sekcjami i automatycznymi przypisami."
+                },
+                "review": {
+                    "title": "Pętla review",
+                    "desc": "Zapraszaj prawników lub klientów z komentarzami śledzącymi zmiany."
+                },
+                "share": {
+                    "title": "Eksport i podpis",
+                    "desc": "Wysyłaj dopracowane PDF-y lub wklejaj klauzule do swoich narzędzi."
+                }
+            }
+        },
         "steps": {
             "overline": "Jak to działa",
             "title": "Trzy kroki. Zero chaosu.",
@@ -133,6 +196,29 @@
             "saveCollaborate": {
                 "title": "Zapisuj i współpracuj",
                 "desc": "Zachowuj wnioski, eksportuj dokumenty i zapraszaj prawników."
+            }
+        },
+        "testimonials": {
+            "overline": "Rekomendacje",
+            "title": "Uwielbiane przez nowoczesne zespoły prawne",
+            "subtitle": "Partnerzy projektowi z branży tech, finansów i sektora publicznego dopracowali każdy detal.",
+            "cta": "Poznaj historie klientów",
+            "items": {
+                "loop": {
+                    "quote": "Founderzy samodzielnie obsługują 80% pytań. Interfejs przypomina Notion, a nie urzędowy portal.",
+                    "author": "Sofia Malik",
+                    "role": "Head of Legal, Loop"
+                },
+                "atlas": {
+                    "quote": "Wątki spraw są uporządkowane, wielojęzyczne i wyszukiwalne. Zastąpiło to pięć rozłącznych paneli.",
+                    "author": "Andre Lima",
+                    "role": "Operations Lead, Atlas Mobility"
+                },
+                "pioneer": {
+                    "quote": "Sugestie AI natychmiast pokazują ryzyko, więc prawnicy naprawdę recenzują zamiast szukać kontekstu.",
+                    "author": "Jules Park",
+                    "role": "Partner, Pioneer Law"
+                }
             }
         },
         "ctaBand": {
@@ -672,7 +758,8 @@
             "cases": "Przejdź do spraw",
             "notes": "Zapisane notatki",
             "procedures": "Procedury",
-            "footer": "Szukasz kontaktów? Ta funkcja jest dostępna w aplikacji mobilnej."
+            "connections": "Zarządzaj kontaktami",
+            "footer": "Zaproś lub usuń współpracowników na stronie Kontaktów."
         },
         "errors": {
             "profileLoad": "Nie udało się wczytać profilu.",
@@ -689,6 +776,58 @@
         "success": {
             "profileSaved": "Profil zapisany.",
             "passwordChanged": "Hasło zostało zmienione."
+        }
+    },
+    "connections": {
+        "loading": "Ładowanie kontaktów…",
+        "title": "Kontakty",
+        "subtitle": "Zaproś zaufanych prawników lub klientów i zarządzaj zaproszeniami w jednym miejscu.",
+        "search": {
+            "title": "Znajdź osoby",
+            "subtitle": "Szukaj po nazwie użytkownika lub adresie e-mail, aby zaprosić do współpracy.",
+            "username": "@nazwa",
+            "email": "Email",
+            "usernameLabel": "Szukaj @nazwa",
+            "emailLabel": "Szukaj po e-mailu",
+            "usernamePlaceholder": "@twoj.prawnik",
+            "emailPlaceholder": "uzytkownik@example.com",
+            "cta": "Szukaj",
+            "searching": "Wyszukiwanie…",
+            "helper": "Podaj nazwę użytkownika lub adres e-mail, aby rozpocząć.",
+            "noResults": "Nie znaleziono użytkowników."
+        },
+        "results": {
+            "request": "Wyślij",
+            "requested": "Wysłano"
+        },
+        "requests": {
+            "title": "Zaproszenia",
+            "subtitle": "Akceptuj nowe zgłoszenia lub śledź wysłane prośby.",
+            "incoming": "Przychodzące ({{count}})",
+            "outgoing": "Wychodzące ({{count}})",
+            "incomingEmpty": "Brak przychodzących zaproszeń 🎉",
+            "outgoingEmpty": "Brak wysłanych zaproszeń.",
+            "incomingLabel": "Nowe zaproszenie",
+            "outgoingLabel": "Oczekujące"
+        },
+        "actions": {
+            "accept": "Akceptuj",
+            "reject": "Odrzuć"
+        },
+        "list": {
+            "title": "Kontakty ({{count}})",
+            "empty": "Brak kontaktów. Zacznij od wysłania zaproszenia."
+        },
+        "messages": {
+            "requestSent": "Zaproszenie wysłane.",
+            "requestAccepted": "Zaproszenie zaakceptowane.",
+            "requestRejected": "Zaproszenie odrzucone.",
+            "connectionRemoved": "Kontakt usunięty.",
+            "searchFailed": "Nie udało się wyszukać. Spróbuj ponownie.",
+            "sendFailed": "Nie udało się wysłać zaproszenia.",
+            "acceptFailed": "Nie udało się zaakceptować zaproszenia.",
+            "rejectFailed": "Nie udało się odrzucić zaproszenia.",
+            "removeFailed": "Nie udało się usunąć kontaktu."
         }
     },
     "myDocuments": {
@@ -1088,7 +1227,8 @@
             "createDoc": "Utwórz dokument",
             "cases": "Sprawy",
             "stopProcedures": "Procedury stop",
-            "notes": "Notatki"
+            "notes": "Notatki",
+            "connections": "Kontakty"
         },
         "info": {
             "chats": {
@@ -1117,7 +1257,8 @@
         "menu": {
             "account": "Konto",
             "documents": "Dokumenty",
-            "cases": "Moje sprawy"
+            "cases": "Moje sprawy",
+            "connections": "Kontakty"
         },
         "upgrade": {
             "title": "Odblokuj dokumenty, sprawy i więcej",

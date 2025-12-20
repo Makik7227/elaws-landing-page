@@ -16,6 +16,10 @@ import {
     useTheme,
     Snackbar,
 } from "@mui/material";
+import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
+import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
+import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
@@ -25,6 +29,7 @@ import {auth, db} from "../../firebase.ts";
 import {COUNTRIES, type CountryOption} from "../utils/CountryOption.ts";
 import SubscriptionButton from "../components/SubscriptionButton.tsx";
 import {useTranslation} from "react-i18next";
+import DashboardBackButton from "../components/DashboardBackButton.tsx";
 
 type Role = "client" | "lawyer";
 
@@ -221,6 +226,9 @@ const ManageAccount: React.FC = () => {
             </Box>
 
             <Container maxWidth="md" sx={{py: {xs: 6, md: 8}}}>
+                <Box sx={{mb: 2}}>
+                    <DashboardBackButton />
+                </Box>
                 <Stack spacing={4}>
                     {/* Profile */}
                     <Card elevation={3} sx={{borderRadius: 3}}>
@@ -392,15 +400,41 @@ const ManageAccount: React.FC = () => {
                                 {t("manageAccount.shortcuts.title")}
                             </Typography>
                             <Stack direction={{xs: "column", sm: "row"}} spacing={1.5} useFlexGap flexWrap="wrap">
-                                <Button component={RouterLink} to="/dashboard/cases" variant="outlined" sx={{borderRadius: 3}}>
+                                <Button
+                                    component={RouterLink}
+                                    to="/dashboard/cases"
+                                    variant="outlined"
+                                    sx={{borderRadius: 3}}
+                                    startIcon={<WorkOutlineRoundedIcon />}
+                                >
                                     {t("manageAccount.shortcuts.cases")}
                                 </Button>
-                                <Button component={RouterLink} to="/notes" variant="outlined" sx={{borderRadius: 3}}>
+                                <Button
+                                    component={RouterLink}
+                                    to="/dashboard/notes"
+                                    variant="outlined"
+                                    sx={{borderRadius: 3}}
+                                    startIcon={<AutoStoriesRoundedIcon />}
+                                >
                                     {t("manageAccount.shortcuts.notes")}
                                 </Button>
-                                <Button component={RouterLink} to="/procedures/saved-procedures" variant="outlined"
-                                        sx={{borderRadius: 3}}>
+                                <Button
+                                    component={RouterLink}
+                                    to="/dashboard/procedures/saved"
+                                    variant="outlined"
+                                    sx={{borderRadius: 3}}
+                                    startIcon={<LocalPoliceRoundedIcon />}
+                                >
                                     {t("manageAccount.shortcuts.procedures")}
+                                </Button>
+                                <Button
+                                    component={RouterLink}
+                                    to="/connections"
+                                    variant="outlined"
+                                    sx={{borderRadius: 3}}
+                                    startIcon={<PeopleAltRoundedIcon />}
+                                >
+                                    {t("manageAccount.shortcuts.connections")}
                                 </Button>
                             </Stack>
                             <Divider sx={{my: 2}}/>

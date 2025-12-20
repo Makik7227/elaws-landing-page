@@ -11,7 +11,8 @@
                 "pl": "PL"
             },
             "aria": "Toggle language"
-        }
+        },
+        "backToDashboard": "Back to dashboard"
     },
     "nav": {
         "home": "Home",
@@ -22,7 +23,8 @@
         "aiChat": "AI Chat",
         "documents": "Documents",
         "procedures": "Procedures",
-        "notes": "Notes"
+        "notes": "Notes",
+        "connections": "Connections"
     },
     "auth": {
         "account": "Account",
@@ -55,7 +57,42 @@
                 "localization": "Country-aware guidance",
                 "citations": "Cited answers"
             },
-            "trustedBy": "Trusted by modern legal teams:"
+            "trustedBy": "Trusted by modern legal teams:",
+            "widget": {
+                "title": "Live case hub",
+                "subtitle": "Employment contract kit · Spain",
+                "headline": "All stakeholders aligned",
+                "progressLabel": "Documents completed",
+                "status": {
+                    "cases": "Open matters",
+                    "tasks": "AI suggestions",
+                    "sla": "Avg. SLA"
+                },
+                "supportTitle": "Compliance reviewers online",
+                "supportDesc": "Local experts jump in the moment you invite them to a workspace.",
+                "supportStatus": "Live within 5 min"
+            }
+        },
+        "benefits": {
+            "overline": "Why teams switch",
+            "title": "Modern UI meets legal precision.",
+            "subtitle": "Layers of thoughtful UI reduce onboarding time, while AI keeps the workflow fast, compliant, and friendly for every stakeholder.",
+            "compliance": {
+                "title": "Regulation-ready",
+                "desc": "Country packs, citation history, and audit logs keep every answer defensible."
+            },
+            "workspace": {
+                "title": "One shared workspace",
+                "desc": "Cases, docs, notes, and chat live together so no context is lost."
+            },
+            "guidance": {
+                "title": "Guided decisions",
+                "desc": "Highlight risks, surface required forms, and collect missing facts dynamically."
+            },
+            "speed": {
+                "title": "Faster than email",
+                "desc": "Notifications, summaries, and templates help your team close tickets 3× faster."
+            }
         },
         "features": {
             "overline": "What you get",
@@ -118,6 +155,32 @@
                 "footerDesc": "Toggle it anytime from the nav."
             }
         },
+        "timeline": {
+            "badge": "Turnaround",
+            "title": "From intake to share-ready in minutes",
+            "subtitle": "Structured blocks + AI assistance guide every matter forward without the chaos.",
+            "etaLabel": "Avg. time saved per case",
+            "primaryCta": "Browse procedures",
+            "secondaryCta": "Open the app",
+            "steps": {
+                "intake": {
+                    "title": "Smart intake",
+                    "desc": "Collect facts with adaptive questions that reflect local law."
+                },
+                "drafting": {
+                    "title": "Draft + cite",
+                    "desc": "Generate filings with editable sections and auto citations."
+                },
+                "review": {
+                    "title": "Review loop",
+                    "desc": "Loop in counsel or clients with tracked suggestions."
+                },
+                "share": {
+                    "title": "Export & sign",
+                    "desc": "Send polished PDFs or copy clauses straight into your tools."
+                }
+            }
+        },
         "steps": {
             "overline": "How it works",
             "title": "Three steps. Zero confusion.",
@@ -133,6 +196,29 @@
             "saveCollaborate": {
                 "title": "Save & collaborate",
                 "desc": "Store insights, export docs, and loop in lawyers when needed."
+            }
+        },
+        "testimonials": {
+            "overline": "Social proof",
+            "title": "Loved by modern legal teams",
+            "subtitle": "Design partners from tech, finance, and public institutions shaped every detail.",
+            "cta": "See customer stories",
+            "items": {
+                "loop": {
+                    "quote": "Our founders self-serve 80% of legal questions now. The UI feels like Notion, not a dated government portal.",
+                    "author": "Sofia Malik",
+                    "role": "Head of Legal, Loop"
+                },
+                "atlas": {
+                    "quote": "Case threads stay organized, multilingual, and searchable. It replaced five disconnected dashboards.",
+                    "author": "Andre Lima",
+                    "role": "Operations Lead, Atlas Mobility"
+                },
+                "pioneer": {
+                    "quote": "The AI suggestions surface risk instantly, so our lawyers can review, not hunt for context.",
+                    "author": "Jules Park",
+                    "role": "Partner, Pioneer Law"
+                }
             }
         },
         "ctaBand": {
@@ -672,7 +758,8 @@
             "cases": "Go to My Cases",
             "notes": "Saved Notes",
             "procedures": "Procedures",
-            "footer": "Looking for connections? That feature is in the mobile app right now."
+            "connections": "Manage Connections",
+            "footer": "Invite or remove collaborators from the Connections page."
         },
         "errors": {
             "profileLoad": "Failed to load your profile.",
@@ -689,6 +776,58 @@
         "success": {
             "profileSaved": "Profile saved.",
             "passwordChanged": "Password changed successfully."
+        }
+    },
+    "connections": {
+        "loading": "Loading your connections…",
+        "title": "Connections",
+        "subtitle": "Invite trusted lawyers or clients and manage requests from one place.",
+        "search": {
+            "title": "Find people",
+            "subtitle": "Search by username or email to invite someone to your workspace.",
+            "username": "@username",
+            "email": "Email",
+            "usernameLabel": "Search @username",
+            "emailLabel": "Search by email",
+            "usernamePlaceholder": "@legal.partner",
+            "emailPlaceholder": "user@example.com",
+            "cta": "Search",
+            "searching": "Searching…",
+            "helper": "Enter a username or email to start searching.",
+            "noResults": "No matching users found."
+        },
+        "results": {
+            "request": "Request",
+            "requested": "Requested"
+        },
+        "requests": {
+            "title": "Requests",
+            "subtitle": "Approve new invitations or track the ones you have sent.",
+            "incoming": "Incoming ({{count}})",
+            "outgoing": "Outgoing ({{count}})",
+            "incomingEmpty": "No incoming requests 🎉",
+            "outgoingEmpty": "No outgoing requests.",
+            "incomingLabel": "Incoming request",
+            "outgoingLabel": "Pending"
+        },
+        "actions": {
+            "accept": "Accept",
+            "reject": "Reject"
+        },
+        "list": {
+            "title": "Connections ({{count}})",
+            "empty": "No connections yet. Start by sending a request."
+        },
+        "messages": {
+            "requestSent": "Request sent.",
+            "requestAccepted": "Request accepted.",
+            "requestRejected": "Request rejected.",
+            "connectionRemoved": "Connection removed.",
+            "searchFailed": "Search failed. Try again.",
+            "sendFailed": "Could not send request.",
+            "acceptFailed": "Could not accept request.",
+            "rejectFailed": "Could not reject request.",
+            "removeFailed": "Could not remove connection."
         }
     },
     "myDocuments": {
@@ -1088,7 +1227,8 @@
             "createDoc": "Create Doc",
             "cases": "Cases",
             "stopProcedures": "Stop Procedures",
-            "notes": "Notes"
+            "notes": "Notes",
+            "connections": "Connections"
         },
         "info": {
             "chats": {
@@ -1115,7 +1255,8 @@
         "menu": {
             "account": "Account",
             "documents": "Documents",
-            "cases": "My Cases"
+            "cases": "My Cases",
+            "connections": "Connections"
         },
         "upgrade": {
             "title": "Unlock documents, cases and more",

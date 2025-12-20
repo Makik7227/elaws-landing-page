@@ -31,6 +31,7 @@ import CustomCountryPickerWeb from "../components/CustomCountryPicker";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import DashboardBackButton from "../components/DashboardBackButton";
 
 interface Message {
     id: string;
@@ -593,20 +594,30 @@ Instructions:
         </>
     );
 
+    const backButton = (
+        <Container maxWidth="lg" sx={{ pt: { xs: 3, md: 4 }, pb: 0 }}>
+            <DashboardBackButton />
+        </Container>
+    );
+
     if (!authChecked || profileLoading || !persistHydrated) {
         return (
-            <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
-                <CircularProgress />
-                <Typography mt={3} color="text.secondary">
-                    {t("aiChat.loading.preparing")}
-                </Typography>
-            </Container>
+            <>
+                {backButton}
+                <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
+                    <CircularProgress />
+                    <Typography mt={3} color="text.secondary">
+                        {t("aiChat.loading.preparing")}
+                    </Typography>
+                </Container>
+            </>
         );
     }
 
     if (!selectedTopic) {
         return (
             <>
+                {backButton}
                 <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
                     <Grid container spacing={{ xs: 4, md: 6 }} alignItems="stretch">
                         <Grid size={{ xs: 12, md: 5 }}>
@@ -677,6 +688,7 @@ Instructions:
 
     return (
         <>
+            {backButton}
             {layout}
             {overlayElements}
         </>

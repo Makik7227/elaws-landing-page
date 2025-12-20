@@ -64,6 +64,7 @@ import type { User } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import caseProperties from "../utils/caseProperties.json";
 import { useTranslation } from "react-i18next";
+import DashboardBackButton from "../components/DashboardBackButton";
 
 const popularProperties = caseProperties as { key: string; label: string }[];
 
@@ -537,6 +538,9 @@ const CasesPage: React.FC = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 5, display: "flex", flexDirection: "column", minHeight: "50dvh" }}>
+            <Box sx={{ mb: 2 }}>
+                <DashboardBackButton />
+            </Box>
             <Stack
                 direction={{ xs: "column", sm: "row" }}
                 spacing={{ xs: 1.5, sm: 2 }}

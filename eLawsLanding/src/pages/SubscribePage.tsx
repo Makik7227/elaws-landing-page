@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { SubscriptionPaymentDialog } from "../components/SubscriptionPaymentDialog.tsx";
 import type { PaymentDialogState } from "../components/SubscriptionPaymentDialog.tsx";
 import { useTranslation } from "react-i18next";
+import DashboardBackButton from "../components/DashboardBackButton.tsx";
 
 type PlanId = "free" | "plus" | "premium";
 
@@ -277,6 +278,9 @@ const SubscribePage: React.FC = () => {
     return (
         <Box sx={{ minHeight: "100vh", bgcolor: theme.palette.background.default }}>
             <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
+                <Box sx={{ mb: 3 }}>
+                    <DashboardBackButton />
+                </Box>
                 {/* Header */}
                 <Stack spacing={1} alignItems="center" textAlign="center" mb={4}>
                     <Typography variant="h4" fontWeight={900}>

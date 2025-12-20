@@ -20,6 +20,7 @@ import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {auth, db} from "../../firebase.ts";
 import {onAuthStateChanged} from "firebase/auth";
 import {useTranslation} from "react-i18next";
+import DashboardBackButton from "../components/DashboardBackButton.tsx";
 
 type Procedure = {
     id: string;
@@ -67,6 +68,9 @@ const SavedProceduresPage: React.FC = () => {
 
     return (
         <Container maxWidth="md" sx={{ py: 6 }}>
+            <Box sx={{ mb: 2 }}>
+                <DashboardBackButton />
+            </Box>
             <Box display="flex" alignItems="center" gap={2} mb={3}>
                 <FlagRoundedIcon color="primary" />
                 <Typography variant="h5" fontWeight={800}>

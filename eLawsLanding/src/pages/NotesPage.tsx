@@ -51,12 +51,12 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
 import NoteOutlinedIcon from "@mui/icons-material/NoteOutlined";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import DashboardBackButton from "../components/DashboardBackButton";
 
 type Note = {
     id: string;
@@ -292,6 +292,9 @@ const NotesPage: React.FC = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+            <Box sx={{ mb: 2 }}>
+                <DashboardBackButton />
+            </Box>
             <Card
                 sx={{
                     mb: 4,
@@ -302,9 +305,6 @@ const NotesPage: React.FC = () => {
                 <CardContent>
                     <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" spacing={2}>
                         <Stack direction="row" alignItems="center" spacing={1.5}>
-                            <IconButton onClick={() => navigate('/dashboard')}>
-                                <ArrowBackRoundedIcon />
-                            </IconButton>
                             <NoteOutlinedIcon fontSize="large" sx={{ color: theme.palette.primary.main }} />
                             <Box>
                                 <Typography variant="h5" fontWeight={900}>
