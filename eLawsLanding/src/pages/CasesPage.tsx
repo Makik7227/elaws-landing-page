@@ -55,8 +55,7 @@ import {
     deleteDoc,
     Timestamp,
     where,
-    type QuerySnapshot,
-    type QueryDocumentSnapshot,
+    type QueryConstraint,
 } from "firebase/firestore";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
@@ -222,7 +221,7 @@ const CasesPage: React.FC = () => {
         if (!user) return;
         setLoading(true);
         const roleField = userRole === "lawyer" ? "lawyerId" : "clientId";
-        const constraints = [
+        const constraints: QueryConstraint[] = [
             where(roleField, "==", user.uid),
         ];
         if (caseFilters.status !== "all") {

@@ -205,7 +205,7 @@ const ConnectionsPage: React.FC = () => {
     const searchByEmail = async (raw: string): Promise<UserProfile[]> => {
         const email = raw.trim();
         if (!email) return [];
-        const matches: UserProfile[] = [];
+        const matches: Array<Partial<UserProfile> & { uid: string }> = [];
 
         const exact = await getDocs(query(collection(db, "users"), where("email", "==", email), limit(10)));
         exact.forEach((docSnap) => matches.push({ uid: docSnap.id, ...(docSnap.data() as Record<string, unknown>) }));

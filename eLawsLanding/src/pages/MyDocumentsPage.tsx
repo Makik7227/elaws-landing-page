@@ -24,6 +24,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import {
@@ -38,6 +39,7 @@ import {
 import { deleteObject, ref } from "firebase/storage";
 import { auth, db, storage } from "../../firebase";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 type DocumentItem = {
     id: string;
@@ -196,6 +198,12 @@ const MyDocumentsPage: React.FC = () => {
         });
     }, [docs, search, filter]);
 
+    const formatRelativeWhen = useCallback(
+        (value?: Timestamp | Date | string | null) =>
+            formatWhen(value, (key, params) => t(`myDocuments.when.${key}`, params)),
+        [t]
+    );
+
     if (!user) {
         return (
             <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
@@ -207,39 +215,78 @@ const MyDocumentsPage: React.FC = () => {
         );
     }
 
-    return (
-        <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
-            <Stack spacing={3}>
-                <Stack
-                    direction={{ xs: "column", md: "row" }}
-                    spacing={{ xs: 1.5, md: 1 }}
-                    alignItems={{ xs: "flex-start", md: "center" }}
-                    justifyContent="space-between"
-                >
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                        <IconButton component={RouterLink} to="/documents">
-                            <ArrowBackIcon />
-                        </IconButton>
-                        <Box>
-                            <Typography variant="h4" fontWeight={900}>
-                                {t("myDocuments.hero.title")}
-                            </Typography>
-                            <Typography color="text.secondary">
-                                {t("myDocuments.hero.subtitle")}
-                            </Typography>
-                        </Box>
-                    </Stack>
-                    <Button
-                        component={RouterLink}
-                        to="/documents/generate"
-                        variant="contained"
-                        sx={{ borderRadius: 3, width: { xs: "100%", sm: "auto" } }}
-                    >
-                        {t("myDocuments.hero.new")}
-                    </Button>
-                </Stack>
+    const latestUpload = docs[0]?.uploadedAt;
+    const pdfCount = docs.filter((docItem) => docItem.fileName?.toLowerCase().endsWith(".pdf")).length;
+    const imageCount = docs.filter((docItem) => /\.(png|jpe?g|gif|bmp|webp)$/i.test(docItem.fileName ?? "")).length;
+    const docCount = docs.filter((docItem) => /\.(docx?|pptx?|xlsx?)$/i.test(docItem.fileName ?? "")).length;
 
-                <Card sx={{ borderRadius: 4 }}>
+    const heroStats = [
+        {
+            label: t("myDocuments.stats.total", { defaultValue: "Total files" }),
+            value: docs.length.toString(),
+        },
+        {
+            label: t("myDocuments.stats.lastUpload", { defaultValue: "Last upload" }),
+            value: docs.length
+                ? formatRelativeWhen(latestUpload)
+                : t("myDocuments.stats.none", { defaultValue: "No files yet" }),
+        },
+        {
+            label: t("myDocuments.stats.mix", { defaultValue: "File mix" }),
+            value: `${pdfCount} PDF · ${imageCount} IMG · ${docCount} DOC`,
+        },
+    ];
+
+    return (
+        <>
+            <PageHero
+                title={t("myDocuments.hero.title")}
+                subtitle={t("myDocuments.hero.subtitle")}
+                overline={t("myDocuments.hero.overline", { defaultValue: "Documents workspace" })}
+                icon={<FolderOpenIcon />}
+                actions={
+                    <>
+                        <Button
+                            component={RouterLink}
+                            to="/documents"
+                            variant="text"
+                            startIcon={<ArrowBackIcon />}
+                            sx={{ borderRadius: 3 }}
+                        >
+                            {t("myDocuments.hero.back", { defaultValue: "Back to overview" })}
+                        </Button>
+                        <Button
+                            component={RouterLink}
+                            to="/documents/generate"
+                            variant="contained"
+                            sx={{ borderRadius: 3, fontWeight: 800 }}
+                        >
+                            {t("myDocuments.hero.new")}
+                        </Button>
+                    </>
+                }
+            >
+                <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 2, sm: 4 }}
+                    flexWrap="wrap"
+                >
+                    {heroStats.map((stat) => (
+                        <Stack key={stat.label} spacing={0.5}>
+                            <Typography variant="h5" fontWeight={900}>
+                                {stat.value}
+                            </Typography>
+                            <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                                {stat.label}
+                            </Typography>
+                        </Stack>
+                    ))}
+                </Stack>
+            </PageHero>
+
+            <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
+                <Stack spacing={3}>
+                    <Card sx={{ borderRadius: 4 }}>
                     <CardContent>
                         <Stack
                             spacing={2}
@@ -280,9 +327,9 @@ const MyDocumentsPage: React.FC = () => {
                             </Button>
                         </Stack>
                     </CardContent>
-                </Card>
+                    </Card>
 
-                {loading ? (
+                    {loading ? (
                     <Box textAlign="center" py={6}>
                         <CircularProgress />
                         <Typography mt={2} color="text.secondary">
@@ -314,7 +361,7 @@ const MyDocumentsPage: React.FC = () => {
                                                 {item.fileName || "Untitled document"}
                                             </Typography>
                                             <Stack direction="row" spacing={1} flexWrap="wrap">
-                                                <Chip label={formatWhen(item.uploadedAt, (key, params) => t(`myDocuments.when.${key}`, params))} size="small" />
+                                                <Chip label={formatRelativeWhen(item.uploadedAt)} size="small" />
                                                 {item.mimeType && <Chip label={item.mimeType} size="small" />}
                                             </Stack>
                                        </Stack>
@@ -354,8 +401,9 @@ const MyDocumentsPage: React.FC = () => {
                             </Grid>
                         ))}
                     </Grid>
-                )}
-            </Stack>
+                    )}
+                </Stack>
+            </Container>
 
             <Snackbar
                 open={snackbar.open}
@@ -363,7 +411,7 @@ const MyDocumentsPage: React.FC = () => {
                 onClose={() => setSnackbar({ open: false, text: "" })}
                 message={snackbar.text}
             />
-        </Container>
+        </>
     );
 };
 

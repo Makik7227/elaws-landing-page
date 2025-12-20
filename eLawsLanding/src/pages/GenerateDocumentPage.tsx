@@ -9,7 +9,6 @@ import {
     CircularProgress,
     Container,
     Divider,
-    IconButton,
     Snackbar,
     Stack,
     TextField,
@@ -37,6 +36,7 @@ import generateDocumentHTML from "../utils/generateDocumentHTML";
 import { sendMessageToGPT } from "../api/chat";
 import CustomDatePicker from "../components/CustomDatePicker";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 type SchemaParamType = "text" | "textarea" | "number" | "date" | "email" | "list" | "dropdown";
 
@@ -57,6 +57,24 @@ type SchemaDoc = {
 
 const SCHEMAS_CACHE_KEY = "docSchemasCache";
 const DOC_CACHE_PREFIX = "docOutputCache:";
+
+const HERO_STEPS = [
+    {
+        key: "choose",
+        labelKey: "generateDoc.hero.steps.choose",
+        defaultLabel: "Select a legal template",
+    },
+    {
+        key: "fill",
+        labelKey: "generateDoc.hero.steps.fill",
+        defaultLabel: "Answer guided questions",
+    },
+    {
+        key: "export",
+        labelKey: "generateDoc.hero.steps.export",
+        defaultLabel: "Generate & save output",
+    },
+];
 
 const stableStringify = (value: unknown): string => {
     if (value === null || typeof value !== "object") return JSON.stringify(value);
@@ -320,37 +338,53 @@ const GenerateDocumentPage: React.FC = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
-            <Stack spacing={4}>
+        <>
+            <PageHero
+                title={t("generateDoc.hero.title")}
+                subtitle={t("generateDoc.hero.subtitle")}
+                overline={t("generateDoc.hero.overline", { defaultValue: "Document automation" })}
+                icon={<LibraryBooksIcon />}
+                actions={
+                    <>
+                        <Button
+                            component={RouterLink}
+                            to="/documents"
+                            variant="text"
+                            startIcon={<ArrowBackIcon />}
+                            sx={{ borderRadius: 3 }}
+                        >
+                            {t("generateDoc.hero.back", { defaultValue: "Documents hub" })}
+                        </Button>
+                        <Button
+                            component={RouterLink}
+                            to="/documents/my"
+                            variant="contained"
+                            sx={{ borderRadius: 3, fontWeight: 800 }}
+                        >
+                            {t("generateDoc.hero.savedCta")}
+                        </Button>
+                    </>
+                }
+            >
                 <Stack
-                    direction={{ xs: "column", md: "row" }}
-                    alignItems={{ xs: "flex-start", md: "center" }}
-                    spacing={{ xs: 1.5, md: 1 }}
-                    justifyContent="space-between"
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 2, sm: 4 }}
+                    flexWrap="wrap"
                 >
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                        <IconButton component={RouterLink} to="/documents">
-                            <ArrowBackIcon />
-                        </IconButton>
-                        <Box>
-                            <Typography variant="h4" fontWeight={900}>
-                                {t("generateDoc.hero.title")}
+                    {HERO_STEPS.map((step, idx) => (
+                        <Stack key={step.key} spacing={0.5}>
+                            <Typography variant="subtitle2" fontWeight={800}>
+                                0{idx + 1}
                             </Typography>
-                            <Typography color="text.secondary">
-                                {t("generateDoc.hero.subtitle")}
+                            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                                {t(step.labelKey, { defaultValue: step.defaultLabel })}
                             </Typography>
-                        </Box>
-                    </Stack>
-                    <Button
-                        component={RouterLink}
-                        to="/documents/my"
-                        variant="text"
-                        sx={{ width: { xs: "100%", md: "auto" }, justifyContent: "flex-end" }}
-                    >
-                        {t("generateDoc.hero.savedCta")}
-                    </Button>
+                        </Stack>
+                    ))}
                 </Stack>
+            </PageHero>
 
+            <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
                 <Grid container spacing={{ xs: 4, md: 5 }}>
                     <Grid size={{ xs: 12, md: 4 }}>
                         <Card sx={{ borderRadius: 4, position: "sticky", top: 32 }}>
@@ -613,7 +647,7 @@ const GenerateDocumentPage: React.FC = () => {
                         </Stack>
                     </Grid>
                 </Grid>
-            </Stack>
+            </Container>
 
             <Snackbar
                 open={snackbar.open}
@@ -621,7 +655,7 @@ const GenerateDocumentPage: React.FC = () => {
                 onClose={() => setSnackbar({ open: false, text: "" })}
                 message={snackbar.text}
             />
-        </Container>
+        </>
     );
 };
 
