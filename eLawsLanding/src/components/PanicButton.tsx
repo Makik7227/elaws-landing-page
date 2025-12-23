@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Button,
     CircularProgress,
@@ -7,9 +7,11 @@ import {
     DialogContent,
     DialogActions,
     Typography,
+    Tooltip,
 } from "@mui/material";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import ShieldIcon from "@mui/icons-material/Shield";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { auth, db } from "../../firebase";
 import {
     addDoc,
@@ -26,6 +28,12 @@ import { useNavigate } from "react-router-dom";
 import CustomCountryPicker from "./CustomCountryPicker";
 import { sendMessageToGPT } from "../api/chat.ts"; // ✅ reuse your picker
 import { useTranslation } from "react-i18next";
+import {
+    canTriggerPanic,
+    hasUsedFreePanic,
+    markFreePanicUsed,
+    type Tier,
+} from "../utils/monetization.ts";
 
 type ChatRole = "system" | "user" | "assistant";
 type ChatMessage = { role: ChatRole; content: string };
@@ -35,20 +43,50 @@ export default function PanicButtonWeb({
                                            defaultCode,
                                            tokensUsed,
                                            tokenLimit,
+                                           subscriptionTier,
+                                           userId,
+                                           onLockedAttempt,
                                        }: {
     defaultCountry: string;
     defaultCode: string;
     tokensUsed?: number;
     tokenLimit?: number;
+    subscriptionTier: Tier;
+    userId: string;
+    onLockedAttempt?: () => void;
 }) {
     const [open, setOpen] = useState(false);
     const [country, setCountry] = useState(defaultCountry);
     const [countryCode, setCountryCode] = useState(defaultCode);
     const [loading, setLoading] = useState(false);
+    const [panicLocked, setPanicLocked] = useState(false);
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const usageLabel = useMemo(() => {
+        if (subscriptionTier !== "free") return t("components.panicButton.unlimited");
+        return panicLocked
+            ? t("components.panicButton.lockedLabel")
+            : t("components.panicButton.trialLabel");
+    }, [panicLocked, subscriptionTier, t]);
+
+    useEffect(() => {
+        setPanicLocked(hasUsedFreePanic(userId));
+    }, [userId]);
+
+    const handleTriggerClick = () => {
+        if (!canTriggerPanic(subscriptionTier, panicLocked)) {
+            onLockedAttempt?.();
+            return;
+        }
+        setOpen(true);
+    };
 
     const handleStart = async () => {
+        if (!canTriggerPanic(subscriptionTier, panicLocked)) {
+            onLockedAttempt?.();
+            setOpen(false);
+            return;
+        }
         setLoading(true);
         try {
             const currentUser = auth.currentUser;
@@ -127,6 +165,10 @@ export default function PanicButtonWeb({
                     tokenLimit: tokenLimit?.toString() || "0",
                 },
             });
+            if (subscriptionTier === "free" && !panicLocked) {
+                markFreePanicUsed(userId);
+                setPanicLocked(true);
+            }
         } catch (err) {
             console.error("PanicButtonWeb error:", err);
         } finally {
@@ -137,20 +179,34 @@ export default function PanicButtonWeb({
 
     return (
         <>
-            <Button
-                variant="contained"
-                color="error"
-                startIcon={<LocalPoliceRoundedIcon />}
-                sx={{
-                    borderRadius: 2,
-                    fontWeight: 800,
-                    px: 3,
-                    py: 1.5,
-                }}
-                onClick={() => setOpen(true)}
+            <Tooltip
+                title={
+                    panicLocked && subscriptionTier === "free"
+                        ? t("components.panicButton.lockedHint")
+                        : usageLabel
+                }
+                arrow
             >
-                {t("components.panicButton.trigger")}
-            </Button>
+                <Button
+                    variant="contained"
+                    color={panicLocked && subscriptionTier === "free" ? "inherit" : "error"}
+                    startIcon={panicLocked && subscriptionTier === "free" ? <LockOutlinedIcon /> : <LocalPoliceRoundedIcon />}
+                    sx={{
+                        borderRadius: 2,
+                        fontWeight: 800,
+                        px: 3,
+                        py: 1.5,
+                        textTransform: "none",
+                        opacity: panicLocked && subscriptionTier === "free" ? 0.7 : 1,
+                        borderStyle: panicLocked && subscriptionTier === "free" ? "dashed" : "solid",
+                    }}
+                    onClick={handleTriggerClick}
+                >
+                    {panicLocked && subscriptionTier === "free"
+                        ? t("components.panicButton.lockedCta")
+                        : t("components.panicButton.trigger")}
+                </Button>
+            </Tooltip>
 
             <Dialog open={open} onClose={() => !loading && setOpen(false)} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>

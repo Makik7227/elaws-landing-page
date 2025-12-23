@@ -22,16 +22,17 @@ import {
     useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { Save as SaveIcon, Send as SendIcon } from "@mui/icons-material";
+import { Save as SaveIcon, Send as SendIcon, BoltRounded as BoltRoundedIcon } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion";
 import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { sendMessageToGPT } from "../api/chat";
 import CustomCountryPickerWeb from "../components/CustomCountryPicker";
 import { onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
+import { shouldWarnAboutTokens, type Tier } from "../utils/monetization";
 
 interface Message {
     id: string;
@@ -91,6 +92,51 @@ const AiChatPage: React.FC = () => {
     const [authChecked, setAuthChecked] = useState(false);
     const [profileLoading, setProfileLoading] = useState(true);
     const [persistHydrated, setPersistHydrated] = useState(false);
+    const [tokenLimit, setTokenLimit] = useState(0);
+    const [monthlyTokensUsed, setMonthlyTokensUsed] = useState(0);
+    const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const tokenWarning = shouldWarnAboutTokens(monthlyTokensUsed, tokenLimit);
+    const tokenUsageLabel =
+        tokenLimit > 0
+            ? t("aiChat.tokens.usage", {
+                  used: monthlyTokensUsed.toLocaleString(),
+                  limit: tokenLimit.toLocaleString(),
+              })
+            : null;
+    const renderUsageBanner = () => {
+        if (!tokenUsageLabel && !tokenWarning) return null;
+        return (
+            <Stack spacing={1} mb={3}>
+                {tokenUsageLabel && (
+                    <Chip
+                        label={tokenUsageLabel}
+                        icon={<BoltRoundedIcon />}
+                        variant="outlined"
+                        color={tokenWarning ? "warning" : "default"}
+                    />
+                )}
+                {tokenWarning && (
+                    <Alert
+                        severity="warning"
+                        action={
+                            <Button
+                                component={RouterLink}
+                                to="/dashboard/subscribe"
+                                size="small"
+                                variant="contained"
+                            >
+                                {t("aiChat.tokens.cta")}
+                            </Button>
+                        }
+                    >
+                        {subscriptionTier === "free"
+                            ? t("aiChat.tokens.freeWarning")
+                            : t("aiChat.tokens.plusWarning")}
+                    </Alert>
+                )}
+            </Stack>
+        );
+    };
 
     const [noteDialog, setNoteDialog] = useState<{
         open: boolean;
@@ -140,9 +186,22 @@ const AiChatPage: React.FC = () => {
             try {
                 const snap = await getDoc(doc(db, "users", u.uid));
                 if (snap.exists()) {
-                    const data = snap.data();
-                    if (data.country) setCountry((prev) => prev || data.country);
-                    if (data.countryCode) setCountryCode((prev) => prev || data.countryCode);
+                    const data = snap.data() as {
+                        country?: string;
+                        countryCode?: string;
+                        monthlyTokensUsed?: number;
+                        tokenLimit?: number;
+                        subscriptionTier?: Tier;
+                    };
+                    if (data.country) setCountry(data.country);
+                    if (data.countryCode) setCountryCode(data.countryCode);
+                    if (typeof data.monthlyTokensUsed === "number") {
+                        setMonthlyTokensUsed(data.monthlyTokensUsed);
+                    }
+                    if (typeof data.tokenLimit === "number") {
+                        setTokenLimit(data.tokenLimit);
+                    }
+                    setSubscriptionTier((data.subscriptionTier as Tier) ?? "free");
                 }
             } catch (error) {
                 console.error("Failed to load profile", error);
@@ -619,6 +678,7 @@ Instructions:
             <>
                 {backButton}
                 <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
+                    {renderUsageBanner()}
                     <Grid container spacing={{ xs: 4, md: 6 }} alignItems="stretch">
                         <Grid size={{ xs: 12, md: 5 }}>
                             <Card sx={{ height: "100%", borderRadius: 4 }}>
@@ -679,6 +739,7 @@ Instructions:
 
     const layout = (
         <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+            {renderUsageBanner()}
             <Grid container spacing={{ xs: 4, md: 5 }} alignItems="stretch">
                 <Grid size={{ xs: 12, md: 4 }}>{renderContextPanel(false)}</Grid>
                 <Grid size={{ xs: 12, md: 8 }}>{renderChatPanel(false)}</Grid>

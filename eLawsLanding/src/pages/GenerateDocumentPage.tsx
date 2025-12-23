@@ -22,11 +22,15 @@ import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import BoltIcon from "@mui/icons-material/Bolt";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import {
     QueryDocumentSnapshot,
     addDoc,
     collection,
+    doc,
+    getDoc,
     getDocs,
     serverTimestamp,
 } from "firebase/firestore";
@@ -37,6 +41,15 @@ import { sendMessageToGPT } from "../api/chat";
 import CustomDatePicker from "../components/CustomDatePicker";
 import { useTranslation } from "react-i18next";
 import PageHero from "../components/PageHero";
+import UpgradePromptDialog from "../components/UpgradePromptDialog";
+import {
+    canGenerateDocument,
+    getDocumentLimit,
+    getDocumentRunsThisMonth,
+    incrementDocumentRunsThisMonth,
+    remainingDocumentRuns,
+    type Tier,
+} from "../utils/monetization";
 
 type SchemaParamType = "text" | "textarea" | "number" | "date" | "email" | "list" | "dropdown";
 
@@ -94,6 +107,8 @@ const GenerateDocumentPage: React.FC = () => {
     const { t } = useTranslation();
     const [authReady, setAuthReady] = useState(false);
     const [user, setUser] = useState<User | null>(auth.currentUser);
+    const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const [docRuns, setDocRuns] = useState(0);
 
     // schema state
     const [schemas, setSchemas] = useState<Record<string, SchemaDoc>>({});
@@ -118,6 +133,12 @@ const GenerateDocumentPage: React.FC = () => {
     const [saving, setSaving] = useState(false);
     const [fileName, setFileName] = useState("");
     const [snackbar, setSnackbar] = useState<{ open: boolean; text: string }>({ open: false, text: "" });
+    const [upgradePrompt, setUpgradePrompt] = useState<{
+        title: string;
+        description: string;
+        requiredTier: "plus" | "premium";
+        highlight?: string;
+    } | null>(null);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => {
@@ -127,6 +148,30 @@ const GenerateDocumentPage: React.FC = () => {
         });
         return () => unsub();
     }, [navigate]);
+
+    useEffect(() => {
+        if (!user) {
+            setSubscriptionTier("free");
+            setDocRuns(0);
+            return;
+        }
+        const hydrateProfile = async () => {
+            try {
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    const data = snap.data() as { subscriptionTier?: Tier };
+                    setSubscriptionTier((data.subscriptionTier as Tier) ?? "free");
+                } else {
+                    setSubscriptionTier("free");
+                }
+            } catch {
+                setSubscriptionTier("free");
+            } finally {
+                setDocRuns(getDocumentRunsThisMonth(user.uid));
+            }
+        };
+        hydrateProfile();
+    }, [user]);
 
     useEffect(() => {
         const loadSchemas = async () => {
@@ -216,6 +261,14 @@ const GenerateDocumentPage: React.FC = () => {
             })),
         [schemaOrder, schemas]
     );
+    const docLimit = getDocumentLimit(subscriptionTier);
+    const docRemaining = remainingDocumentRuns(subscriptionTier, docRuns);
+    const generationLocked = !canGenerateDocument(subscriptionTier, docRuns);
+    const upgradeTier = subscriptionTier === "free" ? "plus" : "premium";
+    const docUsageLabel =
+        docLimit === null
+            ? t("generateDoc.limits.unlimited")
+            : t("generateDoc.limits.counter", { remaining: Math.max(0, docRemaining), limit: docLimit });
 
     const setValue = useCallback(
         (key: string, value: unknown) => {
@@ -254,6 +307,20 @@ const GenerateDocumentPage: React.FC = () => {
             setOutput("");
             setTokensUsed(null);
             setUsedCache(false);
+            if (!canGenerateDocument(subscriptionTier, docRuns)) {
+                const key = subscriptionTier === "free" ? "free" : "plus";
+                const highlight =
+                    subscriptionTier === "plus" && docLimit !== null
+                        ? t("generateDoc.limits.plusHighlight", { limit: docLimit })
+                        : undefined;
+                setUpgradePrompt({
+                    title: t(`generateDoc.limits.${key}Title`),
+                    description: t(`generateDoc.limits.${key}Description`),
+                    requiredTier: upgradeTier,
+                    highlight,
+                });
+                return;
+            }
             if (!selectedSchemaId) throw new Error(t("generateDoc.errors.selectTemplate"));
             if (missingRequired.length) {
                 throw new Error(
@@ -289,6 +356,10 @@ const GenerateDocumentPage: React.FC = () => {
             setOutput(content);
             setTokensUsed(totalTokens);
             localStorage.setItem(cacheKey, content);
+            if (subscriptionTier !== "free") {
+                const used = incrementDocumentRunsThisMonth(user?.uid);
+                setDocRuns(used);
+            }
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : t("generateDoc.errors.generateFailed");
@@ -296,7 +367,7 @@ const GenerateDocumentPage: React.FC = () => {
         } finally {
             setGenerating(false);
         }
-    }, [selectedSchemaId, formValues, missingRequired, buildUserPrompt, t]);
+    }, [selectedSchemaId, formValues, missingRequired, buildUserPrompt, t, subscriptionTier, docRuns, docLimit, upgradeTier, user]);
 
     const handleSave = useCallback(async () => {
         try {
@@ -385,6 +456,36 @@ const GenerateDocumentPage: React.FC = () => {
             </PageHero>
 
             <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
+                <Stack spacing={1.5} mb={3}>
+                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                        <Chip label={docUsageLabel} icon={<DescriptionOutlinedIcon />} variant="outlined" />
+                        {subscriptionTier === "plus" && docLimit !== null && (
+                            <Chip
+                                color={docRemaining <= 1 ? "warning" : "default"}
+                                label={t("generateDoc.limits.remaining", { count: Math.max(0, docRemaining) })}
+                            />
+                        )}
+                    </Stack>
+                    {generationLocked && (
+                        <Alert
+                            severity={subscriptionTier === "free" ? "info" : "warning"}
+                            action={
+                                <Button
+                                    size="small"
+                                    variant="contained"
+                                    component={RouterLink}
+                                    to="/dashboard/subscribe"
+                                >
+                                    {t("generateDoc.limits.cta")}
+                                </Button>
+                            }
+                        >
+                            {subscriptionTier === "free"
+                                ? t("generateDoc.limits.freeInline")
+                                : t("generateDoc.limits.plusInline", { limit: docLimit ?? 0 })}
+                        </Alert>
+                    )}
+                </Stack>
                 <Grid container spacing={{ xs: 4, md: 5 }}>
                     <Grid size={{ xs: 12, md: 4 }}>
                         <Card sx={{ borderRadius: 4, position: "sticky", top: 32 }}>
@@ -562,14 +663,32 @@ const GenerateDocumentPage: React.FC = () => {
                                             })}
                                             <Button
                                                 variant="contained"
-                                                startIcon={generating ? <CircularProgress size={18} /> : <BoltIcon />}
+                                                startIcon={
+                                                    generating ? (
+                                                        <CircularProgress size={18} />
+                                                    ) : generationLocked ? (
+                                                        <LockOutlinedIcon />
+                                                    ) : (
+                                                        <BoltIcon />
+                                                    )
+                                                }
                                                 onClick={handleGenerate}
                                                 disabled={generating}
-                                                sx={{ alignSelf: "flex-start" }}
+                                                sx={{
+                                                    alignSelf: "flex-start",
+                                                    borderRadius: 3,
+                                                    fontWeight: 700,
+                                                    borderStyle: generationLocked ? "dashed" : "solid",
+                                                    opacity: generationLocked ? 0.85 : 1,
+                                                }}
                                             >
-                                                {generating
-                                                    ? t("generateDoc.actions.generating")
-                                                    : t("generateDoc.actions.generate")}
+                                                {generationLocked
+                                                    ? t("generateDoc.actions.generateLocked", {
+                                                          tier: upgradeTier.toUpperCase(),
+                                                      })
+                                                    : generating
+                                                        ? t("generateDoc.actions.generating")
+                                                        : t("generateDoc.actions.generate")}
                                             </Button>
                                             {error && <Alert severity="error">{error}</Alert>}
                                         </Stack>
@@ -648,6 +767,17 @@ const GenerateDocumentPage: React.FC = () => {
                     </Grid>
                 </Grid>
             </Container>
+
+            {upgradePrompt && (
+                <UpgradePromptDialog
+                    open
+                    onClose={() => setUpgradePrompt(null)}
+                    title={upgradePrompt.title}
+                    description={upgradePrompt.description}
+                    requiredTier={upgradePrompt.requiredTier}
+                    highlight={upgradePrompt.highlight}
+                />
+            )}
 
             <Snackbar
                 open={snackbar.open}

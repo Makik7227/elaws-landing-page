@@ -26,6 +26,8 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useTranslation } from "react-i18next";
+import UpgradePromptDialog from "../components/UpgradePromptDialog";
+import { canCreateCase, type Tier } from "../utils/monetization";
 
 type ClientProfile = {
     uid: string;
@@ -46,6 +48,9 @@ const CreateCasePage = () => {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isLawyer, setIsLawyer] = useState(false);
+    const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const [upgradePromptOpen, setUpgradePromptOpen] = useState(false);
+    const planLocked = !canCreateCase(subscriptionTier);
 
     const loadClients = useCallback(async (uid: string) => {
         setClientsLoading(true);
@@ -103,7 +108,10 @@ const CreateCasePage = () => {
                 if (!profileSnap.exists()) {
                     throw new Error(t("createCasePage.errors.profileIncomplete"));
                 }
-                const role = profileSnap.data().role;
+                const data = profileSnap.data() as Record<string, unknown>;
+                const role = data.role;
+                const tier = (data.subscriptionTier as Tier) ?? "free";
+                setSubscriptionTier(tier);
                 const isUserLawyer = role === "lawyer";
                 setIsLawyer(isUserLawyer);
                 if (!isUserLawyer) {
@@ -125,6 +133,11 @@ const CreateCasePage = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError(null);
+        if (planLocked) {
+            setUpgradePromptOpen(true);
+            setError(t("createCasePage.plan.locked"));
+            return;
+        }
         if (!currentUser || !isLawyer) {
             setError(t("createCasePage.errors.lawyerOnly"));
             return;
@@ -209,13 +222,29 @@ const CreateCasePage = () => {
                                     {t("createCasePage.errors.lawyerOnly")}
                                 </Alert>
                             )}
+                            {isLawyer && planLocked && (
+                                <Alert
+                                    severity="warning"
+                                    action={
+                                        <Button
+                                            size="small"
+                                            variant="contained"
+                                            onClick={() => navigate("/dashboard/subscribe")}
+                                        >
+                                            {t("createCasePage.plan.cta")}
+                                        </Button>
+                                    }
+                                >
+                                    {t("createCasePage.plan.banner")}
+                                </Alert>
+                            )}
                             <TextField
                                 label={t("createCasePage.form.titleLabel")}
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 required
                                 fullWidth
-                                disabled={!isLawyer}
+                                disabled={!isLawyer || planLocked}
                             />
                             <TextField
                                 label={t("createCasePage.form.descriptionLabel")}
@@ -225,7 +254,7 @@ const CreateCasePage = () => {
                                 multiline
                                 minRows={4}
                                 placeholder={t("createCasePage.form.descriptionPlaceholder")}
-                                disabled={!isLawyer}
+                                disabled={!isLawyer || planLocked}
                             />
                             <Autocomplete<ClientProfile, false, false, false>
                                 options={clients}
@@ -234,7 +263,7 @@ const CreateCasePage = () => {
                                 onChange={(_, value) => setSelectedClient(value)}
                                 getOptionLabel={(option) => option.displayName}
                                 isOptionEqualToValue={(option, value) => option.uid === value.uid}
-                                disabled={!isLawyer}
+                                disabled={!isLawyer || planLocked}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -266,16 +295,34 @@ const CreateCasePage = () => {
                                     type="submit"
                                     variant="contained"
                                     disabled={submitting || clientsLoading || !isLawyer}
+                                    onClick={(event) => {
+                                        if (planLocked) {
+                                            event.preventDefault();
+                                            setUpgradePromptOpen(true);
+                                        }
+                                    }}
                                 >
-                                    {submitting
-                                        ? t("createCasePage.actions.submitting")
-                                        : t("createCasePage.actions.submit")}
+                                    {planLocked
+                                        ? t("createCasePage.plan.cta")
+                                        : submitting
+                                            ? t("createCasePage.actions.submitting")
+                                            : t("createCasePage.actions.submit")}
                                 </Button>
                             </Stack>
                         </Stack>
                     </CardContent>
                 </Card>
             </Stack>
+
+            {upgradePromptOpen && (
+                <UpgradePromptDialog
+                    open
+                    onClose={() => setUpgradePromptOpen(false)}
+                    title={t("createCasePage.plan.dialogTitle")}
+                    description={t("createCasePage.plan.dialogDescription")}
+                    requiredTier="premium"
+                />
+            )}
         </Container>
     );
 };

@@ -40,6 +40,7 @@ import {
     KeyboardArrowRight,
     TuneRounded as TuneRoundedIcon,
     CheckRounded as CheckRoundedIcon,
+    LockOutlined as LockOutlinedIcon,
 } from "@mui/icons-material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { auth, db } from "../../firebase";
@@ -64,6 +65,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import caseProperties from "../utils/caseProperties.json";
 import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
+import UpgradePromptDialog from "../components/UpgradePromptDialog";
+import type { Tier } from "../utils/monetization";
 
 const popularProperties = caseProperties as { key: string; label: string }[];
 
@@ -146,6 +149,9 @@ const CasesPage: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const [upgradePromptOpen, setUpgradePromptOpen] = useState(false);
+    const planLocked = subscriptionTier !== "premium";
     const { t, i18n } = useTranslation();
 
     const propertyKeyMap = useMemo(() => {
@@ -202,11 +208,14 @@ const CasesPage: React.FC = () => {
 
             unsubRole = onSnapshot(doc(db, "users", u.uid), (snap) => {
                 if (snap.exists()) {
-                    const role = snap.data().role as "lawyer" | "client" | undefined;
+                    const data = snap.data() as { role?: "lawyer" | "client"; subscriptionTier?: Tier };
+                    const role = data.role;
+                    setSubscriptionTier((data.subscriptionTier as Tier) ?? "free");
                     if (role === "lawyer" || role === "client") setUserRole(role);
                     else setUserRole(null);
                 } else {
                     setUserRole(null);
+                    setSubscriptionTier("free");
                 }
             });
         });
@@ -218,7 +227,13 @@ const CasesPage: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (!user) return;
+        if (!user || planLocked) {
+            if (planLocked) {
+                setCases([]);
+                setLoading(false);
+            }
+            return;
+        }
         setLoading(true);
         const roleField = userRole === "lawyer" ? "lawyerId" : "clientId";
         const constraints: QueryConstraint[] = [
@@ -247,7 +262,7 @@ const CasesPage: React.FC = () => {
             }
         );
         return () => unsub();
-    }, [user, userRole, caseFilters, t]);
+    }, [user, userRole, caseFilters, t, planLocked]);
 
     useEffect(() => {
         if (!selectedCase) {
@@ -282,6 +297,12 @@ const CasesPage: React.FC = () => {
             setSelectedCase(null);
         }
     }, [cases, selectedCase]);
+
+    useEffect(() => {
+        if (planLocked && selectedCase) {
+            setSelectedCase(null);
+        }
+    }, [planLocked, selectedCase]);
 
     useEffect(() => {
         if (!selectedCase) {
@@ -534,6 +555,41 @@ const CasesPage: React.FC = () => {
             setErrorMsg(t("casesPage.errors.deleteCase"));
         }
     };
+
+    if (planLocked) {
+        return (
+            <Container maxWidth="md" sx={{ py: 6 }}>
+                <Box sx={{ mb: 2 }}>
+                    <DashboardBackButton />
+                </Box>
+                <Card sx={{ borderRadius: 4, textAlign: "center", p: { xs: 3, md: 4 } }}>
+                    <CardContent>
+                        <Stack spacing={2} alignItems="center">
+                            <LockOutlinedIcon color="warning" fontSize="large" />
+                            <Typography variant="h5" fontWeight={800}>
+                                {t("casesPage.plan.lockedTitle")}
+                            </Typography>
+                            <Typography color="text.secondary">
+                                {t("casesPage.plan.lockedDescription")}
+                            </Typography>
+                            <Button variant="contained" onClick={() => setUpgradePromptOpen(true)}>
+                                {t("casesPage.plan.cta")}
+                            </Button>
+                        </Stack>
+                    </CardContent>
+                </Card>
+                {upgradePromptOpen && (
+                    <UpgradePromptDialog
+                        open
+                        onClose={() => setUpgradePromptOpen(false)}
+                        title={t("casesPage.plan.dialogTitle")}
+                        description={t("casesPage.plan.dialogDescription")}
+                        requiredTier="premium"
+                    />
+                )}
+            </Container>
+        );
+    }
 
     return (
         <Container maxWidth="lg" sx={{ py: 5, display: "flex", flexDirection: "column", minHeight: "50dvh" }}>

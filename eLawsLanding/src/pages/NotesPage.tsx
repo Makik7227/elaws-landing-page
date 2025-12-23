@@ -54,9 +54,12 @@ import NoteOutlinedIcon from "@mui/icons-material/NoteOutlined";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
+import UpgradePromptDialog from "../components/UpgradePromptDialog";
+import { getNoteLimit, shouldLockNotes, type Tier } from "../utils/monetization";
 
 type Note = {
     id: string;
@@ -77,6 +80,13 @@ type CaseSummary = {
 type NoteFilters = {
     timeframe: "any" | "7d" | "30d";
     caseId: string;
+};
+
+type UpgradePromptState = {
+    title: string;
+    description: string;
+    requiredTier: "plus" | "premium";
+    highlight?: string;
 };
 
 const getNotesCutoff = (range: NoteFilters["timeframe"]) => {
@@ -105,11 +115,12 @@ const NotesPage: React.FC = () => {
     const [noteError, setNoteError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [userRole, setUserRole] = useState<"lawyer" | "client" | null>(null);
-    const [subscriptionTier, setSubscriptionTier] = useState<"free" | "plus" | "premium">("free");
+    const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
     const [lawyerCases, setLawyerCases] = useState<CaseSummary[]>([]);
     const [noteFilters, setNoteFilters] = useState<NoteFilters>({ timeframe: "any", caseId: "" });
     const [noteFilterAnchorEl, setNoteFilterAnchorEl] = useState<null | HTMLElement>(null);
     const noteFilterMenuOpen = Boolean(noteFilterAnchorEl);
+    const [upgradePrompt, setUpgradePrompt] = useState<UpgradePromptState | null>(null);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => {
@@ -229,8 +240,28 @@ const NotesPage: React.FC = () => {
         setNoteError(null);
     };
 
+    const showNoteUpgradePrompt = () => {
+        setUpgradePrompt({
+            title: t("notesPage.limit.dialogTitle"),
+            description:
+                subscriptionTier === "free"
+                    ? t("notesPage.limit.dialogFree")
+                    : t("notesPage.limit.dialogPlus"),
+            requiredTier: subscriptionTier === "free" ? "plus" : "premium",
+            highlight:
+                noteLimit !== null
+                    ? t("notesPage.limit.dialogHighlight", { limit: noteLimit })
+                    : undefined,
+        });
+    };
+
     const handleSaveNote = async () => {
         if (!uid) return;
+        if (shouldLockNotes(subscriptionTier, notes.length)) {
+            setNoteError(t("notesPage.manualDialog.errors.limit"));
+            showNoteUpgradePrompt();
+            return;
+        }
         if (!noteContent.trim()) {
             setNoteError(t("notesPage.manualDialog.errors.content"));
             return;
@@ -289,6 +320,23 @@ const NotesPage: React.FC = () => {
         ],
         [t]
     );
+    const noteLimit = getNoteLimit(subscriptionTier);
+    const notesLocked = shouldLockNotes(subscriptionTier, notes.length);
+    const noteLimitLabel =
+        noteLimit === null
+            ? t("notesPage.limit.unlimited")
+            : t("notesPage.limit.label", {
+                  used: Math.min(notes.length, noteLimit),
+                  limit: noteLimit,
+              });
+    const handleCreateNoteClick = () => {
+        if (notesLocked) {
+            showNoteUpgradePrompt();
+            return;
+        }
+        setNoteDialogOpen(true);
+        resetNoteDialog();
+    };
 
     return (
         <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
@@ -315,10 +363,37 @@ const NotesPage: React.FC = () => {
                                 </Typography>
                             </Box>
                         </Stack>
-                        <Chip label={t("notesPage.hero.count", { count: visibleNotes.length })} color="primary" variant="outlined" />
+                        <Stack direction="row" spacing={1}>
+                            <Chip label={t("notesPage.hero.count", { count: visibleNotes.length })} color="primary" variant="outlined" />
+                            <Chip
+                                label={noteLimitLabel}
+                                color={notesLocked ? "warning" : "default"}
+                                variant={notesLocked ? "filled" : "outlined"}
+                            />
+                        </Stack>
                     </Stack>
                 </CardContent>
             </Card>
+
+            {notesLocked && (
+                <Alert
+                    severity="warning"
+                    sx={{ mb: 3 }}
+                    action={
+                        <Button
+                            size="small"
+                            variant="contained"
+                            onClick={() => navigate("/dashboard/subscribe")}
+                        >
+                            {t("notesPage.limit.cta")}
+                        </Button>
+                    }
+                >
+                    {subscriptionTier === "free"
+                        ? t("notesPage.limit.freeMessage")
+                        : t("notesPage.limit.plusMessage", { limit: noteLimit ?? 0 })}
+                </Alert>
+            )}
 
             <Stack spacing={1.5} mb={3}>
                 <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
@@ -409,11 +484,14 @@ const NotesPage: React.FC = () => {
             <Stack direction={{ xs: "column", sm: "row" }} spacing={1} width={{ xs: "100%", md: "auto" }} mb={4}>
                 <Button
                     variant="contained"
-                    sx={{ flex: 1 }}
-                    onClick={() => {
-                        setNoteDialogOpen(true);
-                        resetNoteDialog();
+                    sx={{
+                        flex: 1,
+                        borderRadius: 3,
+                        borderStyle: notesLocked ? "dashed" : "solid",
+                        opacity: notesLocked ? 0.8 : 1,
                     }}
+                    startIcon={notesLocked ? <LockOutlinedIcon /> : undefined}
+                    onClick={handleCreateNoteClick}
                 >
                     {t("notesPage.actions.createManual")}
                 </Button>
@@ -614,6 +692,17 @@ const NotesPage: React.FC = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {upgradePrompt && (
+                <UpgradePromptDialog
+                    open
+                    onClose={() => setUpgradePrompt(null)}
+                    title={upgradePrompt.title}
+                    description={upgradePrompt.description}
+                    requiredTier={upgradePrompt.requiredTier}
+                    highlight={upgradePrompt.highlight}
+                />
+            )}
 
             <Snackbar
                 open={!!successMsg}

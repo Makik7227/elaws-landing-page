@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    Alert,
     Avatar,
     Box,
     Button,
@@ -12,6 +13,7 @@ import {
     LinearProgress,
     Skeleton,
     Stack,
+    Tooltip,
     Typography,
     useTheme,
 } from "@mui/material";
@@ -25,6 +27,7 @@ import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -44,8 +47,16 @@ import { auth, db } from "../../firebase";
 import PanicButtonWeb from "../components/PanicButton.tsx";
 import SubscriptionButton from "../components/SubscriptionButton.tsx";
 import { useTranslation } from "react-i18next";
-
-type Tier = "free" | "plus" | "premium";
+import UpgradePromptDialog from "../components/UpgradePromptDialog.tsx";
+import {
+    getDocumentRunsThisMonth,
+    getDocumentLimit,
+    hasUsedFreePanic,
+    remainingDocumentRuns,
+    shouldWarnAboutTokens,
+    isTierAtLeast,
+    type Tier,
+} from "../utils/monetization.ts";
 type Role = "client" | "lawyer";
 
 type UserDoc = {
@@ -81,6 +92,23 @@ type ChatMeta = {
     users?: string[];
 };
 
+type UpgradePromptState = {
+    title: string;
+    description: string;
+    requiredTier: "plus" | "premium";
+    highlight?: string;
+};
+type QuickActionConfig = {
+    key: "chats" | "aiChat" | "createDoc" | "cases" | "stopProcedures" | "connections" | "notes";
+    to: string;
+    icon: React.ReactNode;
+    title: string;
+    minTier: Tier | "free";
+    requiredTier?: "plus" | "premium";
+    upgradeKey?: "panic" | "cases" | "tokens" | "documents" | "notes";
+    lockCopyKey?: "cases" | "procedures";
+};
+
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
 const Dashboard: React.FC = () => {
@@ -93,6 +121,10 @@ const Dashboard: React.FC = () => {
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const [lastCase, setLastCase] = useState<CaseDoc | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [docRuns, setDocRuns] = useState<number>(0);
+    const [panicUsed, setPanicUsed] = useState<boolean>(false);
+    const [upgradePrompt, setUpgradePrompt] = useState<UpgradePromptState | null>(null);
+    const [tokenPromptShown, setTokenPromptShown] = useState(false);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -230,6 +262,23 @@ const Dashboard: React.FC = () => {
         };
     }, [uid]);
 
+    useEffect(() => {
+        if (!uid) return;
+        setPanicUsed(hasUsedFreePanic(uid));
+        setDocRuns(getDocumentRunsThisMonth(uid));
+    }, [uid]);
+
+    useEffect(() => {
+        if (!uid) return;
+        const handler = (event: StorageEvent) => {
+            if (!event.key || !event.key.includes(uid)) return;
+            setPanicUsed(hasUsedFreePanic(uid));
+            setDocRuns(getDocumentRunsThisMonth(uid));
+        };
+        window.addEventListener("storage", handler);
+        return () => window.removeEventListener("storage", handler);
+    }, [uid]);
+
     if (!uid || !user) {
         return (
             <Container maxWidth="md" sx={{ py: 10, textAlign: "center" }}>
@@ -254,6 +303,22 @@ const Dashboard: React.FC = () => {
         subscriptionCancelDate = null,
     } = user;
 
+    const tokenWarning = shouldWarnAboutTokens(monthlyTokensUsed, tokenLimit);
+    const docLimit = getDocumentLimit(subscriptionTier);
+    const docRemaining = remainingDocumentRuns(subscriptionTier, docRuns);
+    const docUsageLabel =
+        docLimit === null
+            ? t("dashboard.usage.docUnlimited")
+            : t("dashboard.usage.docLabel", {
+                  remaining: docRemaining === Infinity ? "∞" : docRemaining,
+                  limit: docLimit,
+              });
+    const panicUsageLabel =
+        subscriptionTier === "free"
+            ? panicUsed
+                ? t("dashboard.usage.panicLocked")
+                : t("dashboard.usage.panicAvailable")
+            : t("dashboard.usage.panicUnlimited");
     const formatTierLabel = (tier: Tier | "free") => t(`dashboard.subscription.tiers.${tier}`);
 
     const pendingDowngradeTarget = pendingDowngradeTier ?? (subscriptionCancelAtPeriodEnd ? "free" : null);
@@ -313,6 +378,98 @@ const Dashboard: React.FC = () => {
                   status: lastCaseStatusLabel,
               })
             : t("dashboard.info.lastCase.empty");
+    const quickActionsConfig: QuickActionConfig[] = [
+        {
+            key: "chats",
+            to: "/userChats",
+            icon: <ChatBubbleOutlineRoundedIcon />,
+            title: t("dashboard.quickActions.chats"),
+            minTier: "free",
+        },
+        {
+            key: "aiChat",
+            to: "/ai/chat",
+            icon: <GavelRoundedIcon />,
+            title: t("dashboard.quickActions.aiChat"),
+            minTier: "free",
+        },
+        {
+            key: "createDoc",
+            to: "/documents/generate",
+            icon: <DescriptionRoundedIcon />,
+            title: t("dashboard.quickActions.createDoc"),
+            minTier: "free",
+        },
+        {
+            key: "cases",
+            to: "/dashboard/cases",
+            icon: <WorkOutlineRoundedIcon />,
+            title: t("dashboard.quickActions.cases"),
+            minTier: "premium",
+            requiredTier: "premium",
+            upgradeKey: "cases",
+            lockCopyKey: "cases",
+        },
+        {
+            key: "stopProcedures",
+            to: "/dashboard/procedures/saved",
+            icon: <LocalPoliceRoundedIcon />,
+            title: t("dashboard.quickActions.stopProcedures"),
+            minTier: "plus",
+            requiredTier: "plus",
+            upgradeKey: "documents",
+            lockCopyKey: "procedures",
+        },
+        {
+            key: "connections",
+            to: "/connections",
+            icon: <PeopleAltRoundedIcon />,
+            title: t("dashboard.quickActions.connections"),
+            minTier: "free",
+        },
+        {
+            key: "notes",
+            to: "/dashboard/notes",
+            icon: <AutoStoriesIcon />,
+            title: t("dashboard.quickActions.notes"),
+            minTier: "free",
+        },
+    ];
+    const quickActions = quickActionsConfig.map((action) => {
+        const locked = !isTierAtLeast(subscriptionTier, action.minTier);
+        const helper =
+            locked && action.lockCopyKey
+                ? t(`dashboard.quickActions.locked.${action.lockCopyKey}`)
+                : undefined;
+        return {
+            ...action,
+            locked,
+            helper,
+        };
+    });
+    const openUpgradePrompt = (key: "panic" | "cases" | "tokens" | "documents" | "notes", requiredTier: "plus" | "premium") => {
+        const highlight = t(`upgradePrompt.${key}.highlight`, { defaultValue: "" });
+        setUpgradePrompt({
+            title: t(`upgradePrompt.${key}.title`),
+            description: t(`upgradePrompt.${key}.description`),
+            requiredTier,
+            highlight: highlight || undefined,
+        });
+    };
+    const closeUpgradePrompt = () => setUpgradePrompt(null);
+
+    useEffect(() => {
+        if (tokenWarning && !tokenPromptShown) {
+            const highlight = t("upgradePrompt.tokens.highlight", { defaultValue: "" });
+            setUpgradePrompt({
+                title: t("upgradePrompt.tokens.title"),
+                description: t("upgradePrompt.tokens.description"),
+                requiredTier: subscriptionTier === "free" ? "plus" : "premium",
+                highlight: highlight || undefined,
+            });
+            setTokenPromptShown(true);
+        }
+    }, [tokenWarning, tokenPromptShown, subscriptionTier, t]);
 
     return (
         <>
@@ -415,7 +572,17 @@ const Dashboard: React.FC = () => {
                                             <Skeleton variant="rounded" height={14} />
                                         </Stack>
                                     ) : (
-                                        <Stack spacing={1}>
+                                        <Stack spacing={1.25}>
+                                            <Typography fontWeight={800}>
+                                                {t("dashboard.usage.actionsTitle")}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {t("dashboard.usage.actionsDescription")}
+                                            </Typography>
+                                            <Stack direction="row" spacing={1} flexWrap="wrap">
+                                                <Chip label={panicUsageLabel} size="small" />
+                                                <Chip label={docUsageLabel} size="small" />
+                                            </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Chip icon={<GavelRoundedIcon />} label={t("dashboard.usage.tokenLabel")} size="small" />
                                                 <Typography variant="body2" sx={{ opacity: 0.8 }}>
@@ -431,6 +598,23 @@ const Dashboard: React.FC = () => {
                                                     "& .MuiLinearProgress-bar": { borderRadius: 10 },
                                                 }}
                                             />
+                                            {tokenWarning && (
+                                                <Alert
+                                                    severity="warning"
+                                                    action={
+                                                        <Button
+                                                            size="small"
+                                                            color="warning"
+                                                            component={RouterLink}
+                                                            to="/dashboard/subscribe"
+                                                        >
+                                                            {t("dashboard.usage.warningCta")}
+                                                        </Button>
+                                                    }
+                                                >
+                                                    {t("dashboard.usage.warningCopy")}
+                                                </Alert>
+                                            )}
                                         </Stack>
                                     )}
                                 </Box>
@@ -454,6 +638,9 @@ const Dashboard: React.FC = () => {
                                             defaultCode={user.countryCode || ""}
                                             tokensUsed={user.monthlyTokensUsed || 0}
                                             defaultCountry={user.country || ""}
+                                            subscriptionTier={subscriptionTier}
+                                            userId={uid}
+                                            onLockedAttempt={() => openUpgradePrompt("panic", "plus")}
                                         />
                                     )}
                                 </Stack>
@@ -463,55 +650,59 @@ const Dashboard: React.FC = () => {
 
                     {/* Quick actions + Info */}
                     <Card elevation={3} sx={{ borderRadius: 3 }}>
-                        {subscriptionTier !== "free" && (
-                            <>
-                                <CardContent sx={{ pb: 1, pt: { xs: 2.5, md: 3 } }}>
-                                    <Stack
-                                        direction="row"
-                                        spacing={1.5}
-                                        flexWrap="wrap"
-                                        useFlexGap
-                                        alignItems="center"
-                                    >
-                                        <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title={t("dashboard.quickActions.chats")} />
-                                        <QuickAction to="/ai/chat" icon={<GavelRoundedIcon />} title={t("dashboard.quickActions.aiChat")} />
-                                        <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title={t("dashboard.quickActions.createDoc")} />
-                                        {role === "lawyer" && (
-                                            <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title={t("dashboard.quickActions.cases")} />
-                                        )}
-                                        <QuickAction to="/dashboard/procedures/saved" icon={<LocalPoliceRoundedIcon />} title={t("dashboard.quickActions.stopProcedures")} />
-                                        <QuickAction to="/connections" icon={<PeopleAltRoundedIcon />} title={t("dashboard.quickActions.connections")} />
-                                        <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon />} title={t("dashboard.quickActions.notes")} />
-                                    </Stack>
-                                </CardContent>
+                        <CardContent sx={{ pb: 1, pt: { xs: 2.5, md: 3 } }}>
+                            <Stack
+                                direction="row"
+                                spacing={1.5}
+                                flexWrap="wrap"
+                                useFlexGap
+                                alignItems="center"
+                            >
+                                {quickActions
+                                    .filter((action) => action.key !== "cases" || role === "lawyer")
+                                    .map((action) => (
+                                        <QuickAction
+                                            key={action.key}
+                                            to={action.to}
+                                            icon={action.icon}
+                                            title={action.title}
+                                            locked={action.locked}
+                                            helper={action.helper}
+                                            onLocked={() => {
+                                                if (action.locked && action.requiredTier && action.upgradeKey) {
+                                                    openUpgradePrompt(action.upgradeKey, action.requiredTier);
+                                                }
+                                            }}
+                                        />
+                                    ))}
+                            </Stack>
+                        </CardContent>
 
-                                <CardContent sx={{ pt: 1 }}>
-                                    <Stack
-                                        direction="row"
-                                        spacing={2}
-                                        flexWrap="wrap"
-                                        useFlexGap
-                                        alignItems="stretch"
-                                    >
-                                        <InfoCard
-                                            to="/userChats"
-                                            icon={<ForumRoundedIcon />}
-                                            title={t("dashboard.info.chats.title")}
-                                            text={unreadText}
-                                            actionLabel={t("dashboard.common.open")}
-                                        />
-                                        <InfoCard
-                                            to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
-                                            icon={<AssignmentTurnedInRoundedIcon />}
-                                            title={t("dashboard.info.lastCase.title")}
-                                            text={lastCaseSummary}
-                                            disabled={!lastCase}
-                                            actionLabel={t("dashboard.common.open")}
-                                        />
-                                    </Stack>
-                                </CardContent>
-                            </>
-                        )}
+                        <CardContent sx={{ pt: 1 }}>
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                flexWrap="wrap"
+                                useFlexGap
+                                alignItems="stretch"
+                            >
+                                <InfoCard
+                                    to="/userChats"
+                                    icon={<ForumRoundedIcon />}
+                                    title={t("dashboard.info.chats.title")}
+                                    text={unreadText}
+                                    actionLabel={t("dashboard.common.open")}
+                                />
+                                <InfoCard
+                                    to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
+                                    icon={<AssignmentTurnedInRoundedIcon />}
+                                    title={t("dashboard.info.lastCase.title")}
+                                    text={lastCaseSummary}
+                                    disabled={!lastCase}
+                                    actionLabel={t("dashboard.common.open")}
+                                />
+                            </Stack>
+                        </CardContent>
 
                         <CardContent sx={{ pt: subscriptionTier !== "free" ? 1 : 3 }}>
                             <Stack
@@ -572,6 +763,17 @@ const Dashboard: React.FC = () => {
                     )}
                 </Stack>
             </Container>
+
+            {upgradePrompt && (
+                <UpgradePromptDialog
+                    open
+                    onClose={closeUpgradePrompt}
+                    title={upgradePrompt.title}
+                    description={upgradePrompt.description}
+                    requiredTier={upgradePrompt.requiredTier}
+                    highlight={upgradePrompt.highlight}
+                />
+            )}
         </>
     );
 };
@@ -584,17 +786,31 @@ function QuickAction({
                          to,
                          icon,
                          title,
+                         locked,
+                         helper,
+                         onLocked,
                      }: {
     to: string;
     icon: React.ReactNode;
     title: string;
+    locked?: boolean;
+    helper?: string;
+    onLocked?: () => void;
 }) {
-    return (
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        if (locked) {
+            event.preventDefault();
+            onLocked?.();
+        }
+    };
+
+    const button = (
         <Button
             component={RouterLink}
             to={to}
             variant="outlined"
-            startIcon={icon}
+            startIcon={locked ? <LockOutlinedIcon /> : icon}
+            onClick={handleClick}
             sx={{
                 borderRadius: 2,
                 px: 2.5,
@@ -603,11 +819,15 @@ function QuickAction({
                 textTransform: "none",
                 width: { xs: "100%", sm: "auto" },
                 justifyContent: { xs: "space-between", sm: "center" },
+                opacity: locked ? 0.7 : 1,
+                borderStyle: locked ? "dashed" : "solid",
             }}
         >
             {title}
         </Button>
     );
+
+    return helper && locked ? <Tooltip title={helper}>{button}</Tooltip> : button;
 }
 
 function InfoCard({

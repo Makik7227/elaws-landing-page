@@ -299,8 +299,8 @@
     "pricingPage": {
         "hero": {
             "badge": "Pricing",
-            "title": "Simple, fair, and flexible",
-            "subtitle": "Pick what fits your workflow. Cancel anytime.",
+            "title": "Protect your legal workflow",
+            "subtitle": "Free is a trial. Upgrade when you need reliable guidance, documents, and case control.",
             "secondaryCta": "See features",
             "openApp": "Open App"
         },
@@ -308,29 +308,29 @@
             "perMonth": "/ month",
             "free": {
                 "name": "Free",
-                "tokens": "10,000 tokens / month",
+                "tokens": "Single panic run • schema preview only",
                 "features": {
-                    "chatBasic": "AI legal chat (basic)",
-                    "policeShortcut": "“Stopped by Police” quick access"
+                    "chatBasic": "Legal chat (trial bandwidth)",
+                    "policeShortcut": "One “Stopped by Police” activation"
                 }
             },
             "plus": {
                 "name": "Plus",
-                "tokens": "100,000 tokens / month",
+                "tokens": "5 document runs • unlimited panic",
                 "features": {
-                    "documents": "Secure document generation",
+                    "documents": "Secure document generation (5/month)",
                     "encryptedChat": "Encrypted chat with your lawyer",
-                    "chatEnhanced": "AI legal chat (enhanced)",
-                    "policeShortcut": "“Stopped by Police” quick access"
+                    "chatEnhanced": "Legal chat with priority bandwidth",
+                    "policeShortcut": "Unlimited “Stopped by Police” shortcuts"
                 }
             },
             "premium": {
                 "name": "Premium",
-                "tokens": "500,000 tokens / month",
+                "tokens": "Unlimited panic • unlimited documents • cases",
                 "features": {
                     "plusAll": "Everything in Plus",
                     "clientChat": "Encrypted chat with your clients",
-                    "caseManagement": "Case management for clients",
+                    "caseManagement": "Full case management + role switching",
                     "prioritySupport": "Priority support"
                 }
             },
@@ -346,10 +346,10 @@
         },
         "included": {
             "overline": "What’s included",
-            "title": "Everything you need to get moving",
-            "chat": "AI legal chat",
-            "docs": "Doc generation",
-            "localGuidance": "Country-aware guidance",
+            "title": "Every plan ships with legal safeguards",
+            "chat": "Legal guidance chat",
+            "docs": "Document schematics",
+            "localGuidance": "Country-aware procedures",
             "security": "Privacy-first security",
             "speed": "Fast & reliable",
             "manageButton": "Manage subscription",
@@ -556,6 +556,12 @@
         "loading": {
             "preparing": "Preparing your workspace…"
         },
+        "tokens": {
+            "usage": "{{used}} / {{limit}} legal bandwidth",
+            "cta": "Upgrade bandwidth",
+            "freeWarning": "You’re almost out of Free bandwidth. Upgrade to Plus so chat guidance stays responsive.",
+            "plusWarning": "Plus bandwidth is nearly exhausted. Upgrade to Premium to keep legal chat online."
+        },
         "empty": {
             "countryTitle": "Choose your jurisdiction",
             "countryDescription": "We preload relevant regulations and forms the moment you confirm the country.",
@@ -575,11 +581,16 @@
             "close": "Close"
         },
         "panicButton": {
-            "trigger": "Stopped by the police",
-            "dialogTitle": "Police stop emergency",
-            "dialogDescription": "Pick your country to get the most accurate procedures.",
+            "trigger": "Emergency legal shield",
+            "dialogTitle": "Police encounter protocol",
+            "dialogDescription": "Confirm your jurisdiction to load the exact stop-and-search procedure. Free plans unlock a single run.",
             "submit": "Get procedures",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "trialLabel": "One emergency run on Free",
+            "unlimited": "Unlimited panic runs",
+            "lockedLabel": "Emergency run exhausted",
+            "lockedHint": "Upgrade to Plus for unlimited emergency guidance.",
+            "lockedCta": "Upgrade for safety"
         },
         "subscriptionButton": {
             "upgrade": "Upgrade",
@@ -592,6 +603,31 @@
             "processing": "Processing…",
             "submit": "Pay & Continue",
             "error": "Payment failed. Try again."
+        }
+    },
+    "upgradePrompt": {
+        "requiredTier": "Requires {{tier}}",
+        "secondary": "Not now",
+        "primary": "Upgrade now",
+        "panic": {
+            "title": "Keep your emergency line live",
+            "description": "Free plans include one police-stop protocol. Upgrade to Plus for unlimited panic activations and saved playbooks.",
+            "highlight": "Plus members store every stop procedure for instant recall."
+        },
+        "documents": {
+            "title": "Unlock legal document runs",
+            "description": "You’ve used every document generation run included in your tier. Upgrade to keep generating filings, contracts, and evidence packs.",
+            "highlight": "Plus includes 5 runs/month. Premium removes the cap completely."
+        },
+        "cases": {
+            "title": "Case workflows live in Premium",
+            "description": "Case creation, assignments, and role switching are Premium-only. Upgrade to open matters, add clients, and link notes.",
+            "highlight": "Premium keeps every case, note, and procedure in one protected workspace."
+        },
+        "tokens": {
+            "title": "You’re almost out of legal bandwidth",
+            "description": "Once your token buffer is depleted, panic runs, chat responses, and document drafts may stall. Upgrade before the wall hits.",
+            "highlight": "At 80% usage, we recommend moving to the next tier to avoid outages."
         }
     },
     "userChats": {
@@ -649,6 +685,13 @@
         },
         "clients": {
             "unnamed": "Unnamed client"
+        },
+        "plan": {
+            "banner": "Case creation is reserved for Premium workspaces.",
+            "cta": "Upgrade for cases",
+            "locked": "Premium keeps case workflows, assignments, and role switching online.",
+            "dialogTitle": "Upgrade to manage cases",
+            "dialogDescription": "Premium unlocks case creation, case-linked notes, and client assignments."
         }
     },
     "documentsLanding": {
@@ -692,12 +735,28 @@
         },
         "actions": {
             "generating": "Generating…",
-            "generate": "Generate document"
+            "generate": "Generate document",
+            "generateLocked": "Upgrade to {{tier}}"
         },
         "preview": {
             "title": "Preview",
             "cached": "Cached result",
             "tokens": "{{count}} tokens"
+        },
+        "limits": {
+            "unlimited": "Unlimited legal documents",
+            "counter": "{{remaining}} / {{limit}} document runs left",
+            "remaining": "{{count}} run(s) left this month",
+            "cta": "Upgrade for documents",
+            "freeInline": "Document export stays locked on the Free trial. Upgrade to Plus to generate filings.",
+            "plusInline": "You’ve used all {{limit}} document runs included in Plus.",
+            "plusHighlight": "Plus includes {{limit}} document runs each month.",
+            "freeTitle": "Document runs locked",
+            "freeDescription": "Free plans can preview templates but cannot export final paperwork.",
+            "plusTitle": "Plus document limit reached",
+            "plusDescription": "Upgrade to Premium for unlimited legal document generation.",
+            "dialogTitle": "Upgrade for documents",
+            "dialogDescription": "Premium removes document caps so procedures never stall."
         },
         "save": {
             "fileNameLabel": "Document name",
@@ -909,6 +968,17 @@
             "createFromChat": "Create from chat",
             "createManual": "Add manual note"
         },
+        "limit": {
+            "label": "{{used}} / {{limit}} notes",
+            "unlimited": "Unlimited notes",
+            "cta": "Upgrade for more notes",
+            "freeMessage": "Free plans only store a handful of notes. Upgrade to Plus for a real notebook.",
+            "plusMessage": "Plus allows {{limit}} notes each month. Premium keeps every case note forever.",
+            "dialogTitle": "Upgrade for more notes",
+            "dialogFree": "You’ve reached the Free note limit. Upgrade to Plus to keep saving legal guidance.",
+            "dialogPlus": "You’ve hit the Plus note cap. Upgrade to Premium for unlimited notes and case links.",
+            "dialogHighlight": "{{limit}} notes/month are included with your current plan."
+        },
         "loading": "Loading notes...",
         "empty": "No notes found.",
         "note": {
@@ -941,7 +1011,8 @@
             "success": "Note saved.",
             "errors": {
                 "content": "Content is required.",
-                "save": "Failed to save note. Please try again."
+                "save": "Failed to save note. Please try again.",
+                "limit": "You’ve reached your note limit for this plan."
             }
         }
     },
@@ -1215,11 +1286,20 @@
             }
         },
         "usage": {
-            "tokenLabel": "Monthly Tokens"
+            "tokenLabel": "Legal bandwidth",
+            "actionsTitle": "Protected workflows this month",
+            "actionsDescription": "Monitor panic runs, saved notes, and document generations before you run out.",
+            "docUnlimited": "Unlimited document runs",
+            "docLabel": "{{remaining}} / {{limit}} document runs left",
+            "panicLocked": "Emergency run used",
+            "panicAvailable": "Emergency run ready",
+            "panicUnlimited": "Unlimited emergency playbooks",
+            "warningCta": "Upgrade protection",
+            "warningCopy": "You’re almost out of guidance bandwidth. Upgrade now to keep panic, chat, and documents online."
         },
         "panic": {
-            "title": "Stopped by the Police",
-            "subtitle": "Quick access to local guidance"
+            "title": "Emergency legal response",
+            "subtitle": "Instant police-stop procedures"
         },
         "quickActions": {
             "chats": "Chats",
@@ -1228,7 +1308,11 @@
             "cases": "Cases",
             "stopProcedures": "Stop Procedures",
             "notes": "Notes",
-            "connections": "Connections"
+            "connections": "Connections",
+            "locked": {
+                "cases": "Premium unlocks case creation and management.",
+                "procedures": "Saved stop procedures are available on Plus."
+            }
         },
         "info": {
             "chats": {
@@ -1259,10 +1343,10 @@
             "connections": "Connections"
         },
         "upgrade": {
-            "title": "Unlock documents, cases and more",
-            "description": "Upgrade to Plus or Premium for end-to-end features.",
+            "title": "Free is a trial—protect your workflow",
+            "description": "Upgrade for unlimited panic runs, document generation, and full case management.",
             "seePricing": "See Pricing",
-            "cta": "Upgrade"
+            "cta": "Upgrade protection"
         }
     },
     "casesPage": {
@@ -1372,6 +1456,13 @@
             "closeDetails": "Close case detail",
             "slideBack": "Back",
             "slideNext": "Next"
+        },
+        "plan": {
+            "lockedTitle": "Cases live on Premium",
+            "lockedDescription": "Case lists, notes, and workflows unlock with Premium. Upgrade to reopen your legal workspace.",
+            "cta": "Upgrade to Premium",
+            "dialogTitle": "Upgrade for case management",
+            "dialogDescription": "Premium keeps case creation, assignments, and linked notes online without limits."
         }
     }
 }
