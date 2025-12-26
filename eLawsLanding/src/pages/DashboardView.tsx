@@ -1,34 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-    Alert,
-    Avatar,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CardActionArea,
-    Chip,
-    Container,
-    Divider,
-    LinearProgress,
-    Skeleton,
-    Stack,
-    Tooltip,
-    Typography,
-    useTheme,
-} from "@mui/material";
+import { Container, Stack, Typography, useTheme } from "@mui/material";
 import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
-import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
-import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
-import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
     collection,
@@ -44,15 +23,14 @@ import {
     QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
-import PanicButtonWeb from "../components/PanicButton.tsx";
-import SubscriptionButton from "../components/SubscriptionButton.tsx";
 import { useTranslation } from "react-i18next";
 import UpgradePromptDialog from "../components/UpgradePromptDialog.tsx";
+import DashboardHero from "../components/dashboard/DashboardHero.tsx";
+import DowngradeNotice from "../components/dashboard/DowngradeNotice.tsx";
+import UsageAndPanicCard from "../components/dashboard/UsageAndPanicCard.tsx";
+import QuickActionsSection, { type QuickActionItem } from "../components/dashboard/QuickActionsSection.tsx";
+import UpgradeCallout from "../components/dashboard/UpgradeCallout.tsx";
 import {
-    getDocumentRunsThisMonth,
-    getDocumentLimit,
-    hasUsedFreePanic,
-    remainingDocumentRuns,
     shouldWarnAboutTokens,
     isTierAtLeast,
     type Tier,
@@ -98,17 +76,6 @@ type UpgradePromptState = {
     requiredTier: "plus" | "premium";
     highlight?: string;
 };
-type QuickActionConfig = {
-    key: "chats" | "aiChat" | "createDoc" | "cases" | "stopProcedures" | "connections" | "notes";
-    to: string;
-    icon: React.ReactNode;
-    title: string;
-    minTier: Tier | "free";
-    requiredTier?: "plus" | "premium";
-    upgradeKey?: "panic" | "cases" | "tokens" | "documents" | "notes";
-    lockCopyKey?: "cases" | "procedures";
-};
-
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
 const Dashboard: React.FC = () => {
@@ -121,8 +88,6 @@ const Dashboard: React.FC = () => {
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const [lastCase, setLastCase] = useState<CaseDoc | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [docRuns, setDocRuns] = useState<number>(0);
-    const [panicUsed, setPanicUsed] = useState<boolean>(false);
     const [upgradePrompt, setUpgradePrompt] = useState<UpgradePromptState | null>(null);
     const [tokenPromptShown, setTokenPromptShown] = useState(false);
 
@@ -262,37 +227,11 @@ const Dashboard: React.FC = () => {
         };
     }, [uid]);
 
-    useEffect(() => {
-        if (!uid) return;
-        setPanicUsed(hasUsedFreePanic(uid));
-        setDocRuns(getDocumentRunsThisMonth(uid));
-    }, [uid]);
-
-    useEffect(() => {
-        if (!uid) return;
-        const handler = (event: StorageEvent) => {
-            if (!event.key || !event.key.includes(uid)) return;
-            setPanicUsed(hasUsedFreePanic(uid));
-            setDocRuns(getDocumentRunsThisMonth(uid));
-        };
-        window.addEventListener("storage", handler);
-        return () => window.removeEventListener("storage", handler);
-    }, [uid]);
-
-    if (!uid || !user) {
-        return (
-            <Container maxWidth="md" sx={{ py: 10, textAlign: "center" }}>
-                <Typography variant="h6" color="text.secondary">
-                    {t("dashboard.loading")}
-                </Typography>
-            </Container>
-        );
-    }
-
     const {
         firstName = "",
         lastName = "",
         country,
+        countryCode = "",
         tokenLimit = 100000,
         monthlyTokensUsed = 0,
         role = "client",
@@ -301,24 +240,9 @@ const Dashboard: React.FC = () => {
         pendingDowngradeDate = null,
         subscriptionCancelAtPeriodEnd = null,
         subscriptionCancelDate = null,
-    } = user;
+    } = user ?? {};
 
     const tokenWarning = shouldWarnAboutTokens(monthlyTokensUsed, tokenLimit);
-    const docLimit = getDocumentLimit(subscriptionTier);
-    const docRemaining = remainingDocumentRuns(subscriptionTier, docRuns);
-    const docUsageLabel =
-        docLimit === null
-            ? t("dashboard.usage.docUnlimited")
-            : t("dashboard.usage.docLabel", {
-                  remaining: docRemaining === Infinity ? "∞" : docRemaining,
-                  limit: docLimit,
-              });
-    const panicUsageLabel =
-        subscriptionTier === "free"
-            ? panicUsed
-                ? t("dashboard.usage.panicLocked")
-                : t("dashboard.usage.panicAvailable")
-            : t("dashboard.usage.panicUnlimited");
     const formatTierLabel = (tier: Tier | "free") => t(`dashboard.subscription.tiers.${tier}`);
 
     const pendingDowngradeTarget = pendingDowngradeTier ?? (subscriptionCancelAtPeriodEnd ? "free" : null);
@@ -348,8 +272,8 @@ const Dashboard: React.FC = () => {
 
     const heroName = firstName || t("dashboard.hero.anonymous");
     const heroRoleLabel = t(`dashboard.hero.roles.${role}`);
-    const heroCountryLabel = user.countryCode
-        ? t(`countries.${user.countryCode}`, { defaultValue: country || user.countryCode })
+    const heroCountryLabel = countryCode
+        ? t(`countries.${countryCode}`, { defaultValue: country || countryCode })
         : country;
     const heroMeta = heroCountryLabel
         ? t("dashboard.hero.metaWithCountry", {
@@ -378,7 +302,9 @@ const Dashboard: React.FC = () => {
                   status: lastCaseStatusLabel,
               })
             : t("dashboard.info.lastCase.empty");
-    const quickActionsConfig: QuickActionConfig[] = [
+    const lastCaseLink = lastCase ? `/cases/${lastCase.id}` : "/cases";
+    const hasLastCase = Boolean(lastCase);
+    const quickActionsConfig: QuickActionItem[] = [
         {
             key: "chats",
             to: "/userChats",
@@ -459,307 +385,105 @@ const Dashboard: React.FC = () => {
     const closeUpgradePrompt = () => setUpgradePrompt(null);
 
     useEffect(() => {
-        if (tokenWarning && !tokenPromptShown) {
-            const highlight = t("upgradePrompt.tokens.highlight", { defaultValue: "" });
-            setUpgradePrompt({
-                title: t("upgradePrompt.tokens.title"),
-                description: t("upgradePrompt.tokens.description"),
-                requiredTier: subscriptionTier === "free" ? "plus" : "premium",
-                highlight: highlight || undefined,
-            });
-            setTokenPromptShown(true);
-        }
+        if (!tokenWarning || tokenPromptShown) return;
+        const highlight = t("upgradePrompt.tokens.highlight", { defaultValue: "" });
+        setUpgradePrompt({
+            title: t("upgradePrompt.tokens.title"),
+            description: t("upgradePrompt.tokens.description"),
+            requiredTier: subscriptionTier === "free" ? "plus" : "premium",
+            highlight: highlight || undefined,
+        });
+        setTokenPromptShown(true);
     }, [tokenWarning, tokenPromptShown, subscriptionTier, t]);
+
+    const heroWelcome = t("dashboard.hero.welcome", { name: heroName });
+
+    const handleQuickActionLocked = (action: QuickActionItem) => {
+        if (action.locked && action.requiredTier && action.upgradeKey) {
+            openUpgradePrompt(action.upgradeKey, action.requiredTier);
+        }
+    };
+
+    if (!uid || !user) {
+        return (
+            <Container maxWidth="md" sx={{ py: 10, textAlign: "center" }}>
+                <Typography variant="h6" color="text.secondary">
+                    {t("dashboard.loading")}
+                </Typography>
+            </Container>
+        );
+    }
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
+            <DashboardHero
+                gradient={gradient}
+                initials={initials}
+                heroName={heroWelcome}
+                heroMeta={heroMeta}
+                subscriptionTier={subscriptionTier}
             />
-            {/* Hero */}
-            <Box
-                sx={{
-                    mt: { xs: -8, md: -10 },
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: { xs: 5, md: 7 },
-                }}
-            >
-                <Container maxWidth="lg">
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
-                        alignItems={{ xs: "flex-start", sm: "center" }}
-                        justifyContent="space-between"
-                    >
-                        <Stack direction="row" spacing={2} alignItems="center">
-                            <Avatar sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}>
-                                {initials}
-                            </Avatar>
-                            <Box>
-                                <Typography variant="h5" fontWeight={900} lineHeight={1.2}>
-                                    {t("dashboard.hero.welcome", { name: heroName })}
-                                </Typography>
-                                <Typography sx={{ opacity: 0.9 }}>
-                                    {heroMeta}
-                                </Typography>
-                            </Box>
-                        </Stack>
-
-                        {/* 💎 Subscription Button */}
-                        <SubscriptionButton subscriptionTier={subscriptionTier} />
-                    </Stack>
-                </Container>
-            </Box>
 
             <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
-                {pendingDowngradeTarget && (
-                    <Box
-                        sx={{
-                            mb: 3,
-                            p: 2.5,
-                            borderRadius: 2,
-                            border: `1px solid ${theme.palette.warning.main}`,
-                            backgroundColor: theme.palette.warning.main + "15",
-                        }}
-                    >
-                        <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={2}
-                            alignItems={{ xs: "flex-start", sm: "center" }}
-                            justifyContent="space-between"
-                        >
-                            <Box>
-                                <Typography variant="subtitle2" sx={{ textTransform: "uppercase", fontWeight: 700 }}>
-                                    {t("dashboard.subscription.downgrade.title")}
-                                </Typography>
-                                <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                                    {downgradeMessage}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {downgradeHelp}
-                                </Typography>
-                            </Box>
-                            <Button
-                                component={RouterLink}
-                                to="/subscribe"
-                                variant="outlined"
-                                color="warning"
-                                sx={{ fontWeight: 700, borderRadius: 2 }}
-                            >
-                                {t("dashboard.subscription.downgrade.cta")}
-                            </Button>
-                        </Stack>
-                    </Box>
-                )}
+                <DowngradeNotice
+                    show={Boolean(pendingDowngradeTarget)}
+                    title={t("dashboard.subscription.downgrade.title")}
+                    message={downgradeMessage}
+                    help={downgradeHelp}
+                    ctaLabel={t("dashboard.subscription.downgrade.cta")}
+                    ctaTo="/subscribe"
+                />
+
                 <Stack spacing={3}>
-                    {/* Usage + Panic */}
-                    <Card elevation={4} sx={{ borderRadius: 3 }}>
-                        <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                            <Stack
-                                direction={{ xs: "column", md: "row" }}
-                                alignItems={{ xs: "stretch", md: "center" }}
-                                justifyContent="space-between"
-                                spacing={3}
-                            >
-                                <Box sx={{ flex: 1, minWidth: 260 }}>
-                                    {loading ? (
-                                        <Stack spacing={1.5}>
-                                            <Skeleton variant="text" width="70%" />
-                                            <Skeleton variant="rounded" height={14} />
-                                        </Stack>
-                                    ) : (
-                                        <Stack spacing={1.25}>
-                                            <Typography fontWeight={800}>
-                                                {t("dashboard.usage.actionsTitle")}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {t("dashboard.usage.actionsDescription")}
-                                            </Typography>
-                                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                                                <Chip label={panicUsageLabel} size="small" />
-                                                <Chip label={docUsageLabel} size="small" />
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Chip icon={<GavelRoundedIcon />} label={t("dashboard.usage.tokenLabel")} size="small" />
-                                                <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                                                    {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
-                                                </Typography>
-                                            </Stack>
-                                            <LinearProgress
-                                                variant="determinate"
-                                                value={Math.round(tokenPct * 100)}
-                                                sx={{
-                                                    height: 10,
-                                                    borderRadius: 10,
-                                                    "& .MuiLinearProgress-bar": { borderRadius: 10 },
-                                                }}
-                                            />
-                                            {tokenWarning && (
-                                                <Alert
-                                                    severity="warning"
-                                                    action={
-                                                        <Button
-                                                            size="small"
-                                                            color="warning"
-                                                            component={RouterLink}
-                                                            to="/dashboard/subscribe"
-                                                        >
-                                                            {t("dashboard.usage.warningCta")}
-                                                        </Button>
-                                                    }
-                                                >
-                                                    {t("dashboard.usage.warningCopy")}
-                                                </Alert>
-                                            )}
-                                        </Stack>
-                                    )}
-                                </Box>
+                    <UsageAndPanicCard
+                        loading={loading}
+                        monthlyTokensUsed={monthlyTokensUsed}
+                        tokenLimit={tokenLimit}
+                        tokenPct={tokenPct}
+                        tokenLabel={t("dashboard.usage.tokenLabel")}
+                        tokenWarning={tokenWarning}
+                        warningCopy={t("dashboard.usage.warningCopy")}
+                        warningCtaLabel={t("dashboard.usage.warningCta")}
+                        warningCtaTo="/dashboard/subscribe"
+                        panicTitle={t("dashboard.panic.title")}
+                        panicSubtitle={t("dashboard.panic.subtitle")}
+                        country={country}
+                        countryCode={countryCode}
+                        subscriptionTier={subscriptionTier}
+                        userId={uid}
+                        onLockedAttempt={() => openUpgradePrompt("panic", "plus")}
+                    />
 
-                                <Divider flexItem orientation="vertical" sx={{ display: { xs: "none", md: "block" }, mx: 1 }} />
+                    <QuickActionsSection
+                        quickActions={quickActions}
+                        role={role}
+                        unreadText={unreadText}
+                        chatsTitle={t("dashboard.info.chats.title")}
+                        chatsActionLabel={t("dashboard.common.open")}
+                        lastCaseTitle={t("dashboard.info.lastCase.title")}
+                        lastCaseSummary={lastCaseSummary}
+                        lastCaseActionLabel={t("dashboard.common.open")}
+                        lastCaseLink={lastCaseLink}
+                        hasLastCase={hasLastCase}
+                        subscriptionTier={subscriptionTier}
+                        menuTitles={{
+                            account: t("dashboard.menu.account"),
+                            connections: t("dashboard.menu.connections"),
+                            documents: t("dashboard.menu.documents"),
+                            cases: t("dashboard.menu.cases"),
+                        }}
+                        onQuickActionLocked={handleQuickActionLocked}
+                    />
 
-                                <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
-                                    <Box>
-                                        <Typography fontWeight={800} display="flex" alignItems="center" gap={1}>
-                                            <LocalPoliceRoundedIcon /> {t("dashboard.panic.title")}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {t("dashboard.panic.subtitle")}
-                                        </Typography>
-                                    </Box>
-                                    {loading ? (
-                                        <Skeleton variant="rounded" width={220} height={48} />
-                                    ) : (
-                                        <PanicButtonWeb
-                                            tokenLimit={user.tokenLimit || 0}
-                                            defaultCode={user.countryCode || ""}
-                                            tokensUsed={user.monthlyTokensUsed || 0}
-                                            defaultCountry={user.country || ""}
-                                            subscriptionTier={subscriptionTier}
-                                            userId={uid}
-                                            onLockedAttempt={() => openUpgradePrompt("panic", "plus")}
-                                        />
-                                    )}
-                                </Stack>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-
-                    {/* Quick actions + Info */}
-                    <Card elevation={3} sx={{ borderRadius: 3 }}>
-                        <CardContent sx={{ pb: 1, pt: { xs: 2.5, md: 3 } }}>
-                            <Stack
-                                direction="row"
-                                spacing={1.5}
-                                flexWrap="wrap"
-                                useFlexGap
-                                alignItems="center"
-                            >
-                                {quickActions
-                                    .filter((action) => action.key !== "cases" || role === "lawyer")
-                                    .map((action) => (
-                                        <QuickAction
-                                            key={action.key}
-                                            to={action.to}
-                                            icon={action.icon}
-                                            title={action.title}
-                                            locked={action.locked}
-                                            helper={action.helper}
-                                            onLocked={() => {
-                                                if (action.locked && action.requiredTier && action.upgradeKey) {
-                                                    openUpgradePrompt(action.upgradeKey, action.requiredTier);
-                                                }
-                                            }}
-                                        />
-                                    ))}
-                            </Stack>
-                        </CardContent>
-
-                        <CardContent sx={{ pt: 1 }}>
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                flexWrap="wrap"
-                                useFlexGap
-                                alignItems="stretch"
-                            >
-                                <InfoCard
-                                    to="/userChats"
-                                    icon={<ForumRoundedIcon />}
-                                    title={t("dashboard.info.chats.title")}
-                                    text={unreadText}
-                                    actionLabel={t("dashboard.common.open")}
-                                />
-                                <InfoCard
-                                    to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
-                                    icon={<AssignmentTurnedInRoundedIcon />}
-                                    title={t("dashboard.info.lastCase.title")}
-                                    text={lastCaseSummary}
-                                    disabled={!lastCase}
-                                    actionLabel={t("dashboard.common.open")}
-                                />
-                            </Stack>
-                        </CardContent>
-
-                        <CardContent sx={{ pt: subscriptionTier !== "free" ? 1 : 3 }}>
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                flexWrap="wrap"
-                                useFlexGap
-                                alignItems="stretch"
-                                justifyContent="space-between"
-                            >
-                                <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title={t("dashboard.menu.account")} />
-                                <MenuTile to="/connections" icon={<PeopleAltRoundedIcon />} title={t("dashboard.menu.connections")} />
-                                {subscriptionTier !== "free" && (
-                                    <>
-                                        <MenuTile to="/documents" icon={<DescriptionRoundedIcon />} title={t("dashboard.menu.documents")} />
-                                        <MenuTile to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title={t("dashboard.menu.cases")} />
-                                    </>
-                                )}
-                            </Stack>
-                        </CardContent>
-                    </Card>
-
-                    {/* Upgrade */}
                     {subscriptionTier === "free" && (
-                        <Card
-                            elevation={0}
-                            sx={{
-                                borderRadius: 3,
-                                backgroundColor: theme.palette.background.default,
-                            }}
-                        >
-                            <CardContent>
-                                <Stack
-                                    direction={{ xs: "column", md: "row" }}
-                                    spacing={2}
-                                    alignItems={{ xs: "flex-start", md: "center" }}
-                                    justifyContent="space-between"
-                                >
-                                    <Box>
-                                        <Typography variant="h6" fontWeight={900}>
-                                            {t("dashboard.upgrade.title")}
-                                        </Typography>
-                                        <Typography color="text.secondary">
-                                            {t("dashboard.upgrade.description")}
-                                        </Typography>
-                                    </Box>
-                                    <Stack direction="row" spacing={1.25} flexWrap="wrap">
-                                        <Button component={RouterLink} to="/pricing" variant="outlined" sx={{ borderRadius: 2 }}>
-                                            {t("dashboard.upgrade.seePricing")}
-                                        </Button>
-                                        <Button component={RouterLink} to="/subscribe" variant="contained" sx={{ borderRadius: 2, fontWeight: 800 }}>
-                                            {t("dashboard.upgrade.cta")}
-                                        </Button>
-                                    </Stack>
-                                </Stack>
-                            </CardContent>
-                        </Card>
+                        <UpgradeCallout
+                            title={t("dashboard.upgrade.title")}
+                            description={t("dashboard.upgrade.description")}
+                            pricingLabel={t("dashboard.upgrade.seePricing")}
+                            ctaLabel={t("dashboard.upgrade.cta")}
+                            pricingLink="/pricing"
+                            ctaLink="/subscribe"
+                        />
                     )}
                 </Stack>
             </Container>
@@ -779,157 +503,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-
-/* ---------- Subcomponents (unchanged logic, refined styles) ---------- */
-
-function QuickAction({
-                         to,
-                         icon,
-                         title,
-                         locked,
-                         helper,
-                         onLocked,
-                     }: {
-    to: string;
-    icon: React.ReactNode;
-    title: string;
-    locked?: boolean;
-    helper?: string;
-    onLocked?: () => void;
-}) {
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-        if (locked) {
-            event.preventDefault();
-            onLocked?.();
-        }
-    };
-
-    const button = (
-        <Button
-            component={RouterLink}
-            to={to}
-            variant="outlined"
-            startIcon={locked ? <LockOutlinedIcon /> : icon}
-            onClick={handleClick}
-            sx={{
-                borderRadius: 2,
-                px: 2.5,
-                py: 1.25,
-                fontWeight: 700,
-                textTransform: "none",
-                width: { xs: "100%", sm: "auto" },
-                justifyContent: { xs: "space-between", sm: "center" },
-                opacity: locked ? 0.7 : 1,
-                borderStyle: locked ? "dashed" : "solid",
-            }}
-        >
-            {title}
-        </Button>
-    );
-
-    return helper && locked ? <Tooltip title={helper}>{button}</Tooltip> : button;
-}
-
-function InfoCard({
-                      to,
-                      icon,
-                      title,
-                      text,
-                      disabled,
-                      actionLabel,
-                  }: {
-    to: string;
-    icon: React.ReactNode;
-    title: string;
-    text: string;
-    disabled?: boolean;
-    actionLabel?: string;
-}) {
-    return (
-        <Card
-            elevation={2}
-            sx={{
-                borderRadius: 3,
-                flex: "1 1 320px",
-                width: "100%",
-                minWidth: { xs: "unset", sm: 280 },
-                maxWidth: { xs: "100%", md: 520 },
-            }}
-        >
-            <CardContent>
-                <Stack direction="row" spacing={1.25} alignItems="center" mb={1}>
-                    <Box
-                        sx={{
-                            width: 40,
-                            height: 40,
-                            display: "grid",
-                            placeItems: "center",
-                            borderRadius: 2,
-                            bgcolor: (t) =>
-                                t.palette.mode === "light"
-                                    ? t.palette.primary.main + "20"
-                                    : t.palette.primary.main + "30",
-                        }}
-                    >
-                        {icon}
-                    </Box>
-                    <Typography fontWeight={800}>{title}</Typography>
-                </Stack>
-                <Stack justifyContent="space-between" direction="row" alignItems="flex-end">
-                    <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
-                        {text}
-                    </Typography>
-                    <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
-                        {actionLabel ?? "Open"}
-                    </Button>
-                </Stack>
-            </CardContent>
-        </Card>
-    );
-}
-
-function MenuTile({
-                      to,
-                      icon,
-                      title,
-                  }: {
-    to: string;
-    icon: React.ReactNode;
-    title: string;
-}) {
-    return (
-        <Card
-            elevation={2}
-            sx={{
-                borderRadius: 3,
-                flex: "1 1 260px",
-                width: "100%",
-                minWidth: { xs: "unset", sm: 220 },
-                maxWidth: { xs: "100%", sm: 320 },
-            }}
-            component="div"
-        >
-            <CardActionArea component={RouterLink} to={to} sx={{ borderRadius: 3 }}>
-                <CardContent sx={{ display: "grid", placeItems: "center", py: 3 }}>
-                    <Box
-                        sx={{
-                            width: 44,
-                            height: 44,
-                            display: "grid",
-                            placeItems: "center",
-                            borderRadius: 2,
-                            bgcolor: (t) =>
-                                t.palette.mode === "light"
-                                    ? t.palette.primary.main + "20"
-                                    : t.palette.primary.main + "30",
-                            mb: 1,
-                        }}
-                    >
-                        {icon}
-                    </Box>
-                    <Typography fontWeight={800}>{title}</Typography>
-                </CardContent>
-            </CardActionArea>
-        </Card>
-    );
-}

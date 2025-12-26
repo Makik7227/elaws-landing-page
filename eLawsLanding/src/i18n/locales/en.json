@@ -1288,7 +1288,6 @@
         "usage": {
             "tokenLabel": "Legal bandwidth",
             "actionsTitle": "Protected workflows this month",
-            "actionsDescription": "Monitor panic runs, saved notes, and document generations before you run out.",
             "docUnlimited": "Unlimited document runs",
             "docLabel": "{{remaining}} / {{limit}} document runs left",
             "panicLocked": "Emergency run used",
