@@ -1,30 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-    Avatar,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CardActionArea,
-    Chip,
-    Container,
-    Divider,
-    LinearProgress,
-    Skeleton,
-    Stack,
-    Typography,
-    useTheme,
-} from "@mui/material";
+import { Container, Stack, Typography, useTheme } from "@mui/material";
 import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
-import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
-import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
-import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
     collection,
@@ -40,10 +23,18 @@ import {
     QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
-import PanicButtonWeb from "../components/PanicButton.tsx";
-import SubscriptionButton from "../components/SubscriptionButton.tsx";
-
-type Tier = "free" | "plus" | "premium";
+import { useTranslation } from "react-i18next";
+import UpgradePromptDialog from "../components/UpgradePromptDialog.tsx";
+import DashboardHero from "../components/dashboard/DashboardHero.tsx";
+import DowngradeNotice from "../components/dashboard/DowngradeNotice.tsx";
+import UsageAndPanicCard from "../components/dashboard/UsageAndPanicCard.tsx";
+import QuickActionsSection, { type QuickActionItem } from "../components/dashboard/QuickActionsSection.tsx";
+import UpgradeCallout from "../components/dashboard/UpgradeCallout.tsx";
+import {
+    shouldWarnAboutTokens,
+    isTierAtLeast,
+    type Tier,
+} from "../utils/monetization.ts";
 type Role = "client" | "lawyer";
 
 type UserDoc = {
@@ -79,17 +70,26 @@ type ChatMeta = {
     users?: string[];
 };
 
+type UpgradePromptState = {
+    title: string;
+    description: string;
+    requiredTier: "plus" | "premium";
+    highlight?: string;
+};
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
 const Dashboard: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     const [uid, setUid] = useState<string | null>(null);
     const [user, setUser] = useState<UserDoc | null>(null);
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const [lastCase, setLastCase] = useState<CaseDoc | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [upgradePrompt, setUpgradePrompt] = useState<UpgradePromptState | null>(null);
+    const [tokenPromptShown, setTokenPromptShown] = useState(false);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -227,20 +227,11 @@ const Dashboard: React.FC = () => {
         };
     }, [uid]);
 
-    if (!uid || !user) {
-        return (
-            <Container maxWidth="md" sx={{ py: 10, textAlign: "center" }}>
-                <Typography variant="h6" color="text.secondary">
-                    Loading your dashboard…
-                </Typography>
-            </Container>
-        );
-    }
-
     const {
         firstName = "",
         lastName = "",
         country,
+        countryCode = "",
         tokenLimit = 100000,
         monthlyTokensUsed = 0,
         role = "client",
@@ -249,419 +240,266 @@ const Dashboard: React.FC = () => {
         pendingDowngradeDate = null,
         subscriptionCancelAtPeriodEnd = null,
         subscriptionCancelDate = null,
-    } = user;
+    } = user ?? {};
 
-    const formatTierLabel = (tier: Tier | "free") => tier.charAt(0).toUpperCase() + tier.slice(1);
+    const tokenWarning = shouldWarnAboutTokens(monthlyTokensUsed, tokenLimit);
+    const formatTierLabel = (tier: Tier | "free") => t(`dashboard.subscription.tiers.${tier}`);
 
     const pendingDowngradeTarget = pendingDowngradeTier ?? (subscriptionCancelAtPeriodEnd ? "free" : null);
     const pendingDowngradeLabel = pendingDowngradeTarget ? formatTierLabel(pendingDowngradeTarget) : null;
     const pendingDowngradeEffectiveDate =
         pendingDowngradeTarget === "free" ? subscriptionCancelDate : pendingDowngradeDate;
+    const locale = i18n.language || undefined;
     const pendingDowngradeDateLabel = pendingDowngradeEffectiveDate
-        ? new Date(pendingDowngradeEffectiveDate).toLocaleDateString(undefined, {
+        ? new Date(pendingDowngradeEffectiveDate).toLocaleDateString(locale, {
               year: "numeric",
               month: "long",
               day: "numeric",
           })
         : null;
+    const downgradeMessage =
+        pendingDowngradeTarget && pendingDowngradeLabel
+            ? pendingDowngradeDateLabel
+                ? t("dashboard.subscription.downgrade.messageWithDate", {
+                      tier: pendingDowngradeLabel,
+                      date: pendingDowngradeDateLabel,
+                  })
+                : t("dashboard.subscription.downgrade.messageNoDate", {
+                      tier: pendingDowngradeLabel,
+                  })
+            : null;
+    const downgradeHelp = t("dashboard.subscription.downgrade.help");
 
+    const heroName = firstName || t("dashboard.hero.anonymous");
+    const heroRoleLabel = t(`dashboard.hero.roles.${role}`);
+    const heroCountryLabel = countryCode
+        ? t(`countries.${countryCode}`, { defaultValue: country || countryCode })
+        : country;
+    const heroMeta = heroCountryLabel
+        ? t("dashboard.hero.metaWithCountry", {
+              tier: subscriptionTier?.toUpperCase(),
+              role: heroRoleLabel,
+              country: heroCountryLabel,
+          })
+        : t("dashboard.hero.meta", {
+              tier: subscriptionTier?.toUpperCase(),
+              role: heroRoleLabel,
+          });
     const initials = ((firstName?.[0] || "") + (lastName?.[0] || "") || "U").toUpperCase();
     const tokenPct = clamp(tokenLimit ? monthlyTokensUsed / tokenLimit : 0);
     const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
+    const unreadText = loading
+        ? t("dashboard.info.chats.loading")
+        : t("dashboard.info.chats.unread", { count: unreadCount });
+    const lastCaseStatusLabel = lastCase?.status
+        ? t(`casesPage.status.${lastCase.status}`)
+        : t("dashboard.cases.statusUnknown");
+    const lastCaseSummary = loading
+        ? t("dashboard.info.lastCase.loading")
+        : lastCase
+            ? t("dashboard.info.lastCase.summary", {
+                  title: lastCase.title ?? t("dashboard.cases.untitled"),
+                  status: lastCaseStatusLabel,
+              })
+            : t("dashboard.info.lastCase.empty");
+    const lastCaseLink = lastCase ? `/cases/${lastCase.id}` : "/cases";
+    const hasLastCase = Boolean(lastCase);
+    const quickActionsConfig: QuickActionItem[] = [
+        {
+            key: "chats",
+            to: "/userChats",
+            icon: <ChatBubbleOutlineRoundedIcon />,
+            title: t("dashboard.quickActions.chats"),
+            minTier: "free",
+        },
+        {
+            key: "aiChat",
+            to: "/ai/chat",
+            icon: <GavelRoundedIcon />,
+            title: t("dashboard.quickActions.aiChat"),
+            minTier: "free",
+        },
+        {
+            key: "createDoc",
+            to: "/documents/generate",
+            icon: <DescriptionRoundedIcon />,
+            title: t("dashboard.quickActions.createDoc"),
+            minTier: "free",
+        },
+        {
+            key: "cases",
+            to: "/dashboard/cases",
+            icon: <WorkOutlineRoundedIcon />,
+            title: t("dashboard.quickActions.cases"),
+            minTier: "premium",
+            requiredTier: "premium",
+            upgradeKey: "cases",
+            lockCopyKey: "cases",
+        },
+        {
+            key: "stopProcedures",
+            to: "/dashboard/procedures/saved",
+            icon: <LocalPoliceRoundedIcon />,
+            title: t("dashboard.quickActions.stopProcedures"),
+            minTier: "plus",
+            requiredTier: "plus",
+            upgradeKey: "documents",
+            lockCopyKey: "procedures",
+        },
+        {
+            key: "connections",
+            to: "/connections",
+            icon: <PeopleAltRoundedIcon />,
+            title: t("dashboard.quickActions.connections"),
+            minTier: "free",
+        },
+        {
+            key: "notes",
+            to: "/dashboard/notes",
+            icon: <AutoStoriesIcon />,
+            title: t("dashboard.quickActions.notes"),
+            minTier: "free",
+        },
+    ];
+    const quickActions = quickActionsConfig.map((action) => {
+        const locked = !isTierAtLeast(subscriptionTier, action.minTier);
+        const helper =
+            locked && action.lockCopyKey
+                ? t(`dashboard.quickActions.locked.${action.lockCopyKey}`)
+                : undefined;
+        return {
+            ...action,
+            locked,
+            helper,
+        };
+    });
+    const openUpgradePrompt = (key: "panic" | "cases" | "tokens" | "documents" | "notes", requiredTier: "plus" | "premium") => {
+        const highlight = t(`upgradePrompt.${key}.highlight`, { defaultValue: "" });
+        setUpgradePrompt({
+            title: t(`upgradePrompt.${key}.title`),
+            description: t(`upgradePrompt.${key}.description`),
+            requiredTier,
+            highlight: highlight || undefined,
+        });
+    };
+    const closeUpgradePrompt = () => setUpgradePrompt(null);
+
+    useEffect(() => {
+        if (!tokenWarning || tokenPromptShown) return;
+        const highlight = t("upgradePrompt.tokens.highlight", { defaultValue: "" });
+        setUpgradePrompt({
+            title: t("upgradePrompt.tokens.title"),
+            description: t("upgradePrompt.tokens.description"),
+            requiredTier: subscriptionTier === "free" ? "plus" : "premium",
+            highlight: highlight || undefined,
+        });
+        setTokenPromptShown(true);
+    }, [tokenWarning, tokenPromptShown, subscriptionTier, t]);
+
+    const heroWelcome = t("dashboard.hero.welcome", { name: heroName });
+
+    const handleQuickActionLocked = (action: QuickActionItem) => {
+        if (action.locked && action.requiredTier && action.upgradeKey) {
+            openUpgradePrompt(action.upgradeKey, action.requiredTier);
+        }
+    };
+
+    if (!uid || !user) {
+        return (
+            <Container maxWidth="md" sx={{ py: 10, textAlign: "center" }}>
+                <Typography variant="h6" color="text.secondary">
+                    {t("dashboard.loading")}
+                </Typography>
+            </Container>
+        );
+    }
 
     return (
         <>
-            {/* Hero */}
-            <Box
-                sx={{
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: { xs: 5, md: 7 },
-                }}
-            >
-                <Container maxWidth="lg">
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
-                        alignItems={{ xs: "flex-start", sm: "center" }}
-                        justifyContent="space-between"
-                    >
-                        <Stack direction="row" spacing={2} alignItems="center">
-                            <Avatar sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}>
-                                {initials}
-                            </Avatar>
-                            <Box>
-                                <Typography variant="h5" fontWeight={900} lineHeight={1.2}>
-                                    Welcome, {firstName || "there"}
-                                </Typography>
-                                <Typography sx={{ opacity: 0.9 }}>
-                                    {subscriptionTier?.toUpperCase()} • {role === "lawyer" ? "Lawyer" : "Client"}
-                                    {country ? ` • ${country}` : ""}
-                                </Typography>
-                            </Box>
-                        </Stack>
-
-                        {/* 💎 Subscription Button */}
-                        <SubscriptionButton subscriptionTier={subscriptionTier} />
-                    </Stack>
-                </Container>
-            </Box>
+            <DashboardHero
+                gradient={gradient}
+                initials={initials}
+                heroName={heroWelcome}
+                heroMeta={heroMeta}
+                subscriptionTier={subscriptionTier}
+            />
 
             <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
-                {pendingDowngradeTarget && (
-                    <Box
-                        sx={{
-                            mb: 3,
-                            p: 2.5,
-                            borderRadius: 2,
-                            border: `1px solid ${theme.palette.warning.main}`,
-                            backgroundColor: theme.palette.warning.main + "15",
-                        }}
-                    >
-                        <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={2}
-                            alignItems={{ xs: "flex-start", sm: "center" }}
-                            justifyContent="space-between"
-                        >
-                            <Box>
-                                <Typography variant="subtitle2" sx={{ textTransform: "uppercase", fontWeight: 700 }}>
-                                    Downgrade scheduled
-                                </Typography>
-                                <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                                    You’ll move to {pendingDowngradeLabel}{" "}
-                                    {pendingDowngradeDateLabel ? `on ${pendingDowngradeDateLabel}` : "at period end"}.
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Use “Manage subscription” if you want to undo or change your plan.
-                                </Typography>
-                            </Box>
-                            <Button
-                                component={RouterLink}
-                                to="/subscribe"
-                                variant="outlined"
-                                color="warning"
-                                sx={{ fontWeight: 700, borderRadius: 2 }}
-                            >
-                                Review plan
-                            </Button>
-                        </Stack>
-                    </Box>
-                )}
+                <DowngradeNotice
+                    show={Boolean(pendingDowngradeTarget)}
+                    title={t("dashboard.subscription.downgrade.title")}
+                    message={downgradeMessage}
+                    help={downgradeHelp}
+                    ctaLabel={t("dashboard.subscription.downgrade.cta")}
+                    ctaTo="/subscribe"
+                />
+
                 <Stack spacing={3}>
-                    {/* Usage + Panic */}
-                    <Card elevation={4} sx={{ borderRadius: 3 }}>
-                        <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                            <Stack
-                                direction={{ xs: "column", md: "row" }}
-                                alignItems={{ xs: "stretch", md: "center" }}
-                                justifyContent="space-between"
-                                spacing={3}
-                            >
-                                <Box sx={{ flex: 1, minWidth: 260 }}>
-                                    {loading ? (
-                                        <Stack spacing={1.5}>
-                                            <Skeleton variant="text" width="70%" />
-                                            <Skeleton variant="rounded" height={14} />
-                                        </Stack>
-                                    ) : (
-                                        <Stack spacing={1}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Chip icon={<GavelRoundedIcon />} label="Monthly Tokens" size="small" />
-                                                <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                                                    {monthlyTokensUsed.toLocaleString()} / {tokenLimit.toLocaleString()}
-                                                </Typography>
-                                            </Stack>
-                                            <LinearProgress
-                                                variant="determinate"
-                                                value={Math.round(tokenPct * 100)}
-                                                sx={{
-                                                    height: 10,
-                                                    borderRadius: 10,
-                                                    "& .MuiLinearProgress-bar": { borderRadius: 10 },
-                                                }}
-                                            />
-                                        </Stack>
-                                    )}
-                                </Box>
+                    <UsageAndPanicCard
+                        loading={loading}
+                        monthlyTokensUsed={monthlyTokensUsed}
+                        tokenLimit={tokenLimit}
+                        tokenPct={tokenPct}
+                        tokenLabel={t("dashboard.usage.tokenLabel")}
+                        tokenWarning={tokenWarning}
+                        warningCopy={t("dashboard.usage.warningCopy")}
+                        warningCtaLabel={t("dashboard.usage.warningCta")}
+                        warningCtaTo="/dashboard/subscribe"
+                        panicTitle={t("dashboard.panic.title")}
+                        panicSubtitle={t("dashboard.panic.subtitle")}
+                        country={country}
+                        countryCode={countryCode}
+                        subscriptionTier={subscriptionTier}
+                        userId={uid}
+                        onLockedAttempt={() => openUpgradePrompt("panic", "plus")}
+                    />
 
-                                <Divider flexItem orientation="vertical" sx={{ display: { xs: "none", md: "block" }, mx: 1 }} />
+                    <QuickActionsSection
+                        quickActions={quickActions}
+                        role={role}
+                        unreadText={unreadText}
+                        chatsTitle={t("dashboard.info.chats.title")}
+                        chatsActionLabel={t("dashboard.common.open")}
+                        lastCaseTitle={t("dashboard.info.lastCase.title")}
+                        lastCaseSummary={lastCaseSummary}
+                        lastCaseActionLabel={t("dashboard.common.open")}
+                        lastCaseLink={lastCaseLink}
+                        hasLastCase={hasLastCase}
+                        subscriptionTier={subscriptionTier}
+                        menuTitles={{
+                            account: t("dashboard.menu.account"),
+                            connections: t("dashboard.menu.connections"),
+                            documents: t("dashboard.menu.documents"),
+                            cases: t("dashboard.menu.cases"),
+                        }}
+                        onQuickActionLocked={handleQuickActionLocked}
+                    />
 
-                                <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
-                                    <Box>
-                                        <Typography fontWeight={800} display="flex" alignItems="center" gap={1}>
-                                            <LocalPoliceRoundedIcon /> Stopped by the Police
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Quick access to local guidance
-                                        </Typography>
-                                    </Box>
-                                    {loading ? (
-                                        <Skeleton variant="rounded" width={220} height={48} />
-                                    ) : (
-                                        <PanicButtonWeb
-                                            tokenLimit={user.tokenLimit || 0}
-                                            defaultCode={user.countryCode || ""}
-                                            tokensUsed={user.monthlyTokensUsed || 0}
-                                            defaultCountry={user.country || ""}
-                                        />
-                                    )}
-                                </Stack>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-
-                    {/* Quick actions + Info */}
-                    <Card elevation={3} sx={{ borderRadius: 3 }}>
-                        {subscriptionTier !== "free" && (
-                            <>
-                                <CardContent sx={{ pb: 1, pt: { xs: 2.5, md: 3 } }}>
-                                    <Stack
-                                        direction="row"
-                                        spacing={1.5}
-                                        flexWrap="wrap"
-                                        useFlexGap
-                                        alignItems="center"
-                                    >
-                                        <QuickAction to="/userChats" icon={<ChatBubbleOutlineRoundedIcon />} title="Chats" />
-                                        <QuickAction to="/ai/chat" icon={<GavelRoundedIcon />} title="AI Legal Chat" />
-                                        <QuickAction to="/documents/generate" icon={<DescriptionRoundedIcon />} title="Create Doc" />
-                                        {role === "lawyer" && (
-                                            <QuickAction to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="Cases" />
-                                        )}
-                                        <QuickAction to="procedures/saved" icon={<LocalPoliceRoundedIcon />} title="Stop Procedures" />
-                                        <QuickAction to="/dashboard/notes" icon={<AutoStoriesIcon />} title="Notes" />
-                                    </Stack>
-                                </CardContent>
-
-                                <CardContent sx={{ pt: 1 }}>
-                                    <Stack
-                                        direction="row"
-                                        spacing={2}
-                                        flexWrap="wrap"
-                                        useFlexGap
-                                        alignItems="stretch"
-                                    >
-                                        <InfoCard
-                                            to="/userChats"
-                                            icon={<ForumRoundedIcon />}
-                                            title="Unread chats"
-                                            text={
-                                                loading
-                                                    ? "Checking chats…"
-                                                    : unreadCount > 0
-                                                        ? `You have ${unreadCount} unread chat${unreadCount > 1 ? "s" : ""}.`
-                                                        : "No unread chats."
-                                            }
-                                        />
-                                        <InfoCard
-                                            to={lastCase ? `/cases/${lastCase.id}` : "/cases"}
-                                            icon={<AssignmentTurnedInRoundedIcon />}
-                                            title="Last case"
-                                            text={
-                                                loading
-                                                    ? "Loading your last case…"
-                                                    : lastCase
-                                                        ? `${lastCase.title ?? "Untitled"} (${lastCase.status ?? "open"})`
-                                                        : "No cases found."
-                                            }
-                                            disabled={!lastCase}
-                                        />
-                                    </Stack>
-                                </CardContent>
-                            </>
-                        )}
-
-                        <CardContent sx={{ pt: subscriptionTier !== "free" ? 1 : 3 }}>
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                flexWrap="wrap"
-                                useFlexGap
-                                alignItems="stretch"
-                                justifyContent="space-between"
-                            >
-                                <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title="Account" />
-                                {subscriptionTier !== "free" && (
-                                    <>
-                                        <MenuTile to="/documents" icon={<DescriptionRoundedIcon />} title="Documents" />
-                                        <MenuTile to="/dashboard/cases" icon={<WorkOutlineRoundedIcon />} title="My Cases" />
-                                    </>
-                                )}
-                            </Stack>
-                        </CardContent>
-                    </Card>
-
-                    {/* Upgrade */}
                     {subscriptionTier === "free" && (
-                        <Card
-                            elevation={0}
-                            sx={{
-                                borderRadius: 3,
-                                backgroundColor: theme.palette.background.default,
-                            }}
-                        >
-                            <CardContent>
-                                <Stack
-                                    direction={{ xs: "column", md: "row" }}
-                                    spacing={2}
-                                    alignItems={{ xs: "flex-start", md: "center" }}
-                                    justifyContent="space-between"
-                                >
-                                    <Box>
-                                        <Typography variant="h6" fontWeight={900}>
-                                            Unlock documents, cases and more
-                                        </Typography>
-                                        <Typography color="text.secondary">
-                                            Upgrade to Plus or Premium for end-to-end features.
-                                        </Typography>
-                                    </Box>
-                                    <Stack direction="row" spacing={1.25} flexWrap="wrap">
-                                        <Button component={RouterLink} to="/pricing" variant="outlined" sx={{ borderRadius: 2 }}>
-                                            See Pricing
-                                        </Button>
-                                        <Button component={RouterLink} to="/subscribe" variant="contained" sx={{ borderRadius: 2, fontWeight: 800 }}>
-                                            Upgrade
-                                        </Button>
-                                    </Stack>
-                                </Stack>
-                            </CardContent>
-                        </Card>
+                        <UpgradeCallout
+                            title={t("dashboard.upgrade.title")}
+                            description={t("dashboard.upgrade.description")}
+                            pricingLabel={t("dashboard.upgrade.seePricing")}
+                            ctaLabel={t("dashboard.upgrade.cta")}
+                            pricingLink="/pricing"
+                            ctaLink="/subscribe"
+                        />
                     )}
                 </Stack>
             </Container>
+
+            {upgradePrompt && (
+                <UpgradePromptDialog
+                    open
+                    onClose={closeUpgradePrompt}
+                    title={upgradePrompt.title}
+                    description={upgradePrompt.description}
+                    requiredTier={upgradePrompt.requiredTier}
+                    highlight={upgradePrompt.highlight}
+                />
+            )}
         </>
     );
 };
 
 export default Dashboard;
-
-/* ---------- Subcomponents (unchanged logic, refined styles) ---------- */
-
-function QuickAction({
-                         to,
-                         icon,
-                         title,
-                     }: {
-    to: string;
-    icon: React.ReactNode;
-    title: string;
-}) {
-    return (
-        <Button
-            component={RouterLink}
-            to={to}
-            variant="outlined"
-            startIcon={icon}
-            sx={{
-                borderRadius: 2,
-                px: 2.5,
-                py: 1.25,
-                fontWeight: 700,
-                textTransform: "none",
-            }}
-        >
-            {title}
-        </Button>
-    );
-}
-
-function InfoCard({
-                      to,
-                      icon,
-                      title,
-                      text,
-                      disabled,
-                  }: {
-    to: string;
-    icon: React.ReactNode;
-    title: string;
-    text: string;
-    disabled?: boolean;
-}) {
-    return (
-        <Card
-            elevation={2}
-            sx={{
-                borderRadius: 3,
-                flex: "1 1 320px",
-                minWidth: 280,
-                maxWidth: 520,
-            }}
-        >
-            <CardContent>
-                <Stack direction="row" spacing={1.25} alignItems="center" mb={1}>
-                    <Box
-                        sx={{
-                            width: 40,
-                            height: 40,
-                            display: "grid",
-                            placeItems: "center",
-                            borderRadius: 2,
-                            bgcolor: (t) =>
-                                t.palette.mode === "light"
-                                    ? t.palette.primary.main + "20"
-                                    : t.palette.primary.main + "30",
-                        }}
-                    >
-                        {icon}
-                    </Box>
-                    <Typography fontWeight={800}>{title}</Typography>
-                </Stack>
-                <Stack justifyContent="space-between" direction="row" alignItems="flex-end">
-                    <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
-                        {text}
-                    </Typography>
-                    <Button component={RouterLink} to={to} variant="text" disabled={disabled} sx={{ borderRadius: 2 }}>
-                        Open
-                    </Button>
-                </Stack>
-            </CardContent>
-        </Card>
-    );
-}
-
-function MenuTile({
-                      to,
-                      icon,
-                      title,
-                  }: {
-    to: string;
-    icon: React.ReactNode;
-    title: string;
-}) {
-    return (
-        <Card
-            elevation={2}
-            sx={{
-                borderRadius: 3,
-                flex: "1 1 260px",
-                minWidth: 220,
-                maxWidth: 320,
-            }}
-            component="div"
-        >
-            <CardActionArea component={RouterLink} to={to} sx={{ borderRadius: 3 }}>
-                <CardContent sx={{ display: "grid", placeItems: "center", py: 3 }}>
-                    <Box
-                        sx={{
-                            width: 44,
-                            height: 44,
-                            display: "grid",
-                            placeItems: "center",
-                            borderRadius: 2,
-                            bgcolor: (t) =>
-                                t.palette.mode === "light"
-                                    ? t.palette.primary.main + "20"
-                                    : t.palette.primary.main + "30",
-                            mb: 1,
-                        }}
-                    >
-                        {icon}
-                    </Box>
-                    <Typography fontWeight={800}>{title}</Typography>
-                </CardContent>
-            </CardActionArea>
-        </Card>
-    );
-}

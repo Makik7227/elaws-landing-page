@@ -19,6 +19,7 @@ import PublicRoundedIcon from "@mui/icons-material/PublicRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import { useTranslation } from "react-i18next";
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
     <Stack alignItems="center" spacing={0.5} sx={{ minWidth: 120 }}>
@@ -54,15 +55,7 @@ const Pill = ({ icon, text }: { icon: React.ReactNode; text: string }) => (
     </Stack>
 );
 
-const TimelineItem = ({
-                          year,
-                          title,
-                          desc,
-                      }: {
-    year: string;
-    title: string;
-    desc: string;
-}) => (
+const TimelineItem = ({ year, title, desc }: { year: string; title: string; desc: string }) => (
     <Stack direction="row" spacing={2} alignItems="flex-start">
         <Chip label={year} size="small" color="primary" sx={{ borderRadius: 2 }} />
         <Box>
@@ -76,15 +69,48 @@ const TimelineItem = ({
     </Stack>
 );
 
+const STATS = [
+    { value: "10k+", labelKey: "about.stats.users" },
+    { value: "30+", labelKey: "about.stats.countries" },
+    { value: "50ms", labelKey: "about.stats.response" },
+];
+
+const MISSION_PILLS = [
+    { icon: <GavelRoundedIcon fontSize="small" />, textKey: "about.mission.pills.jurisdiction" },
+    { icon: <PublicRoundedIcon fontSize="small" />, textKey: "about.mission.pills.local" },
+    { icon: <ShieldRoundedIcon fontSize="small" />, textKey: "about.mission.pills.privacy" },
+    { icon: <BoltRoundedIcon fontSize="small" />, textKey: "about.mission.pills.speed" },
+];
+
+const TRUST_POINTS = [
+    "about.trust.points.citations",
+    "about.trust.points.control",
+    "about.trust.points.security",
+    "about.trust.points.editable",
+];
+
+const TIMELINE = [
+    { year: "2024", titleKey: "about.story.timeline.2024.title", descKey: "about.story.timeline.2024.desc" },
+    { year: "2025", titleKey: "about.story.timeline.2025.title", descKey: "about.story.timeline.2025.desc" },
+    { year: "Today", titleKey: "about.story.timeline.today.title", descKey: "about.story.timeline.today.desc" },
+];
+
 const AboutPage: React.FC = () => {
     const theme = useTheme();
+    const { t } = useTranslation();
     const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
 
     return (
         <>
-            {/* HERO */}
             <Box
                 sx={{
+                    height: { xs: "64px", md: "80px" },
+                    background: gradient,
+                }}
+            />
+            <Box
+                sx={{
+                    mt: { xs: -8, md: -10 },
                     background: gradient,
                     color: theme.palette.getContrastText(theme.palette.primary.main),
                     py: { xs: 8, md: 10 },
@@ -93,7 +119,7 @@ const AboutPage: React.FC = () => {
             >
                 <Container maxWidth="md">
                     <Chip
-                        label="About"
+                        label={t("about.hero.badge")}
                         variant="outlined"
                         sx={{
                             color: "inherit",
@@ -104,12 +130,10 @@ const AboutPage: React.FC = () => {
                         }}
                     />
                     <Typography variant="h3" fontWeight={900} sx={{ letterSpacing: -0.5 }}>
-                        Making legal help fast, clear, and accessible
+                        {t("about.hero.title")}
                     </Typography>
                     <Typography sx={{ opacity: 0.95, mt: 1.25 }}>
-                        E-Laws is your AI legal copilot — built to answer questions,
-                        generate documents, and guide you through procedures with privacy by
-                        default.
+                        {t("about.hero.subtitle")}
                     </Typography>
 
                     <Stack
@@ -129,7 +153,7 @@ const AboutPage: React.FC = () => {
                                 "&:hover": { borderColor: "currentColor" },
                             }}
                         >
-                            Our Features
+                            {t("about.hero.secondaryCta")}
                         </Button>
                         <Button
                             component={RouterLink}
@@ -138,7 +162,7 @@ const AboutPage: React.FC = () => {
                             sx={{ borderRadius: 3, fontWeight: 800 }}
                             startIcon={<RocketLaunchRoundedIcon />}
                         >
-                            Get Started
+                            {t("about.hero.primaryCta")}
                         </Button>
                     </Stack>
                 </Container>
@@ -151,13 +175,10 @@ const AboutPage: React.FC = () => {
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                             <Stack spacing={2.5}>
                                 <Typography variant="h5" fontWeight={900}>
-                                    Our mission
+                                    {t("about.mission.title")}
                                 </Typography>
                                 <Typography color="text.secondary">
-                                    People deserve understandable, actionable legal guidance — not
-                                    endless jargon and wait times. We combine reliable AI with
-                                    country-aware context to help you draft, decide, and move
-                                    forward.
+                                    {t("about.mission.subtitle")}
                                 </Typography>
 
                                 <Stack
@@ -166,10 +187,9 @@ const AboutPage: React.FC = () => {
                                     useFlexGap
                                     flexWrap="wrap"
                                 >
-                                    <Pill icon={<GavelRoundedIcon fontSize="small" />} text="Jurisdiction-aware answers" />
-                                    <Pill icon={<PublicRoundedIcon fontSize="small" />} text="Local procedures & presets" />
-                                    <Pill icon={<ShieldRoundedIcon fontSize="small" />} text="Privacy-first by design" />
-                                    <Pill icon={<BoltRoundedIcon fontSize="small" />} text="Fast and reliable responses" />
+                                    {MISSION_PILLS.map((pill) => (
+                                        <Pill key={pill.textKey} icon={pill.icon} text={t(pill.textKey)} />
+                                    ))}
                                 </Stack>
                             </Stack>
                         </CardContent>
@@ -185,9 +205,9 @@ const AboutPage: React.FC = () => {
                     justifyContent="center"
                     alignItems="center"
                 >
-                    <Stat value="10k+" label="Users helped" />
-                    <Stat value="30+" label="Countries supported" />
-                    <Stat value="50ms" label="Avg. response prep" />
+                    {STATS.map((stat) => (
+                        <Stat key={stat.labelKey} value={stat.value} label={t(stat.labelKey)} />
+                    ))}
                 </Stack>
             </Container>
 
@@ -196,26 +216,21 @@ const AboutPage: React.FC = () => {
                 <Container maxWidth="md">
                     <Stack spacing={1.25} mb={2}>
                         <Typography variant="overline" color="text.secondary">
-                            Trust & Safety
+                            {t("about.trust.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={900}>
-                            Designed to be dependable
+                            {t("about.trust.title")}
                         </Typography>
                     </Stack>
 
                     <Card elevation={2} sx={{ borderRadius: 3 }}>
                         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                             <Stack spacing={1.25}>
-                                {[
-                                    "Clear citations and jurisdictional hints where relevant",
-                                    "No sale of your personal data — you control exports",
-                                    "Role-based access and encryption at rest",
-                                    "Human-readable docs you can edit and sign",
-                                ].map((line) => (
+                                {TRUST_POINTS.map((line) => (
                                     <Stack key={line} direction="row" spacing={1.25} alignItems="flex-start">
                                         <CheckCircleRoundedIcon fontSize="small" />
                                         <Typography variant="body2" color="text.secondary">
-                                            {line}
+                                            {t(line)}
                                         </Typography>
                                     </Stack>
                                 ))}
@@ -230,29 +245,22 @@ const AboutPage: React.FC = () => {
                 <Container maxWidth="md">
                     <Stack spacing={1.25} mb={2}>
                         <Typography variant="overline" color="text.secondary">
-                            Our story
+                            {t("about.story.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={900}>
-                            From idea to everyday copilot
+                            {t("about.story.title")}
                         </Typography>
                     </Stack>
 
                     <Stack spacing={2.5}>
-                        <TimelineItem
-                            year="2024"
-                            title="Prototype"
-                            desc="We shipped our first jurisdiction-aware chat with document drafting."
-                        />
-                        <TimelineItem
-                            year="2025"
-                            title="Cases & Procedures"
-                            desc="Added local procedures, saved notes, and structured case management."
-                        />
-                        <TimelineItem
-                            year="Today"
-                            title="Scaling globally"
-                            desc="Improving multilingual guidance, performance, and lawyer workflows."
-                        />
+                        {TIMELINE.map((item) => (
+                            <TimelineItem
+                                key={item.year}
+                                year={item.year}
+                                title={t(item.titleKey)}
+                                desc={t(item.descKey)}
+                            />
+                        ))}
                     </Stack>
                 </Container>
             </Box>
@@ -263,10 +271,10 @@ const AboutPage: React.FC = () => {
                     <Stack spacing={1.5} textAlign="center" alignItems="center">
                         <PeopleAltRoundedIcon />
                         <Typography variant="h5" fontWeight={900}>
-                            Want to partner or have feedback?
+                            {t("about.cta.title")}
                         </Typography>
                         <Typography color="text.secondary">
-                            We collaborate with lawyers and organizations to make legal help accessible.
+                            {t("about.cta.subtitle")}
                         </Typography>
 
                         <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} justifyContent="center" mt={1}>
@@ -276,7 +284,7 @@ const AboutPage: React.FC = () => {
                                 variant="contained"
                                 sx={{ borderRadius: 3, fontWeight: 800 }}
                             >
-                                Contact us
+                                {t("about.cta.primary")}
                             </Button>
                             <Button
                                 component={RouterLink}
@@ -287,7 +295,7 @@ const AboutPage: React.FC = () => {
                                     "&:hover": { borderColor: "currentColor" },
                                 }}
                             >
-                                See pricing
+                                {t("about.cta.secondary")}
                             </Button>
                         </Stack>
                     </Stack>

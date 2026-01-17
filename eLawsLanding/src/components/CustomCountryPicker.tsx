@@ -20,6 +20,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { countries } from "../utils/contries.ts";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     country: string;
@@ -39,10 +40,20 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                                                  }) => {
     const [search, setSearch] = useState("");
     const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
 
-    const filtered = countries.filter((c) =>
-        c.name.toLowerCase().includes(search.toLowerCase())
-    );
+    const getLocalizedName = (code: string, fallback: string) =>
+        t(`countries.${code}`, { defaultValue: fallback || code });
+
+    const normalizedSearch = search.trim().toLowerCase();
+    const filtered = countries.filter((c) => {
+        const localized = getLocalizedName(c.code, c.name).toLowerCase();
+        return (
+            localized.includes(normalizedSearch) ||
+            c.name.toLowerCase().includes(normalizedSearch) ||
+            c.code.toLowerCase().includes(normalizedSearch)
+        );
+    });
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
@@ -74,7 +85,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                             variant="square"
                         />
                         <Typography fontWeight={600}>
-                            {country} ({countryCode})
+                            {getLocalizedName(countryCode, country)} ({countryCode})
                         </Typography>
                         {enableXReset && (
                             <IconButton
@@ -89,7 +100,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                         )}
                     </Box>
                 ) : (
-                    "Select a Country"
+                    t("components.countryPicker.trigger")
                 )}
             </Button>
 
@@ -102,7 +113,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                         justifyContent: "space-between",
                     }}
                 >
-                    Select Country
+                    {t("components.countryPicker.dialogTitle")}
                     <IconButton onClick={() => setOpen(false)} size="small">
                         <CloseIcon />
                     </IconButton>
@@ -113,7 +124,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                         fullWidth
                         value={search}
                         onChange={handleSearch}
-                        placeholder="Search country..."
+                        placeholder={t("components.countryPicker.searchPlaceholder")}
                         size="small"
                         margin="normal"
                         InputProps={{
@@ -144,7 +155,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                                     />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={item.name}
+                                    primary={getLocalizedName(item.code, item.name)}
                                     secondary={item.code}
                                     primaryTypographyProps={{ fontWeight: 500 }}
                                 />
@@ -156,7 +167,7 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                                 color="text.secondary"
                                 sx={{ p: 2, textAlign: "center" }}
                             >
-                                No countries found.
+                                {t("components.countryPicker.empty")}
                             </Typography>
                         )}
                     </List>

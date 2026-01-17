@@ -1,12 +1,16 @@
-import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import {doc, getDoc} from "firebase/firestore";
+import {auth, db} from "../../firebase";
 
 export function estimateTokens(text: string): number {
     return Math.ceil(text.length / 4);
 }
-const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+const FUNCTIONS_BASE_URL =
+    import.meta.env.VITE_FUNCTIONS_BASE_URL ??
+    "https://europe-central2-e-lawyer-a3055.cloudfunctions.net";
+
 export async function sendMessageToGPT(
-    history: { role: "system" | "user" | "assistant"; content: string }[]
+    history: { role: "system" | "user" | "assistant"; content: string }[],
+    options: { model?: string } = {}
 ): Promise<{ content: string; tokensUsed: number }> {
     const currentUser = auth.currentUser;
     if (!currentUser) throw new Error("User not authenticated.");
@@ -24,35 +28,41 @@ export async function sendMessageToGPT(
     if (tokensUsed + inputTokens > tokenLimit) {
         throw new Error("You have reached your monthly token limit.");
     }
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+
+    const idToken = await currentUser.getIdToken();
+    const body: Record<string, unknown> = {messages: history};
+    if (options.model) body.model = options.model;
+
+    const response = await fetch(`${FUNCTIONS_BASE_URL}/chatCompletion`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+            Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({
-            model: "gpt-4.1",
-            messages: history,
-            temperature: 0.3,
-        }),
+        body: JSON.stringify(body),
     });
 
-    const data = await response.json();
-    const outputContent = data?.choices?.[0]?.message?.content?.trim();
+    let data: any = null;
+    try {
+        data = await response.json();
+    } catch (err) {
+        console.error("Failed to parse chatCompletion response", err);
+    }
+
+    if (!response.ok) {
+        const errorMessage = data?.error ?? "Failed to generate response.";
+        throw new Error(errorMessage);
+    }
+
+    const outputContent =
+        typeof data?.content === "string" ? data.content.trim() : data?.content;
+    const totalTokens =
+        typeof data?.tokensUsed === "number" ? data.tokensUsed : inputTokens;
 
     if (!outputContent) {
         console.error("OpenAI error:", data);
-        return {
-            content: "Sorry, something went wrong. Please try again.",
-            tokensUsed: 0,
-        };
+        throw new Error("Sorry, something went wrong. Please try again.");
     }
-    const outputTokens = estimateTokens(outputContent);
-    const totalTokens = inputTokens + outputTokens;
-
-    await updateDoc(userRef, {
-        monthlyTokensUsed: increment(totalTokens),
-    });
 
     return {
         content: outputContent,

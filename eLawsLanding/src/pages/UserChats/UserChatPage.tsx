@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import {
     Avatar,
-    Box,
     Button,
     CircularProgress,
     Container,
@@ -10,6 +9,7 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
+    Stack,
     TextField,
     Typography,
     useTheme,
@@ -19,8 +19,9 @@ import { collection, addDoc, doc, onSnapshot, orderBy, query, serverTimestamp, u
 import { useNavigate, useParams } from "react-router-dom";
 import { getChatKey } from "../../utils/getChatKey";
 import { encryptMessage, decryptMessage } from "../../utils/encryption";
-import {auth, db} from "../../../firebase.ts";
+import { auth, db } from "../../../firebase.ts";
 import type { DocumentData, Timestamp } from "firebase/firestore";
+import { useTranslation } from "react-i18next";
 
 type Message = {
     id: string;
@@ -35,6 +36,7 @@ export default function UserChatWeb() {
     const theme = useTheme();
     const user = auth.currentUser;
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
@@ -99,23 +101,46 @@ export default function UserChatWeb() {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Box display="flex" alignItems="center" mb={2}>
-                <IconButton onClick={() => navigate("/userChats")}><ArrowBackRoundedIcon /></IconButton>
-                <Typography variant="h6" fontWeight={800} ml={1}>Chat</Typography>
-            </Box>
+            <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+                <IconButton onClick={() => navigate("/userChats")}>
+                    <ArrowBackRoundedIcon />
+                </IconButton>
+                <Typography variant="h6" fontWeight={800}>
+                    {t("userChats.messages.title")}
+                </Typography>
+            </Stack>
 
-            <List ref={listRef} sx={{ maxHeight: "60vh", overflowY: "auto", display: "flex", flexDirection: "column-reverse" }}>
+            <List
+                ref={listRef}
+                sx={{
+                    maxHeight: { xs: "55vh", sm: "60vh" },
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column-reverse",
+                }}
+            >
                 {messages.length === 0 ? (
-                    <Typography align="center" color="text.secondary" sx={{ py: 4 }}>No messages yet…</Typography>
+                    <Typography align="center" color="text.secondary" sx={{ py: 4 }}>
+                        {t("userChats.messages.empty")}
+                    </Typography>
                 ) : (
                     messages.map((m) => (
-                        <ListItem key={m.id} sx={{ alignSelf: m.senderId === user?.uid ? "flex-end" : "flex-start", maxWidth: "75%" }}>
+                        <ListItem
+                            key={m.id}
+                            sx={{
+                                alignSelf: m.senderId === user?.uid ? "flex-end" : "flex-start",
+                                maxWidth: { xs: "90%", sm: "75%" },
+                            }}
+                        >
                             {m.senderId !== user?.uid && (
                                 <ListItemAvatar><Avatar>{m.senderId[0]}</Avatar></ListItemAvatar>
                             )}
                             <ListItemText
                                 primary={m.text}
-                                secondary={new Date(m.timestamp).toLocaleTimeString()}
+                                secondary={new Date(m.timestamp).toLocaleTimeString(i18n.language, {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                })}
                                 sx={{
                                     bgcolor: m.senderId === user?.uid ? theme.palette.primary.main : theme.palette.grey[300],
                                     color: m.senderId === user?.uid ? theme.palette.primary.contrastText : "inherit",
@@ -129,19 +154,34 @@ export default function UserChatWeb() {
                 )}
             </List>
 
-            <Box display="flex" mt={2}>
+            <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={1.25}
+                mt={2}
+                component="form"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    sendMessage();
+                }}
+            >
                 <TextField
                     fullWidth
-                    placeholder="Type your message…"
+                    placeholder={t("userChats.messages.placeholder")}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     multiline
                     maxRows={4}
                 />
-                <Button variant="contained" onClick={sendMessage} disabled={sending || !input.trim()} sx={{ ml: 1, borderRadius: 2 }}>
-                    {sending ? <CircularProgress size={20} /> : "Send"}
+                <Button
+                    variant="contained"
+                    onClick={sendMessage}
+                    disabled={sending || !input.trim()}
+                    sx={{ borderRadius: 2, minWidth: { sm: 120 }, width: { xs: "100%", sm: "auto" } }}
+                    type="submit"
+                >
+                    {sending ? <CircularProgress size={20} /> : t("userChats.messages.send")}
                 </Button>
-            </Box>
+            </Stack>
         </Container>
     );
 }

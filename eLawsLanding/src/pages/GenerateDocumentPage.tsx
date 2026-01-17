@@ -9,7 +9,6 @@ import {
     CircularProgress,
     Container,
     Divider,
-    IconButton,
     Snackbar,
     Stack,
     TextField,
@@ -23,11 +22,15 @@ import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import BoltIcon from "@mui/icons-material/Bolt";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import {
     QueryDocumentSnapshot,
     addDoc,
     collection,
+    doc,
+    getDoc,
     getDocs,
     serverTimestamp,
 } from "firebase/firestore";
@@ -36,6 +39,17 @@ import { auth, db, storage } from "../../firebase";
 import generateDocumentHTML from "../utils/generateDocumentHTML";
 import { sendMessageToGPT } from "../api/chat";
 import CustomDatePicker from "../components/CustomDatePicker";
+import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
+import UpgradePromptDialog from "../components/UpgradePromptDialog";
+import {
+    canGenerateDocument,
+    getDocumentLimit,
+    getDocumentRunsThisMonth,
+    incrementDocumentRunsThisMonth,
+    remainingDocumentRuns,
+    type Tier,
+} from "../utils/monetization";
 
 type SchemaParamType = "text" | "textarea" | "number" | "date" | "email" | "list" | "dropdown";
 
@@ -57,6 +71,24 @@ type SchemaDoc = {
 const SCHEMAS_CACHE_KEY = "docSchemasCache";
 const DOC_CACHE_PREFIX = "docOutputCache:";
 
+const HERO_STEPS = [
+    {
+        key: "choose",
+        labelKey: "generateDoc.hero.steps.choose",
+        defaultLabel: "Select a legal template",
+    },
+    {
+        key: "fill",
+        labelKey: "generateDoc.hero.steps.fill",
+        defaultLabel: "Answer guided questions",
+    },
+    {
+        key: "export",
+        labelKey: "generateDoc.hero.steps.export",
+        defaultLabel: "Generate & save output",
+    },
+];
+
 const stableStringify = (value: unknown): string => {
     if (value === null || typeof value !== "object") return JSON.stringify(value);
     if (Array.isArray(value)) return `[${value.map(stableStringify).join(",")}]`;
@@ -72,8 +104,11 @@ const sanitizeFileName = (name: string) => {
 
 const GenerateDocumentPage: React.FC = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [authReady, setAuthReady] = useState(false);
     const [user, setUser] = useState<User | null>(auth.currentUser);
+    const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const [docRuns, setDocRuns] = useState(0);
 
     // schema state
     const [schemas, setSchemas] = useState<Record<string, SchemaDoc>>({});
@@ -98,6 +133,12 @@ const GenerateDocumentPage: React.FC = () => {
     const [saving, setSaving] = useState(false);
     const [fileName, setFileName] = useState("");
     const [snackbar, setSnackbar] = useState<{ open: boolean; text: string }>({ open: false, text: "" });
+    const [upgradePrompt, setUpgradePrompt] = useState<{
+        title: string;
+        description: string;
+        requiredTier: "plus" | "premium";
+        highlight?: string;
+    } | null>(null);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => {
@@ -107,6 +148,30 @@ const GenerateDocumentPage: React.FC = () => {
         });
         return () => unsub();
     }, [navigate]);
+
+    useEffect(() => {
+        if (!user) {
+            setSubscriptionTier("free");
+            setDocRuns(0);
+            return;
+        }
+        const hydrateProfile = async () => {
+            try {
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    const data = snap.data() as { subscriptionTier?: Tier };
+                    setSubscriptionTier((data.subscriptionTier as Tier) ?? "free");
+                } else {
+                    setSubscriptionTier("free");
+                }
+            } catch {
+                setSubscriptionTier("free");
+            } finally {
+                setDocRuns(getDocumentRunsThisMonth(user.uid));
+            }
+        };
+        hydrateProfile();
+    }, [user]);
 
     useEffect(() => {
         const loadSchemas = async () => {
@@ -142,14 +207,15 @@ const GenerateDocumentPage: React.FC = () => {
                 setSchemaOrder(order);
                 localStorage.setItem(SCHEMAS_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
             } catch (err) {
-                const message = err instanceof Error ? err.message : "Failed to load templates.";
+                const message =
+                    err instanceof Error ? err.message : t("generateDoc.errors.schemasLoad");
                 setSchemasError(message);
             } finally {
                 setSchemasLoading(false);
             }
         };
         loadSchemas();
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         if (!selectedSchemaId) return;
@@ -195,6 +261,14 @@ const GenerateDocumentPage: React.FC = () => {
             })),
         [schemaOrder, schemas]
     );
+    const docLimit = getDocumentLimit(subscriptionTier);
+    const docRemaining = remainingDocumentRuns(subscriptionTier, docRuns);
+    const generationLocked = !canGenerateDocument(subscriptionTier, docRuns);
+    const upgradeTier = subscriptionTier === "free" ? "plus" : "premium";
+    const docUsageLabel =
+        docLimit === null
+            ? t("generateDoc.limits.unlimited")
+            : t("generateDoc.limits.counter", { remaining: Math.max(0, docRemaining), limit: docLimit });
 
     const setValue = useCallback(
         (key: string, value: unknown) => {
@@ -233,9 +307,27 @@ const GenerateDocumentPage: React.FC = () => {
             setOutput("");
             setTokensUsed(null);
             setUsedCache(false);
-            if (!selectedSchemaId) throw new Error("Select a template to continue.");
+            if (!canGenerateDocument(subscriptionTier, docRuns)) {
+                const key = subscriptionTier === "free" ? "free" : "plus";
+                const highlight =
+                    subscriptionTier === "plus" && docLimit !== null
+                        ? t("generateDoc.limits.plusHighlight", { limit: docLimit })
+                        : undefined;
+                setUpgradePrompt({
+                    title: t(`generateDoc.limits.${key}Title`),
+                    description: t(`generateDoc.limits.${key}Description`),
+                    requiredTier: upgradeTier,
+                    highlight,
+                });
+                return;
+            }
+            if (!selectedSchemaId) throw new Error(t("generateDoc.errors.selectTemplate"));
             if (missingRequired.length) {
-                throw new Error(`Missing required fields: ${missingRequired.join(", ")}`);
+                throw new Error(
+                    t("generateDoc.errors.missingFieldsInline", {
+                        fields: missingRequired.join(", "),
+                    })
+                );
             }
             setGenerating(true);
 
@@ -264,18 +356,23 @@ const GenerateDocumentPage: React.FC = () => {
             setOutput(content);
             setTokensUsed(totalTokens);
             localStorage.setItem(cacheKey, content);
+            if (subscriptionTier !== "free") {
+                const used = incrementDocumentRunsThisMonth(user?.uid);
+                setDocRuns(used);
+            }
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Failed to generate document.";
+            const message =
+                err instanceof Error ? err.message : t("generateDoc.errors.generateFailed");
             setError(message);
         } finally {
             setGenerating(false);
         }
-    }, [selectedSchemaId, formValues, missingRequired, buildUserPrompt]);
+    }, [selectedSchemaId, formValues, missingRequired, buildUserPrompt, t, subscriptionTier, docRuns, docLimit, upgradeTier, user]);
 
     const handleSave = useCallback(async () => {
         try {
-            if (!user) throw new Error("You must be signed in.");
-            if (!output) throw new Error("Generate a document first.");
+            if (!user) throw new Error(t("generateDoc.errors.authRequired"));
+            if (!output) throw new Error(t("generateDoc.errors.noOutput"));
             setSaving(true);
             const html = generateDocumentHTML(output);
             const blob = new Blob([html], { type: "text/html" });
@@ -290,44 +387,105 @@ const GenerateDocumentPage: React.FC = () => {
                 type: "html",
                 mimeType: "text/html",
             });
-            setSnackbar({ open: true, text: "Saved to My Documents." });
+            setSnackbar({ open: true, text: t("generateDoc.save.success") });
             setFileName("");
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Failed to save document.";
+            const message = err instanceof Error ? err.message : t("generateDoc.errors.saveFailed");
             setSnackbar({ open: true, text: message });
         } finally {
             setSaving(false);
         }
-    }, [user, output, fileName, selectedSchema]);
+    }, [user, output, fileName, selectedSchema, t]);
 
     if (!authReady || !user) {
         return (
             <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
                 <CircularProgress />
                 <Typography mt={3} color="text.secondary">
-                    Preparing your workspace…
+                    {t("generateDoc.loading")}
                 </Typography>
             </Container>
         );
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
-            <Stack spacing={4}>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <IconButton component={RouterLink} to="/documents">
-                        <ArrowBackIcon />
-                    </IconButton>
-                    <Box>
-                        <Typography variant="h4" fontWeight={900}>
-                            Generate a document
-                        </Typography>
-                        <Typography color="text.secondary">
-                            Choose a schema, fill in the required data, and let AI craft the legal draft.
-                        </Typography>
-                    </Box>
+        <>
+            <PageHero
+                title={t("generateDoc.hero.title")}
+                subtitle={t("generateDoc.hero.subtitle")}
+                overline={t("generateDoc.hero.overline", { defaultValue: "Document automation" })}
+                icon={<LibraryBooksIcon />}
+                actions={
+                    <>
+                        <Button
+                            component={RouterLink}
+                            to="/documents"
+                            variant="text"
+                            startIcon={<ArrowBackIcon />}
+                            sx={{ borderRadius: 3 }}
+                        >
+                            {t("generateDoc.hero.back", { defaultValue: "Documents hub" })}
+                        </Button>
+                        <Button
+                            component={RouterLink}
+                            to="/documents/my"
+                            variant="contained"
+                            sx={{ borderRadius: 3, fontWeight: 800 }}
+                        >
+                            {t("generateDoc.hero.savedCta")}
+                        </Button>
+                    </>
+                }
+            >
+                <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 2, sm: 4 }}
+                    flexWrap="wrap"
+                >
+                    {HERO_STEPS.map((step, idx) => (
+                        <Stack key={step.key} spacing={0.5}>
+                            <Typography variant="subtitle2" fontWeight={800}>
+                                0{idx + 1}
+                            </Typography>
+                            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                                {t(step.labelKey, { defaultValue: step.defaultLabel })}
+                            </Typography>
+                        </Stack>
+                    ))}
                 </Stack>
+            </PageHero>
 
+            <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 } }}>
+                <Stack spacing={1.5} mb={3}>
+                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                        <Chip label={docUsageLabel} icon={<DescriptionOutlinedIcon />} variant="outlined" />
+                        {subscriptionTier === "plus" && docLimit !== null && (
+                            <Chip
+                                color={docRemaining <= 1 ? "warning" : "default"}
+                                label={t("generateDoc.limits.remaining", { count: Math.max(0, docRemaining) })}
+                            />
+                        )}
+                    </Stack>
+                    {generationLocked && (
+                        <Alert
+                            severity={subscriptionTier === "free" ? "info" : "warning"}
+                            action={
+                                <Button
+                                    size="small"
+                                    variant="contained"
+                                    component={RouterLink}
+                                    to="/dashboard/subscribe"
+                                >
+                                    {t("generateDoc.limits.cta")}
+                                </Button>
+                            }
+                        >
+                            {subscriptionTier === "free"
+                                ? t("generateDoc.limits.freeInline")
+                                : t("generateDoc.limits.plusInline", { limit: docLimit ?? 0 })}
+                        </Alert>
+                    )}
+                </Stack>
                 <Grid container spacing={{ xs: 4, md: 5 }}>
                     <Grid size={{ xs: 12, md: 4 }}>
                         <Card sx={{ borderRadius: 4, position: "sticky", top: 32 }}>
@@ -336,17 +494,19 @@ const GenerateDocumentPage: React.FC = () => {
                                     <Box display="flex" alignItems="center" gap={1}>
                                         <LibraryBooksIcon color="primary" />
                                         <Typography variant="h6" fontWeight={800}>
-                                            Templates
+                                            {t("generateDoc.templates.title")}
                                         </Typography>
                                     </Box>
                                     <Typography color="text.secondary">
-                                        Templates are synced from your mobile workspace. Cached locally for faster loads.
+                                        {t("generateDoc.templates.description")}
                                     </Typography>
                                     <Divider />
                                     {schemasLoading ? (
                                         <Stack spacing={1}>
                                             <CircularProgress size={20} />
-                                            <Typography color="text.secondary">Fetching templates…</Typography>
+                                            <Typography color="text.secondary">
+                                                {t("generateDoc.templates.loading")}
+                                            </Typography>
                                         </Stack>
                                     ) : (
                                         <Autocomplete
@@ -358,13 +518,18 @@ const GenerateDocumentPage: React.FC = () => {
                                             }
                                             onChange={(_, value) => setSelectedSchemaId(value?.id ?? "")}
                                             getOptionLabel={(option) => option.label}
-                                            renderInput={(params) => <TextField {...params} label="Choose a template" />}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("generateDoc.templates.inputLabel")}
+                                                />
+                                            )}
                                         />
                                     )}
                                     {schemasError && <Alert severity="error">{schemasError}</Alert>}
                                     {missingRequired.length > 0 && (
                                         <Alert severity="warning">
-                                            Missing required fields:
+                                            {t("generateDoc.templates.missingIntro")}
                                             <ul style={{ margin: "8px 0 0 16px" }}>
                                                 {missingRequired.map((label) => (
                                                     <li key={label}>{label}</li>
@@ -396,7 +561,10 @@ const GenerateDocumentPage: React.FC = () => {
                                                     const draft = listEditorDrafts[param.key] ?? "";
                                                     return (
                                                         <Box key={param.key}>
-                                                            <Stack direction="row" spacing={1}>
+                                                            <Stack
+                                                                direction={{ xs: "column", sm: "row" }}
+                                                                spacing={1}
+                                                            >
                                                                 <TextField
                                                                     label={`${param.label}${param.required ? " *" : ""}`}
                                                                     value={draft}
@@ -418,7 +586,7 @@ const GenerateDocumentPage: React.FC = () => {
                                                                         setListEditorDrafts((prev) => ({ ...prev, [param.key]: "" }));
                                                                     }}
                                                                 >
-                                                                    Add
+                                                                    {t("generateDoc.form.list.add")}
                                                                 </Button>
                                                             </Stack>
                                                             <Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
@@ -448,7 +616,7 @@ const GenerateDocumentPage: React.FC = () => {
                                                             onChange={(e) => setValue(param.key, e.target.value)}
                                                             fullWidth
                                                         >
-                                                            <option value="">Select…</option>
+                                                            <option value="">{t("generateDoc.form.dropdownPlaceholder")}</option>
                                                             {param.options.map((opt) => (
                                                                 <option key={opt} value={opt}>
                                                                     {opt}
@@ -495,12 +663,32 @@ const GenerateDocumentPage: React.FC = () => {
                                             })}
                                             <Button
                                                 variant="contained"
-                                                startIcon={generating ? <CircularProgress size={18} /> : <BoltIcon />}
+                                                startIcon={
+                                                    generating ? (
+                                                        <CircularProgress size={18} />
+                                                    ) : generationLocked ? (
+                                                        <LockOutlinedIcon />
+                                                    ) : (
+                                                        <BoltIcon />
+                                                    )
+                                                }
                                                 onClick={handleGenerate}
                                                 disabled={generating}
-                                                sx={{ alignSelf: "flex-start" }}
+                                                sx={{
+                                                    alignSelf: "flex-start",
+                                                    borderRadius: 3,
+                                                    fontWeight: 700,
+                                                    borderStyle: generationLocked ? "dashed" : "solid",
+                                                    opacity: generationLocked ? 0.85 : 1,
+                                                }}
                                             >
-                                                {generating ? "Generating…" : "Generate document"}
+                                                {generationLocked
+                                                    ? t("generateDoc.actions.generateLocked", {
+                                                          tier: upgradeTier.toUpperCase(),
+                                                      })
+                                                    : generating
+                                                        ? t("generateDoc.actions.generating")
+                                                        : t("generateDoc.actions.generate")}
                                             </Button>
                                             {error && <Alert severity="error">{error}</Alert>}
                                         </Stack>
@@ -510,7 +698,7 @@ const GenerateDocumentPage: React.FC = () => {
                                 <Card sx={{ borderRadius: 4 }}>
                                     <CardContent>
                                         <Typography color="text.secondary">
-                                            Select a template from the left panel to start filling the form.
+                                            {t("generateDoc.templates.emptyState")}
                                         </Typography>
                                     </CardContent>
                                 </Card>
@@ -519,14 +707,24 @@ const GenerateDocumentPage: React.FC = () => {
                             {!!output && (
                                 <Card sx={{ borderRadius: 4 }}>
                                     <CardContent>
-                                        <Stack spacing={2}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
+                                            <Stack spacing={2}>
+                                            <Stack
+                                                direction={{ xs: "column", sm: "row" }}
+                                                spacing={1}
+                                                alignItems={{ xs: "flex-start", sm: "center" }}
+                                            >
                                                 <Typography variant="h6" fontWeight={800}>
-                                                    Preview
+                                                    {t("generateDoc.preview.title")}
                                                 </Typography>
                                                 {tokensUsed !== null && (
                                                     <Chip
-                                                        label={usedCache ? "Cached result" : `${tokensUsed} tokens`}
+                                                        label={
+                                                            usedCache
+                                                                ? t("generateDoc.preview.cached")
+                                                                : t("generateDoc.preview.tokens", {
+                                                                      count: tokensUsed,
+                                                                  })
+                                                        }
                                                         size="small"
                                                         color={usedCache ? "default" : "primary"}
                                                     />
@@ -545,8 +743,8 @@ const GenerateDocumentPage: React.FC = () => {
                                                 <div dangerouslySetInnerHTML={{ __html: output }} />
                                             </Box>
                                             <TextField
-                                                label="Document name"
-                                                placeholder="e.g. Consulting_Agreement"
+                                                label={t("generateDoc.save.fileNameLabel")}
+                                                placeholder={t("generateDoc.save.fileNamePlaceholder")}
                                                 value={fileName}
                                                 onChange={(e) => setFileName(e.target.value)}
                                             />
@@ -557,7 +755,9 @@ const GenerateDocumentPage: React.FC = () => {
                                                 disabled={saving}
                                                 sx={{ alignSelf: "flex-start" }}
                                             >
-                                                {saving ? "Saving…" : "Save to My Documents"}
+                                                {saving
+                                                    ? t("generateDoc.save.saving")
+                                                    : t("generateDoc.save.cta")}
                                             </Button>
                                         </Stack>
                                     </CardContent>
@@ -566,7 +766,18 @@ const GenerateDocumentPage: React.FC = () => {
                         </Stack>
                     </Grid>
                 </Grid>
-            </Stack>
+            </Container>
+
+            {upgradePrompt && (
+                <UpgradePromptDialog
+                    open
+                    onClose={() => setUpgradePrompt(null)}
+                    title={upgradePrompt.title}
+                    description={upgradePrompt.description}
+                    requiredTier={upgradePrompt.requiredTier}
+                    highlight={upgradePrompt.highlight}
+                />
+            )}
 
             <Snackbar
                 open={snackbar.open}
@@ -574,7 +785,7 @@ const GenerateDocumentPage: React.FC = () => {
                 onClose={() => setSnackbar({ open: false, text: "" })}
                 message={snackbar.text}
             />
-        </Container>
+        </>
     );
 };
 

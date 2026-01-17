@@ -22,16 +22,15 @@ import {
     BoltOutlined as SpeedIcon,
 } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type Feature = {
-    title: string;
-    desc: string;
+    titleKey: string;
+    descKey: string;
     icon: React.ReactNode;
-    to?: string;
-    cta?: string;
 };
 
-const FeatureCard = ({ title, desc, icon, to, cta = "Explore" }: Feature) => {
+const FeatureCard = ({ title, desc, icon }: { title: string; desc: string; icon: React.ReactNode }) => {
     return (
         <Card
             elevation={3}
@@ -69,17 +68,6 @@ const FeatureCard = ({ title, desc, icon, to, cta = "Explore" }: Feature) => {
                 <Typography color="text.secondary" sx={{ mb: 2 }}>
                     {desc}
                 </Typography>
-
-                {to && (
-                    <Button
-                        component={RouterLink}
-                        to={to}
-                        variant="contained"
-                        sx={{ borderRadius: 2, fontWeight: 700 }}
-                    >
-                        {cta}
-                    </Button>
-                )}
             </CardContent>
         </Card>
     );
@@ -87,71 +75,67 @@ const FeatureCard = ({ title, desc, icon, to, cta = "Explore" }: Feature) => {
 
 const FeaturesPage: React.FC = () => {
     const theme = useTheme();
+    const { t } = useTranslation();
     const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
 
     const core: Feature[] = [
         {
-            title: "AI Legal Chat",
-            desc: "Ask jurisdiction-aware legal questions and get concise, cited guidance.",
+            titleKey: "featuresPage.core.aiChat.title",
+            descKey: "featuresPage.core.aiChat.desc",
             icon: <ChatIcon />,
-            to: "/chat",
-            cta: "Start chatting",
         },
         {
-            title: "Generate Documents",
-            desc: "Draft contracts, letters, and filings with AI, then edit and export.",
+            titleKey: "featuresPage.core.documents.title",
+            descKey: "featuresPage.core.documents.desc",
             icon: <DocIcon />,
-            to: "/documents/generate",
-            cta: "Create a doc",
         },
         {
-            title: "Manage Cases",
-            desc: "Open, track, and review your legal matters in one place.",
+            titleKey: "featuresPage.core.cases.title",
+            descKey: "featuresPage.core.cases.desc",
             icon: <CasesIcon />,
-            to: "/cases",
-            cta: "View cases",
         },
         {
-            title: "Saved Notes",
-            desc: "Capture important answers and keep them organized by topic.",
+            titleKey: "featuresPage.core.notes.title",
+            descKey: "featuresPage.core.notes.desc",
             icon: <NotesIcon />,
-            to: "/notes",
-            cta: "Open notes",
         },
     ];
 
     const more: Feature[] = [
         {
-            title: "Country-specific Procedures",
-            desc: "Step-by-step playbooks tailored to your country’s rules.",
+            titleKey: "featuresPage.more.procedures.title",
+            descKey: "featuresPage.more.procedures.desc",
             icon: <ProceduresIcon />,
-            to: "/procedures/saved-procedures",
-            cta: "Browse procedures",
         },
         {
-            title: "Legal Topics Presets",
-            desc: "Jump straight into Civil, Criminal, Business, Labor, Tax, and more.",
+            titleKey: "featuresPage.more.presets.title",
+            descKey: "featuresPage.more.presets.desc",
             icon: <GavelIcon />,
-            to: "/chat", // preset selection can live in chat UI
-            cta: "Choose a topic",
         },
         {
-            title: "Privacy by Default",
-            desc: "Your data stays yours — secure storage and strict access controls.",
+            titleKey: "featuresPage.more.privacy.title",
+            descKey: "featuresPage.more.privacy.desc",
             icon: <LockIcon />,
         },
         {
-            title: "Fast & Reliable",
-            desc: "Optimized pipeline and caching for snappy, consistent responses.",
+            titleKey: "featuresPage.more.speed.title",
+            descKey: "featuresPage.more.speed.desc",
             icon: <SpeedIcon />,
         },
     ];
 
     return (
         <>
+            <Box
+                sx={{
+                    height: { xs: "64px", md: "80px" },
+                    background: gradient,
+                }}
+            />
             {/* HERO */}
             <Box
                 sx={{
+                    mt: { xs: -8, md: -10 },
                     background: gradient,
                     color: theme.palette.getContrastText(theme.palette.primary.main),
                     py: { xs: 8, md: 10 },
@@ -160,7 +144,7 @@ const FeaturesPage: React.FC = () => {
             >
                 <Container maxWidth="md">
                     <Chip
-                        label="Features"
+                        label={t("featuresPage.hero.badge")}
                         variant="outlined"
                         sx={{
                             color: "inherit",
@@ -175,11 +159,10 @@ const FeaturesPage: React.FC = () => {
                         fontWeight={900}
                         sx={{ letterSpacing: -0.5, mb: 1 }}
                     >
-                        Built for real-world legal work
+                        {t("featuresPage.hero.title")}
                     </Typography>
                     <Typography sx={{ opacity: 0.95 }}>
-                        From quick answers to full documents and organized cases — all in one
-                        place.
+                        {t("featuresPage.hero.subtitle")}
                     </Typography>
                     <Stack
                         direction={{ xs: "column", sm: "row" }}
@@ -193,11 +176,11 @@ const FeaturesPage: React.FC = () => {
                             variant="contained"
                             sx={{ borderRadius: 3, fontWeight: 800 }}
                         >
-                            Get started
+                            {t("featuresPage.hero.primaryCta")}
                         </Button>
                         <Button
                             component={RouterLink}
-                            to="/chat"
+                            to="/pricing"
                             variant="outlined"
                             sx={{
                                 borderRadius: 3,
@@ -206,7 +189,7 @@ const FeaturesPage: React.FC = () => {
                                 "&:hover": { borderColor: "currentColor" },
                             }}
                         >
-                            Try the demo
+                            {t("featuresPage.hero.secondaryCta")}
                         </Button>
                     </Stack>
                 </Container>
@@ -217,10 +200,10 @@ const FeaturesPage: React.FC = () => {
                 <Container>
                     <Stack spacing={1} mb={3} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
-                            Core
+                            {t("featuresPage.coreSection.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={900}>
-                            Everything you need to get moving
+                            {t("featuresPage.coreSection.title")}
                         </Typography>
                     </Stack>
 
@@ -232,7 +215,12 @@ const FeaturesPage: React.FC = () => {
                         justifyContent="center"
                     >
                         {core.map((f) => (
-                            <FeatureCard key={f.title} {...f} />
+                            <FeatureCard
+                                key={f.titleKey}
+                                icon={f.icon}
+                                title={t(f.titleKey)}
+                                desc={t(f.descKey)}
+                            />
                         ))}
                     </Stack>
                 </Container>
@@ -248,10 +236,10 @@ const FeaturesPage: React.FC = () => {
                 <Container>
                     <Stack spacing={1} mb={3} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
-                            And more
+                            {t("featuresPage.moreSection.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={900}>
-                            Practical details that actually matter
+                            {t("featuresPage.moreSection.title")}
                         </Typography>
                     </Stack>
 
@@ -263,19 +251,13 @@ const FeaturesPage: React.FC = () => {
                         justifyContent="center"
                     >
                         {more.map((f) => (
-                            <FeatureCard key={f.title} {...f} />
+                            <FeatureCard
+                                key={f.titleKey}
+                                icon={f.icon}
+                                title={t(f.titleKey)}
+                                desc={t(f.descKey)}
+                            />
                         ))}
-                    </Stack>
-
-                    <Stack alignItems="center" mt={6}>
-                        <Button
-                            component={RouterLink}
-                            to="/pricing"
-                            variant="contained"
-                            sx={{ borderRadius: 3, fontWeight: 800 }}
-                        >
-                            See pricing
-                        </Button>
                     </Stack>
                 </Container>
             </Box>

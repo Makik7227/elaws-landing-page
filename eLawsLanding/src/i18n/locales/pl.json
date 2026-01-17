@@ -1,0 +1,1397 @@
+{
+    "common": {
+        "language": {
+            "tooltip": "Przełącz język na {{language}}",
+            "names": {
+                "en": "Angielski",
+                "pl": "Polski"
+            },
+            "short": {
+                "en": "EN",
+                "pl": "PL"
+            },
+            "aria": "Przełącz język"
+        },
+        "backToDashboard": "Powrót do panelu"
+    },
+    "nav": {
+        "home": "Strona główna",
+        "features": "Funkcje",
+        "pricing": "Cennik",
+        "about": "O nas",
+        "contact": "Kontakt",
+        "dashboard": "Panel",
+        "aiChat": "Czat AI",
+        "documents": "Dokumenty",
+        "procedures": "Procedury",
+        "notes": "Notatki",
+        "connections": "Kontakty"
+    },
+    "auth": {
+        "account": "Konto",
+        "logout": "Wyloguj",
+        "login": "Zaloguj",
+        "signup": "Zarejestruj się",
+        "createAccount": "Utwórz konto"
+    },
+    "topBar": {
+        "menu": "Menu",
+        "openMenu": "Otwórz menu",
+        "closeMenu": "Zamknij menu",
+        "themeToggle": "Zmień motyw"
+    },
+    "home": {
+        "hero": {
+            "badge": "Prawny kopilot AI",
+            "title": "E-Laws — pomoc prawna na żądanie.",
+            "subtitle": "Zadawaj pytania, generuj dokumenty i rozmawiaj z asystentem prawnym dopasowanym do Twojej jurysdykcji. Prywatność przede wszystkim. Dla zespołów prawnych i solowych founderów.",
+            "ctaDashboard": "Przejdź do panelu",
+            "ctaPrimary": "Załóż darmowe konto",
+            "ctaSecondary": "Wypróbuj demo",
+            "metrics": {
+                "questions": "Odpowiedziane pytania",
+                "docs": "Utworzone dokumenty",
+                "response": "Średni czas odpowiedzi"
+            },
+            "highlights": {
+                "security": "Pełne bezpieczeństwo",
+                "localization": "Wiedza o krajowych przepisach",
+                "citations": "Odpowiedzi z przypisami"
+            },
+            "trustedBy": "Zaufali nam nowoczesni prawnicy:",
+            "widget": {
+                "title": "Centrum spraw na żywo",
+                "subtitle": "Pakiet umów pracowniczych · Hiszpania",
+                "headline": "Wszyscy interesariusze w jednym widoku",
+                "progressLabel": "Ukończone dokumenty",
+                "status": {
+                    "cases": "Otwarte sprawy",
+                    "tasks": "Sugestie AI",
+                    "sla": "Śr. SLA"
+                },
+                "supportTitle": "Recenzenci zgodności online",
+                "supportDesc": "Lokalni eksperci dołączają od razu, gdy zaprosisz ich do przestrzeni roboczej.",
+                "supportStatus": "Gotowe w 5 min"
+            }
+        },
+        "benefits": {
+            "overline": "Dlaczego zespoły przechodzą",
+            "title": "Nowoczesny interfejs z prawniczną precyzją.",
+            "subtitle": "Przemyślane warstwy UI skracają wdrożenie, a AI utrzymuje workflow szybki, zgodny i przyjazny dla każdego interesariusza.",
+            "compliance": {
+                "title": "Gotowe na regulacje",
+                "desc": "Pakiety krajowe, historia przypisów i logi audytu czynią odpowiedzi obronnymi."
+            },
+            "workspace": {
+                "title": "Jedna przestrzeń robocza",
+                "desc": "Sprawy, dokumenty, notatki i czat współdzielą kontekst, więc nic nie ginie."
+            },
+            "guidance": {
+                "title": "Prowadzone decyzje",
+                "desc": "Podkreślaj ryzyka, sugeruj formularze i zbieraj brakujące dane dynamicznie."
+            },
+            "speed": {
+                "title": "Szybciej niż e-mail",
+                "desc": "Powiadomienia, podsumowania i szablony pozwalają zamykać sprawy 3× szybciej."
+            }
+        },
+        "features": {
+            "overline": "Co otrzymujesz",
+            "title": "Stworzone do realnych zadań prawnych",
+            "subtitle": "Logika znana z SaaS: moduły, kontekst i piękne domyślne ustawienia.",
+            "cards": {
+                "countryChat": {
+                    "title": "Czat dostosowany do kraju",
+                    "desc": "Pytaj naturalnym językiem i otrzymuj odpowiedzi dopasowane do Twojej jurysdykcji."
+                },
+                "topicPresets": {
+                    "title": "Gotowe presety tematów",
+                    "desc": "Cywilne, karne, biznesowe, pracownicze, podatkowe… zacznij od wybranych podpowiedzi."
+                },
+                "privacy": {
+                    "title": "Prywatność domyślnie",
+                    "desc": "Bezpieczne przechowywanie, kontrola dostępu i pełna audytowalność."
+                },
+                "speed": {
+                    "title": "Błyskawiczne działanie",
+                    "desc": "Optymalny pipeline i cache. Odpowiedzi w sekundy, nie minuty."
+                }
+            }
+        },
+        "workflow": {
+            "badge": "Praca",
+            "title": "Wszystko, czego potrzebują zespoły — bez topornych interfejsów.",
+            "description": "Wzięliśmy to, co najlepsze w SaaS: nawigację z lewej strony, przyjemne karty, stopniowe odsłanianie opcji i tryb ciemny. Czujesz się jak w ulubionym narzędziu produktywnym, nie w archaicznym systemie prawnym.",
+            "points": {
+                "workspace": {
+                    "title": "Jedno środowisko",
+                    "desc": "Czat, notatki, sprawy i procedury dzielą kontekst, więc nic nie ginie."
+                },
+                "realtime": {
+                    "title": "AI w czasie rzeczywistym",
+                    "desc": "Strumieniujemy odpowiedzi, podkreślamy cytaty i pozwalamy rozgałęziać wątki."
+                },
+                "local": {
+                    "title": "Lokalna ekspertyza",
+                    "desc": "Pakiety krajowe zawierają przepisy, formularze i terminy specyficzne dla regionu."
+                }
+            },
+            "primaryCta": "Poznaj produkt",
+            "secondaryCta": "Zobacz ceny →",
+            "preview": {
+                "title": "Podgląd na żywo",
+                "draftNda": {
+                    "title": "Projekt NDA",
+                    "desc": "Dokument AI w 35 sekund."
+                },
+                "laborChat": {
+                    "title": "Czat o sporach pracowniczych",
+                    "desc": "Podsumowania z cytatami gotowe do udostępnienia."
+                },
+                "immigration": {
+                    "title": "Lista kontrolna imigracyjna",
+                    "desc": "Checklist automatycznie dostosowana do Twojego kraju."
+                },
+                "footerTitle": "Tryb ciemny w pakiecie",
+                "footerDesc": "Włączaj w dowolnym momencie z poziomu nawigacji."
+            }
+        },
+        "timeline": {
+            "badge": "Czas realizacji",
+            "title": "Od intake do gotowych plików w kilka minut",
+            "subtitle": "Ustrukturyzowane bloki i wsparcie AI prowadzą każdą sprawę bez chaosu.",
+            "etaLabel": "Średni czas zaoszczędzony na sprawie",
+            "primaryCta": "Przeglądaj procedury",
+            "secondaryCta": "Otwórz aplikację",
+            "steps": {
+                "intake": {
+                    "title": "Sprytny intake",
+                    "desc": "Zbieraj fakty pytaniami dopasowanymi do lokalnych przepisów."
+                },
+                "drafting": {
+                    "title": "Tworzenie i cytaty",
+                    "desc": "Generuj pisma z edytowalnymi sekcjami i automatycznymi przypisami."
+                },
+                "review": {
+                    "title": "Pętla review",
+                    "desc": "Zapraszaj prawników lub klientów z komentarzami śledzącymi zmiany."
+                },
+                "share": {
+                    "title": "Eksport i podpis",
+                    "desc": "Wysyłaj dopracowane PDF-y lub wklejaj klauzule do swoich narzędzi."
+                }
+            }
+        },
+        "steps": {
+            "overline": "Jak to działa",
+            "title": "Trzy kroki. Zero chaosu.",
+            "subtitle": "Prowadzone ścieżki upraszczają złożone procedury. Każde środowisko jest znajome.",
+            "pickCountry": {
+                "title": "Wybierz kraj i temat",
+                "desc": "Dopasowujemy kontekst AI do lokalnych przepisów i praktyki."
+            },
+            "chatDraft": {
+                "title": "Rozmawiaj, twórz, planuj",
+                "desc": "Zadawaj dodatkowe pytania, generuj pisma lub uruchamiaj procedury."
+            },
+            "saveCollaborate": {
+                "title": "Zapisuj i współpracuj",
+                "desc": "Zachowuj wnioski, eksportuj dokumenty i zapraszaj prawników."
+            }
+        },
+        "testimonials": {
+            "overline": "Rekomendacje",
+            "title": "Uwielbiane przez nowoczesne zespoły prawne",
+            "subtitle": "Partnerzy projektowi z branży tech, finansów i sektora publicznego dopracowali każdy detal.",
+            "cta": "Poznaj historie klientów",
+            "items": {
+                "loop": {
+                    "quote": "Founderzy samodzielnie obsługują 80% pytań. Interfejs przypomina Notion, a nie urzędowy portal.",
+                    "author": "Sofia Malik",
+                    "role": "Head of Legal, Loop"
+                },
+                "atlas": {
+                    "quote": "Wątki spraw są uporządkowane, wielojęzyczne i wyszukiwalne. Zastąpiło to pięć rozłącznych paneli.",
+                    "author": "Andre Lima",
+                    "role": "Operations Lead, Atlas Mobility"
+                },
+                "pioneer": {
+                    "quote": "Sugestie AI natychmiast pokazują ryzyko, więc prawnicy naprawdę recenzują zamiast szukać kontekstu.",
+                    "author": "Jules Park",
+                    "role": "Partner, Pioneer Law"
+                }
+            }
+        },
+        "ctaBand": {
+            "title": "Uruchom pierwszą sprawę w kilka minut",
+            "subtitle": "Dostępny darmowy plan. Awansuj, kiedy chcesz.",
+            "primary": "Utwórz konto",
+            "secondary": "Poznaj ceny"
+        },
+        "footer": {
+            "privacy": "Prywatność",
+            "terms": "Regulamin",
+            "contact": "Kontakt"
+        }
+    },
+    "featuresPage": {
+        "hero": {
+            "badge": "Funkcje",
+            "title": "Zaprojektowane do prawdziwej pracy prawniczej",
+            "subtitle": "Od szybkich odpowiedzi po kompletne dokumenty i uporządkowane sprawy — wszystko w jednym miejscu.",
+            "primaryCta": "Zacznij teraz",
+            "secondaryCta": "Sprawdź ceny"
+        },
+        "coreSection": {
+            "overline": "Podstawa",
+            "title": "Wszystko, czego potrzebujesz, by ruszyć"
+        },
+        "moreSection": {
+            "overline": "I więcej",
+            "title": "Praktyczne detale, które mają znaczenie",
+            "cta": "Sprawdź ceny"
+        },
+        "cards": {
+            "defaultCta": "Poznaj"
+        },
+        "core": {
+            "aiChat": {
+                "title": "Prawny czat AI",
+                "desc": "Zadawaj pytania z uwzględnieniem jurysdykcji i otrzymuj zwięzłe odpowiedzi z przypisami.",
+                "cta": "Rozpocznij czat"
+            },
+            "documents": {
+                "title": "Generuj dokumenty",
+                "desc": "Twórz umowy, pisma i wnioski, a potem edytuj i eksportuj.",
+                "cta": "Utwórz dokument"
+            },
+            "cases": {
+                "title": "Zarządzaj sprawami",
+                "desc": "Otwieraj, śledź i analizuj sprawy w jednym miejscu.",
+                "cta": "Zobacz sprawy"
+            },
+            "notes": {
+                "title": "Zapisane notatki",
+                "desc": "Zachowuj ważne odpowiedzi i porządkuj je według tematów.",
+                "cta": "Otwórz notatki"
+            }
+        },
+        "more": {
+            "procedures": {
+                "title": "Procedury dla danego kraju",
+                "desc": "Instrukcje krok po kroku dopasowane do lokalnych wymogów.",
+                "cta": "Przeglądaj procedury"
+            },
+            "presets": {
+                "title": "Presety tematów prawnych",
+                "desc": "Wejdź od razu w cywilne, karne, biznesowe, pracownicze, podatkowe i inne ścieżki.",
+                "cta": "Wybierz temat"
+            },
+            "privacy": {
+                "title": "Prywatność domyślnie",
+                "desc": "Twoje dane zostają u Ciebie — ścisła kontrola dostępu i audyt."
+            },
+            "speed": {
+                "title": "Szybko i niezawodnie",
+                "desc": "Optymalizacje i cache zapewniają błyskawiczne odpowiedzi."
+            }
+        }
+    },
+    "pricingPage": {
+        "hero": {
+            "badge": "Cennik",
+            "title": "Prosto, sprawiedliwie i elastycznie",
+            "subtitle": "Wybierz plan pasujący do Twojej pracy. Możesz zrezygnować w dowolnym momencie.",
+            "secondaryCta": "Zobacz funkcje",
+            "openApp": "Otwórz aplikację"
+        },
+        "plans": {
+            "perMonth": "/ miesiąc",
+            "free": {
+                "name": "Free",
+                "tokens": "10 000 tokenów / miesiąc",
+                "features": {
+                    "chatBasic": "Prawny czat AI (podstawowy)",
+                    "policeShortcut": "Błyskawiczny dostęp „Zatrzymany przez policję”"
+                }
+            },
+            "plus": {
+                "name": "Plus",
+                "tokens": "100 000 tokenów / miesiąc",
+                "features": {
+                    "documents": "Bezpieczna generacja dokumentów",
+                    "encryptedChat": "Szyfrowany czat z prawnikiem",
+                    "chatEnhanced": "Prawny czat AI (rozszerzony)",
+                    "policeShortcut": "Błyskawiczny dostęp „Zatrzymany przez policję”"
+                }
+            },
+            "premium": {
+                "name": "Premium",
+                "tokens": "500 000 tokenów / miesiąc",
+                "features": {
+                    "plusAll": "Wszystko z planu Plus",
+                    "clientChat": "Szyfrowany czat z klientami",
+                    "caseManagement": "Zarządzanie sprawami klientów",
+                    "prioritySupport": "Priorytetowe wsparcie"
+                }
+            },
+            "recommendedTag": "Rekomendowany",
+            "currentLabel": "Bieżący plan"
+        },
+        "cta": {
+            "startFree": "Rozpocznij za darmo",
+            "upgradeTo": "Przejdź na {{plan}}",
+            "currentPlan": "To Twój plan",
+            "downgradeTo": "Zmień na {{plan}}",
+            "selectPlan": "Wybierz {{plan}}"
+        },
+        "included": {
+            "overline": "W cenie",
+            "title": "Wszystko, czego potrzebujesz, by działać",
+            "chat": "Prawny czat AI",
+            "docs": "Generowanie dokumentów",
+            "localGuidance": "Wskazówki uwzględniające kraj",
+            "security": "Bezpieczeństwo prywatności",
+            "speed": "Szybkość i niezawodność",
+            "manageButton": "Zarządzaj subskrypcją",
+            "createAccountButton": "Utwórz konto"
+        }
+    },
+    "contactPage": {
+        "hero": {
+            "badge": "Kontakt",
+            "title": "Porozmawiajmy",
+            "subtitle": "Pytania, partnerstwa lub opinie? Napisz bezposrednio.",
+            "primaryCta": "Email do Maksymiliana"
+        },
+        "card": {
+            "title": "Bezposredni kontakt"
+        },
+        "details": {
+            "nameLabel": "Imie i nazwisko",
+            "roleLabel": "Rola",
+            "emailLabel": "Email",
+            "roleValue": "CEO i Lead Developer w E-Laws"
+        }
+    },
+    "loginPage": {
+        "hero": {
+            "badge": "Bezpieczeństwo przede wszystkim",
+            "title": "Witamy ponownie 👋",
+            "subtitle": "Wracaj do spraw, czatów i dokumentów dokładnie tam, gdzie skończyłeś. Workspace synchronizuje się natychmiast na wszystkich urządzeniach.",
+            "features": {
+                "featureOne": "Dostęp do czatu AI, dokumentów, spraw i notatek",
+                "featureTwo": "Synchronizacja w czasie rzeczywistym",
+                "featureThree": "Architektura zgodna z SOC2 i dziennikami audytu"
+            }
+        },
+        "form": {
+            "badge": "Zaloguj się",
+            "title": "Wejdź do swojego panelu",
+            "subtitle": "Użyj firmowego e-maila i hasła. Jeśli masz 2FA, włączy się automatycznie.",
+            "emailLabel": "E-mail",
+            "passwordLabel": "Hasło",
+            "submit": "Zaloguj się"
+        },
+        "links": {
+            "forgotPassword": "Zapomniałeś hasła?",
+            "newHere": "Nowy użytkownik?",
+            "createAccount": "Utwórz konto",
+            "backToSite": "← Wróć na stronę"
+        },
+        "errors": {
+            "invalidCredentials": "Nieprawidłowy e-mail lub hasło"
+        }
+    },
+    "signupPage": {
+        "hero": {
+            "badge": "Utwórz konto",
+            "title": "Wdrażaj się w minuty, nie tygodnie.",
+            "subtitle": "Twoje środowisko prawne AI z dopracowaną warstwą SaaS. Zacznij na darmowym planie i zaproś zespół, gdy będziesz gotów.",
+            "benefits": {
+                "benefitOne": "Nielimitowane notatki na każdym planie",
+                "benefitTwo": "Procedury dla konkretnego kraju w zestawie",
+                "benefitThree": "Możesz obniżyć plan z poziomu aplikacji"
+            }
+        },
+        "expect": {
+            "title": "Czego się spodziewać",
+            "subtitle": "Odpowiedz na kilka pytań, wybierz jurysdykcję i trafiasz do panelu z przewodnikiem.",
+            "steps": {
+                "stepOne": {
+                    "title": "Powiedz nam, kim jesteś",
+                    "description": "Imię i nazwa użytkownika personalizują workspace."
+                },
+                "stepTwo": {
+                    "title": "Dodaj jurysdykcję",
+                    "description": "Wybór kraju odblokowuje lokalne procedury i przepisy."
+                },
+                "stepThree": {
+                    "title": "Zabezpiecz dane logowania",
+                    "description": "Silne hasła + opcjonalne 2FA chronią workspace."
+                }
+            }
+        },
+        "form": {
+            "badge": "Twoje dane",
+            "title": "Stwórz workspace",
+            "subtitle": "Wymagamy wszystkich pól, aby dobrać właściwy kontekst prawny.",
+            "firstName": "Imię",
+            "lastName": "Nazwisko",
+            "email": "E-mail",
+            "username": "Nazwa użytkownika",
+            "usernameHelper": "Zaczyna się od @, tylko litery/cyfry/._-",
+            "country": "Kraj",
+            "password": "Hasło",
+            "confirmPassword": "Potwierdź hasło",
+            "passwordHelper": "Min. 8 znaków, w tym cyfra lub znak specjalny"
+        },
+        "cta": {
+            "submit": "Utwórz konto",
+            "loading": "Tworzymy..."
+        },
+        "links": {
+            "existing": "Masz już konto?",
+            "login": "Zaloguj się",
+            "backToSite": "← Wróć na stronę"
+        },
+        "errors": {
+            "missingName": "Imię i nazwisko są wymagane.",
+            "invalidEmailFormat": "Nieprawidłowy format e-mail.",
+            "passwordMismatch": "Hasła nie są takie same.",
+            "passwordWeak": "Hasło musi mieć min. 8 znaków oraz cyfrę lub znak specjalny.",
+            "usernameLength": "Nazwa po @ musi mieć co najmniej 2 znaki.",
+            "usernameChars": "Dozwolone są tylko litery, cyfry, kropki, podkreślenia i myślniki.",
+            "usernameTaken": "Ta nazwa użytkownika jest zajęta. Wybierz inną.",
+            "usernameJustTaken": "Nazwa właśnie została zajęta — spróbuj innej.",
+            "emailInUse": "Ten e-mail jest już zarejestrowany. Zaloguj się.",
+            "passwordTooWeak": "Hasło jest za słabe. Użyj dłuższego lub mocniejszego.",
+            "invalidEmail": "Nieprawidłowy e-mail.",
+            "generic": "Coś poszło nie tak. Spróbuj ponownie."
+        }
+    },
+    "about": {
+        "hero": {
+            "badge": "O nas",
+            "title": "Szybka, zrozumiała i dostępna pomoc prawna",
+            "subtitle": "E-Laws to Twój prawny kopilot AI — odpowiada, tworzy dokumenty i prowadzi przez procedury z zachowaniem prywatności.",
+            "secondaryCta": "Nasze funkcje",
+            "primaryCta": "Zacznij już dziś"
+        },
+        "mission": {
+            "title": "Nasza misja",
+            "subtitle": "Ludzie zasługują na zrozumiałe, praktyczne wskazówki prawne — bez żargonu i czekania. Łączymy zaufane AI z kontekstem krajowym, by pomagać decydować i działać.",
+            "pills": {
+                "jurisdiction": "Odpowiedzi z uwzględnieniem jurysdykcji",
+                "local": "Lokalne procedury i presety",
+                "privacy": "Prywatność w projekcie",
+                "speed": "Szybkie i wiarygodne odpowiedzi"
+            }
+        },
+        "stats": {
+            "users": "Obsłużeni użytkownicy",
+            "countries": "Obsługiwane kraje",
+            "response": "Śr. czas przygotowania odpowiedzi"
+        },
+        "trust": {
+            "overline": "Zaufanie i bezpieczeństwo",
+            "title": "Projektujemy niezawodność",
+            "points": {
+                "citations": "Czytelne cytaty i wskazówki jurysdykcyjne",
+                "control": "Nie sprzedajemy danych — to Ty decydujesz o eksporcie",
+                "security": "Role i szyfrowanie w spoczynku",
+                "editable": "Dokumenty gotowe do edycji i podpisu"
+            }
+        },
+        "story": {
+            "overline": "Nasza historia",
+            "title": "Od pomysłu do codziennego kopilota",
+            "timeline": {
+                "2024": {
+                    "title": "Prototyp",
+                    "desc": "Wypuściliśmy pierwszy czat z uwzględnieniem jurysdykcji i generowaniem dokumentów."
+                },
+                "2025": {
+                    "title": "Sprawy i procedury",
+                    "desc": "Dodaliśmy lokalne procedury, notatki i uporządkowane zarządzanie sprawami."
+                },
+                "today": {
+                    "title": "Skala światowa",
+                    "desc": "Rozwijamy wielojęzyczne wskazówki, wydajność i narzędzia dla prawników."
+                }
+            }
+        },
+        "cta": {
+            "title": "Chcesz współpracować lub masz opinię?",
+            "subtitle": "Współtworzymy rozwiązania z prawnikami i organizacjami, by ułatwiać dostęp do prawa.",
+            "primary": "Skontaktuj się",
+            "secondary": "Sprawdź ceny"
+        }
+    },
+    "aiChat": {
+        "topics": {
+            "civil": "Prawo cywilne",
+            "criminal": "Prawo karne",
+            "business": "Prawo gospodarcze",
+            "labor": "Prawo pracy",
+            "tax": "Prawo podatkowe",
+            "other": "Inne"
+        },
+        "context": {
+            "title": "Kontekst",
+            "description": "AI świadome kraju z presetami tematów i szybkimi podpowiedziami."
+        },
+        "labels": {
+            "topic": "Temat",
+            "country": "Kraj",
+            "topicPlaceholder": "Wybierz temat",
+            "anyCountry": "Dowolny kraj"
+        },
+        "buttons": {
+            "changeTopic": "Zmień temat",
+            "saveToNotes": "Zapisz do notatek",
+            "send": "Wyślij"
+        },
+        "inputs": {
+            "questionPlaceholder": "Wpisz swoje pytanie prawne…"
+        },
+        "dialog": {
+            "title": "Tytuł dla notatki",
+            "generating": "Tworzenie propozycji…",
+            "suggestions": "Podpowiedzi",
+            "customTitle": "Lub wpisz własny",
+            "placeholder": "Wpisz własny tytuł",
+            "cancel": "Anuluj",
+            "save": "Zapisz",
+            "untitled": "Notatka bez tytułu"
+        },
+        "snackbar": {
+            "profileError": "Nie udało się pobrać profilu. Odśwież i spróbuj ponownie.",
+            "sendError": "Nie udało się wysłać wiadomości.",
+            "saveSuccess": "Zapisano w Moich notatkach ✅",
+            "saveError": "Nie udało się zapisać notatki."
+        },
+        "loading": {
+            "preparing": "Przygotowujemy Twoje środowisko…"
+        },
+        "empty": {
+            "countryTitle": "Wybierz jurysdykcję",
+            "countryDescription": "Ładujemy właściwe przepisy i formularze, gdy tylko potwierdzisz kraj.",
+            "topicTitle": "Czego potrzebujesz?",
+            "topicDescription": "Wybierz preset, aby dopasować prompt AI. Zawsze możesz zmienić później."
+        }
+    },
+    "components": {
+        "countryPicker": {
+            "trigger": "Wybierz kraj",
+            "dialogTitle": "Wybierz kraj",
+            "searchPlaceholder": "Szukaj kraju...",
+            "empty": "Nie znaleziono krajów."
+        },
+        "datePicker": {
+            "today": "Dziś",
+            "close": "Zamknij"
+        },
+        "panicButton": {
+            "trigger": "Zatrzymała mnie policja",
+            "dialogTitle": "Procedura zatrzymania",
+            "dialogDescription": "Wybierz kraj, aby otrzymać możliwie najdokładniejsze wskazówki.",
+            "submit": "Pobierz procedury",
+            "cancel": "Anuluj"
+        },
+        "subscriptionButton": {
+            "upgrade": "Ulepsz plan",
+            "manage": "Zarządzaj subskrypcją"
+        },
+        "subscriptionPayment": {
+            "title": "Potwierdź płatność",
+            "planLabel": "Plan",
+            "cancel": "Anuluj",
+            "processing": "Przetwarzanie…",
+            "submit": "Zapłać i kontynuuj",
+            "error": "Płatność nie powiodła się. Spróbuj ponownie."
+        }
+    },
+    "userChats": {
+        "list": {
+            "title": "Twoje czaty",
+            "startNew": "Nowa rozmowa",
+            "empty": "Brak rozmów. Zacznij konwersację!",
+            "dialogTitle": "Rozpocznij nowy czat",
+            "searchPlaceholder": "Szukaj znajomych...",
+            "noFriends": "Nie znaleziono znajomych.",
+            "unknownUser": "Nieznany użytkownik"
+        },
+        "messages": {
+            "title": "Czat",
+            "placeholder": "Napisz wiadomość…",
+            "send": "Wyślij",
+            "empty": "Brak wiadomości…",
+            "decryptError": "Nie udało się odszyfrować"
+        },
+        "confirm": {
+            "deleteChat": "Usunąć rozmowę na stałe?",
+            "clearChat": "Wyczyścić wszystkie wiadomości w tej rozmowie?"
+        }
+    },
+    "createCasePage": {
+        "title": "Utwórz sprawę",
+        "breadcrumbs": "Panel / Sprawy",
+        "auth": {
+            "title": "Wymagane logowanie",
+            "description": "Zaloguj się, aby utworzyć sprawę.",
+            "cta": "Przejdź do logowania"
+        },
+        "actions": {
+            "back": "Powrót do spraw",
+            "cancel": "Anuluj",
+            "submit": "Utwórz sprawę",
+            "submitting": "Tworzenie..."
+        },
+        "form": {
+            "titleLabel": "Tytuł sprawy",
+            "descriptionLabel": "Opis",
+            "descriptionPlaceholder": "Dodaj dodatkowe informacje o tej sprawie...",
+            "clientLabel": "Przypisz do klienta",
+            "clientPlaceholder": "Zacznij wpisywać imię klienta...",
+            "clientHelper": "Dodaj klientów przed utworzeniem sprawy."
+        },
+        "errors": {
+            "profileIncomplete": "Uzupełnij profil, zanim utworzysz sprawę.",
+            "profileLoad": "Nie udało się wczytać profilu.",
+            "clientsLoad": "Nie udało się wczytać klientów.",
+            "lawyerOnly": "Tylko prawnicy mogą tworzyć nowe sprawy.",
+            "titleRequired": "Podaj tytuł sprawy.",
+            "clientRequired": "Przypisz sprawę do klienta.",
+            "createFailed": "Nie udało się utworzyć sprawy."
+        },
+        "clients": {
+            "unnamed": "Klient bez nazwy"
+        }
+    },
+    "documentsLanding": {
+        "hero": {
+            "title": "Dokumenty prawne, uporządkowane",
+            "subtitle": "Generuj umowy z pomocą AI i przechowuj każdy PDF w jednym bezpiecznym miejscu."
+        },
+        "generate": {
+            "title": "Wygeneruj dokument",
+            "description": "Wybierz szablon, uzupełnij pola i otrzymaj gotowy kontrakt w kilka sekund.",
+            "primaryCta": "Zacznij generować",
+            "secondaryCta": "Zobacz zapisane dokumenty"
+        },
+        "library": {
+            "title": "Przeglądaj swoje pliki",
+            "description": "Wszystko, co tworzysz lub przesyłasz, synchronizuje się tutaj. Pobieraj, kopiuj lub usuwaj jednym kliknięciem.",
+            "primaryCta": "Moje dokumenty",
+            "secondaryCta": "Generuj nowy"
+        }
+    },
+    "generateDoc": {
+        "loading": "Przygotowujemy Twoje środowisko…",
+        "hero": {
+            "title": "Wygeneruj dokument",
+            "subtitle": "Wybierz schemat, uzupełnij dane i pozwól AI stworzyć wersję roboczą.",
+            "savedCta": "Zobacz zapisane dokumenty →"
+        },
+        "templates": {
+            "title": "Szablony",
+            "description": "Szablony synchronizują się z aplikacji mobilnej i są buforowane lokalnie dla szybkości.",
+            "loading": "Pobieranie szablonów…",
+            "inputLabel": "Wybierz szablon",
+            "missingIntro": "Brakujące pola wymagane:",
+            "emptyState": "Wybierz szablon po lewej, aby rozpocząć wypełnianie formularza."
+        },
+        "form": {
+            "list": {
+                "add": "Dodaj"
+            },
+            "dropdownPlaceholder": "Wybierz…"
+        },
+        "actions": {
+            "generating": "Generowanie…",
+            "generate": "Wygeneruj dokument"
+        },
+        "preview": {
+            "title": "Podgląd",
+            "cached": "Wynik z pamięci podręcznej",
+            "tokens": "{{count}} tokenów"
+        },
+        "save": {
+            "fileNameLabel": "Nazwa dokumentu",
+            "fileNamePlaceholder": "np. Umowa_Konsultingowa",
+            "saving": "Zapisywanie…",
+            "cta": "Zapisz w Moich dokumentach",
+            "success": "Zapisano w Moich dokumentach."
+        },
+        "errors": {
+            "schemasLoad": "Nie udało się wczytać szablonów.",
+            "selectTemplate": "Wybierz szablon, aby kontynuować.",
+            "missingFieldsInline": "Brakujące pola wymagane: {{fields}}",
+            "generateFailed": "Nie udało się wygenerować dokumentu.",
+            "authRequired": "Musisz być zalogowany.",
+            "noOutput": "Najpierw wygeneruj dokument.",
+            "saveFailed": "Nie udało się zapisać dokumentu."
+        }
+    },
+    "manageAccount": {
+        "loading": "Ładowanie konta…",
+        "hero": {
+            "title": "Zarządzaj kontem",
+            "meta": "{{email}} • {{tier}}"
+        },
+        "profile": {
+            "chip": "Profil",
+            "title": "Dane osobowe",
+            "firstName": "Imię",
+            "lastName": "Nazwisko",
+            "email": "Email",
+            "emailHelper": "Adres e-mail jest powiązany z logowaniem. Skontaktuj się z pomocą, aby go zmienić.",
+            "username": "Nazwa użytkownika",
+            "usernameHelper": "Zaczyna się od @ · tylko litery/cyfry/._-",
+            "country": "Kraj",
+            "roleLabel": "Rola konta",
+            "roleField": "Rola",
+            "roleHelper": "Ulepsz do Premium, aby zmienić rolę.",
+            "save": "Zapisz zmiany",
+            "manageSubscription": "Zarządzaj subskrypcją"
+        },
+        "role": {
+            "client": "Klient",
+            "lawyer": "Prawnik"
+        },
+        "security": {
+            "chip": "Bezpieczeństwo",
+            "title": "Zmień hasło",
+            "current": "Obecne hasło",
+            "new": "Nowe hasło",
+            "newHelper": "Min. 8 znaków oraz liczba lub symbol",
+            "confirm": "Potwierdź nowe hasło",
+            "change": "Zmień hasło",
+            "changing": "Trwa zmiana…",
+            "help": "Potrzebujesz pomocy?"
+        },
+        "shortcuts": {
+            "title": "Skróty",
+            "cases": "Przejdź do spraw",
+            "notes": "Zapisane notatki",
+            "procedures": "Procedury",
+            "connections": "Zarządzaj kontaktami",
+            "footer": "Zaproś lub usuń współpracowników na stronie Kontaktów."
+        },
+        "errors": {
+            "profileLoad": "Nie udało się wczytać profilu.",
+            "nameRequired": "Imię i nazwisko są wymagane.",
+            "invalidEmail": "Adres e-mail wygląda niepoprawnie.",
+            "usernameInvalid": "Nazwa użytkownika musi mieć co najmniej 2 znaki i używać tylko a-z, 0-9, kropki, podkreślenia lub myślnika.",
+            "profileSave": "Nie udało się zapisać profilu. Spróbuj ponownie.",
+            "passwordFields": "Wypełnij wszystkie pola hasła.",
+            "passwordMismatch": "Nowe hasła nie są takie same.",
+            "passwordWeak": "Hasło musi mieć co najmniej 8 znaków i zawierać liczbę lub symbol.",
+            "passwordSame": "Nowe hasło musi różnić się od obecnego.",
+            "passwordChange": "Nie udało się zmienić hasła. Sprawdź obecne hasło."
+        },
+        "success": {
+            "profileSaved": "Profil zapisany.",
+            "passwordChanged": "Hasło zostało zmienione."
+        }
+    },
+    "connections": {
+        "loading": "Ładowanie kontaktów…",
+        "title": "Kontakty",
+        "subtitle": "Zaproś zaufanych prawników lub klientów i zarządzaj zaproszeniami w jednym miejscu.",
+        "search": {
+            "title": "Znajdź osoby",
+            "subtitle": "Szukaj po nazwie użytkownika lub adresie e-mail, aby zaprosić do współpracy.",
+            "username": "@nazwa",
+            "email": "Email",
+            "usernameLabel": "Szukaj @nazwa",
+            "emailLabel": "Szukaj po e-mailu",
+            "usernamePlaceholder": "@twoj.prawnik",
+            "emailPlaceholder": "uzytkownik@example.com",
+            "cta": "Szukaj",
+            "searching": "Wyszukiwanie…",
+            "helper": "Podaj nazwę użytkownika lub adres e-mail, aby rozpocząć.",
+            "noResults": "Nie znaleziono użytkowników."
+        },
+        "results": {
+            "request": "Wyślij",
+            "requested": "Wysłano"
+        },
+        "requests": {
+            "title": "Zaproszenia",
+            "subtitle": "Akceptuj nowe zgłoszenia lub śledź wysłane prośby.",
+            "incoming": "Przychodzące ({{count}})",
+            "outgoing": "Wychodzące ({{count}})",
+            "incomingEmpty": "Brak przychodzących zaproszeń 🎉",
+            "outgoingEmpty": "Brak wysłanych zaproszeń.",
+            "incomingLabel": "Nowe zaproszenie",
+            "outgoingLabel": "Oczekujące"
+        },
+        "actions": {
+            "accept": "Akceptuj",
+            "reject": "Odrzuć"
+        },
+        "list": {
+            "title": "Kontakty ({{count}})",
+            "empty": "Brak kontaktów. Zacznij od wysłania zaproszenia."
+        },
+        "messages": {
+            "requestSent": "Zaproszenie wysłane.",
+            "requestAccepted": "Zaproszenie zaakceptowane.",
+            "requestRejected": "Zaproszenie odrzucone.",
+            "connectionRemoved": "Kontakt usunięty.",
+            "searchFailed": "Nie udało się wyszukać. Spróbuj ponownie.",
+            "sendFailed": "Nie udało się wysłać zaproszenia.",
+            "acceptFailed": "Nie udało się zaakceptować zaproszenia.",
+            "rejectFailed": "Nie udało się odrzucić zaproszenia.",
+            "removeFailed": "Nie udało się usunąć kontaktu."
+        }
+    },
+    "myDocuments": {
+        "loadingAuth": "Sprawdzanie konta…",
+        "hero": {
+            "title": "Moje dokumenty",
+            "subtitle": "Pobieraj, kopiuj lub usuwaj wygenerowane pliki.",
+            "new": "Nowy dokument"
+        },
+        "filters": {
+            "search": "Szukaj",
+            "all": "Wszystkie",
+            "pdf": "PDF",
+            "images": "Obrazy",
+            "docs": "Dokumenty",
+            "refresh": "Odśwież",
+            "refreshing": "Odświeżanie…"
+        },
+        "loadingDocs": "Ładowanie dokumentów…",
+        "empty": {
+            "title": "Brak dokumentów",
+            "subtitle": "Wygeneruj dokument lub zmień filtry.",
+            "cta": "Wygeneruj dokument"
+        },
+        "when": {
+            "justNow": "przed chwilą",
+            "minutesAgo": "{{count}} min temu",
+            "minutesAgo_other": "{{count}} min temu",
+            "hoursAgo": "{{count}} godz. temu",
+            "hoursAgo_other": "{{count}} godz. temu",
+            "daysAgo": "{{count}} dzień temu",
+            "daysAgo_other": "{{count}} dni temu",
+            "date": "{{value}}",
+            "unknown": "nieznane"
+        },
+        "actions": {
+            "open": "Otwórz w nowej karcie",
+            "download": "Pobierz",
+            "copy": "Kopiuj link",
+            "delete": "Usuń dokument"
+        },
+        "delete": {
+            "confirm": "Usunąć \"{{name}}\"?"
+        },
+        "errors": {
+            "load": "Nie udało się wczytać dokumentów.",
+            "delete": "Nie udało się usunąć dokumentu.",
+            "clipboard": "Schowek jest niedostępny."
+        },
+        "success": {
+            "deleted": "Dokument został usunięty.",
+            "copied": "Skopiowano link do schowka.",
+            "download": "Rozpoczęto pobieranie."
+        }
+    },
+    "notesPage": {
+        "hero": {
+            "title": "Moje notatki",
+            "subtitle": "Zapisuj, wyszukuj i organizuj każdą odpowiedź od AI.",
+            "count": "{{count}} notatek"
+        },
+        "search": {
+            "placeholder": "Szukaj notatek..."
+        },
+        "filters": {
+            "menu": "Filtry",
+            "created": "Utworzone",
+            "time": {
+                "any": "Cały czas",
+                "7d": "Ostatnie 7 dni",
+                "30d": "Ostatnie 30 dni"
+            },
+            "case": "Powiązana sprawa",
+            "caseAll": "Wszystkie sprawy",
+            "noCases": "Brak dostępnych spraw.",
+            "clear": "Wyczyść filtry"
+        },
+        "actions": {
+            "createFromChat": "Utwórz z czatu",
+            "createManual": "Dodaj notatkę ręcznie"
+        },
+        "loading": "Ładowanie notatek...",
+        "empty": "Brak notatek.",
+        "note": {
+            "untitled": "Notatka bez tytułu",
+            "initialFallback": "N",
+            "topic": "Temat: {{topic}}",
+            "country": "Jurysdykcja: {{country}}",
+            "linkedCase": "Powiązana ze sprawą: {{case}}",
+            "unknownCase": "Sprawa bez tytułu",
+            "viewCase": "Otwórz sprawę"
+        },
+        "dialog": {
+            "title": "Usunąć notatkę",
+            "description": "Czy na pewno chcesz usunąć tę notatkę? Tej operacji nie można cofnąć.",
+            "cancel": "Anuluj",
+            "confirm": "Usuń"
+        },
+        "manualDialog": {
+            "title": "Dodaj notatkę ręcznie",
+            "description": "Zapisz notatkę własnoręcznie i opcjonalnie powiąż ją ze sprawą.",
+            "titleLabel": "Tytuł",
+            "contentLabel": "Treść",
+            "caseLabel": "Powiąż ze sprawą",
+            "caseHelper": "Wybierz sprawę, aby przypisać do niej tę notatkę.",
+            "caseEmpty": "Nie masz jeszcze żadnych aktywnych spraw.",
+            "caseNone": "Nie łącz tej notatki",
+            "cancel": "Anuluj",
+            "save": "Zapisz notatkę",
+            "saving": "Zapisywanie...",
+            "success": "Notatka zapisana.",
+            "errors": {
+                "content": "Treść jest wymagana.",
+                "save": "Nie udało się zapisać notatki. Spróbuj ponownie."
+            }
+        }
+    },
+    "proceduresPage": {
+        "title": "Procedury podczas kontroli",
+        "country": "dla {{country}}",
+        "empty": "Nie znaleziono procedur.",
+        "unknown": "Nieznany",
+        "back": "OK, rozumiem"
+    },
+    "savedProcedures": {
+        "title": "Zapisane procedury",
+        "filter": "Filtruj według kodu kraju",
+        "empty": "Brak zapisanych procedur.",
+        "country": "Kraj: {{country}} ({{code}})"
+    },
+    "countries": {
+        "AE": "Zjednoczone Emiraty Arabskie",
+        "AR": "Argentyna",
+        "AT": "Austria",
+        "AU": "Australia",
+        "BE": "Belgia",
+        "BR": "Brazylia",
+        "CA": "Kanada",
+        "CH": "Szwajcaria",
+        "CL": "Chile",
+        "CN": "Chiny",
+        "CO": "Kolumbia",
+        "DK": "Dania",
+        "DE": "Niemcy",
+        "EG": "Egipt",
+        "ES": "Hiszpania",
+        "FI": "Finlandia",
+        "FR": "Francja",
+        "GB": "Wielka Brytania",
+        "GR": "Grecja",
+        "IE": "Irlandia",
+        "IL": "Izrael",
+        "IN": "Indie",
+        "IT": "Włochy",
+        "JP": "Japonia",
+        "KR": "Korea Południowa",
+        "MX": "Meksyk",
+        "MY": "Malezja",
+        "NL": "Niderlandy",
+        "NO": "Norwegia",
+        "NZ": "Nowa Zelandia",
+        "PE": "Peru",
+        "PH": "Filipiny",
+        "PL": "Polska",
+        "PT": "Portugalia",
+        "RU": "Rosja",
+        "SA": "Arabia Saudyjska",
+        "SE": "Szwecja",
+        "SG": "Singapur",
+        "TH": "Tajlandia",
+        "TR": "Turcja",
+        "US": "Stany Zjednoczone",
+        "VN": "Wietnam",
+        "ZA": "Republika Południowej Afryki"
+    },
+    "caseProperties": {
+        "labels": {
+            "case_number": "Numer sprawy",
+            "client_id": "ID klienta",
+            "lawyer_id": "ID prawnika",
+            "court_name": "Nazwa sądu",
+            "court_address": "Adres sądu",
+            "judge": "Sędzia",
+            "magistrate": "Sędzia pokoju",
+            "clerk": "Sekretarz sądowy",
+            "opposing_party": "Strona przeciwna",
+            "opposing_counsel": "Pełnomocnik strony przeciwnej",
+            "filing_date": "Data złożenia",
+            "service_date": "Data doręczenia",
+            "hearing_date": "Data posiedzenia",
+            "trial_date": "Data rozprawy",
+            "appeal_hearing_date": "Data rozprawy apelacyjnej",
+            "next_deadline": "Najbliższy termin",
+            "case_type": "Typ sprawy",
+            "case_category": "Kategoria sprawy",
+            "jurisdiction": "Jurysdykcja",
+            "venue": "Właściwość miejscowa",
+            "status_detail": "Szczegółowy status",
+            "priority": "Priorytet",
+            "assigned_team": "Przydzielony zespół",
+            "lead_lawyer": "Prawnik prowadzący",
+            "paralegal": "Przydzielony asystent prawny",
+            "contact_email": "Adres e-mail kontaktowy",
+            "contact_phone": "Telefon kontaktowy",
+            "address": "Adres klienta",
+            "dob": "Data urodzenia",
+            "ssn": "Numer ubezpieczenia społecznego",
+            "citizenship": "Obywatelstwo",
+            "occupation": "Zawód",
+            "employer": "Pracodawca",
+            "marital_status": "Stan cywilny",
+            "dependents": "Osoby na utrzymaniu",
+            "opposing_contact": "Dane kontaktowe strony przeciwnej",
+            "evidence_list": "Lista dowodów",
+            "exhibits": "Załączniki dowodowe",
+            "witness_list": "Lista świadków",
+            "expert_witnesses": "Biegli",
+            "affidavits": "Oświadczenia pod przysięgą",
+            "subpoenas": "Wezwania",
+            "discovery_status": "Status discovery",
+            "discovery_deadline": "Termin discovery",
+            "documents_filed": "Złożone dokumenty",
+            "motions_filed": "Złożone wnioski",
+            "orders_issued": "Wydane postanowienia",
+            "court_fees": "Opłaty sądowe",
+            "legal_fees": "Honoraria prawne",
+            "billing_status": "Status rozliczeń",
+            "retainer_amount": "Kwota retainer",
+            "retainer_balance": "Saldo retainer",
+            "hourly_rate": "Stawka godzinowa",
+            "total_hours": "Łączna liczba przepracowanych godzin",
+            "settlement_offers": "Oferty ugodowe",
+            "settlement_status": "Status ugody",
+            "mediation_date": "Data mediacji",
+            "arbitration_date": "Data arbitrażu",
+            "appeal_status": "Status apelacji",
+            "appeal_filing_date": "Data złożenia apelacji",
+            "appeal_outcome": "Wynik apelacji",
+            "sentence": "Wyrok / orzeczenie",
+            "probation_terms": "Warunki dozoru",
+            "bail_amount": "Kwota kaucji",
+            "bond_status": "Status poręczenia",
+            "incarceration_status": "Status osadzenia",
+            "parole_eligibility": "Możliwość warunkowego zwolnienia",
+            "release_date": "Data zwolnienia",
+            "compliance_requirements": "Wymogi zgodności",
+            "supervision_officer": "Kurator / funkcjonariusz nadzorujący",
+            "risk_level": "Poziom ryzyka",
+            "insurance_claims": "Roszczenia ubezpieczeniowe",
+            "damages_claimed": "Żądane odszkodowanie",
+            "damages_awarded": "Przyznane odszkodowanie",
+            "restitution_amount": "Kwota restytucji",
+            "liens": "Zastawy / obciążenia",
+            "assets_seized": "Zabezpieczone aktywa",
+            "case_notes": "Notatki sprawy",
+            "internal_memos": "Notatki wewnętrzne",
+            "strategy_notes": "Notatki strategiczne",
+            "related_cases": "Powiązane sprawy",
+            "precedent_references": "Odwołania do precedensów",
+            "citations": "Cytowania prawne",
+            "conflict_check": "Status sprawdzenia konfliktu",
+            "nda_signed": "Podpisane NDA",
+            "engagement_letter": "Podpisany list intencyjny",
+            "client_intake_date": "Data przyjęcia klienta",
+            "client_preferences": "Preferencje klienta",
+            "language": "Preferowany język",
+            "communication_method": "Preferowana metoda komunikacji",
+            "closing_date": "Data zamknięcia",
+            "archived": "Zarchiwizowano",
+            "reviewed_by": "Przeglądający",
+            "last_review_date": "Data ostatniego przeglądu",
+            "follow_up_date": "Data follow-up",
+            "next_action": "Następne działanie"
+        }
+    },
+    "subscribePage": {
+        "hero": {
+            "title": "Zarządzaj subskrypcją E-Lawyer",
+            "subtitle": "Ulepszaj, obniżaj lub cofaj zmiany w dowolnym momencie."
+        },
+        "banner": {
+            "downgrade": "Zaplanowano obniżenie do planu {{plan}}. Wejdzie w życie {{when}}.",
+            "cancelToFree": "Zaplanowano przejście na plan Free. Wejdzie w życie {{when}}.",
+            "when": {
+                "endOfCycle": "pod koniec bieżącego okresu rozliczeniowego",
+                "date": "{{date}}"
+            },
+            "undo": "Cofnij"
+        },
+        "plans": {
+            "free": {
+                "name": "Free",
+                "subtitle": "Nowe konto",
+                "tokens": "10 000 tokenów / mies.",
+                "features": [
+                    "Czat z AI Law Assistant",
+                    "Dostęp do przycisku „Zatrzymała mnie policja”"
+                ]
+            },
+            "plus": {
+                "name": "Plus",
+                "subtitle": "Konto klienta",
+                "tokens": "100 000 tokenów / mies.",
+                "badge": "Najlepsza oferta",
+                "features": [
+                    "Bezpieczne generowanie dokumentów",
+                    "Szyfrowany czat z Twoim prawnikiem",
+                    "Czat z AI Law Assistant",
+                    "Dostęp do przycisku „Zatrzymała mnie policja”"
+                ]
+            },
+                "premium": {
+                "name": "Premium",
+                "subtitle": "Konto klienta/prawnika",
+                "tokens": "500 000 tokenów / mies.",
+                "badge": "Polecane",
+                "features": [
+                    "Bezpieczne generowanie dokumentów",
+                    "Szyfrowany czat z klientami",
+                    "Zarządzanie sprawami z przypisanymi klientami",
+                    "Czat z AI Law Assistant",
+                    "Dostęp do przycisku „Zatrzymała mnie policja”"
+                ]
+            }
+        },
+        "cta": {
+            "upgrade": "Ulepsz do {{plan}}",
+            "downgrade": "Obniż do {{plan}}",
+            "current": "Korzystasz z planu {{plan}}",
+            "currentPlan": "To Twój obecny plan",
+            "pending": "Obniżenie zaplanowane",
+            "loading": "Przetwarzanie..."
+        },
+        "success": {
+            "downgradeScheduled": "Obniżenie zaplanowane. Zachowasz bieżące korzyści do końca okresu rozliczeniowego.",
+            "subscriptionUpdated": "Zaktualizowano subskrypcję.",
+            "undo": "Obniżenie cofnięte. Pozostajesz na obecnym planie."
+        },
+        "errors": {
+            "pendingDowngrade": "Masz już zaplanowane obniżenie. Cofnij je przed kolejnymi zmianami.",
+            "samePlan": "Już korzystasz z tego planu.",
+            "missingClientSecret": "Brak client secret dla ulepszenia Premium.",
+            "missingPriceId": "Brak identyfikatora ceny Stripe dla wybranego planu.",
+            "generic": "Coś poszło nie tak.",
+            "unexpected": "Wystąpił nieoczekiwany błąd."
+        },
+        "payment": {
+            "premiumUpgrade": {
+                "planName": "Ulepszenie do Premium",
+                "amount": "Opłata za ulepszenie 10,99 USD",
+                "helper": "Po zakończeniu płatności automatycznie przełączymy Cię na Premium.",
+                "success": "Opłacono ulepszenie. Przełączymy Cię na Premium, gdy Stripe potwierdzi płatność."
+            },
+            "default": {
+                "planName": "Plan {{plan}}",
+                "helper": "Zakończ płatność, aby zaktualizować subskrypcję.",
+                "success": "Płatność potwierdzona. Twoja subskrypcja wkrótce się zaktualizuje."
+            }
+        }
+    },
+    "dashboard": {
+        "loading": "Ładowanie panelu…",
+        "hero": {
+            "welcome": "Witaj, {{name}}",
+            "anonymous": "tam",
+            "roles": {
+                "lawyer": "Prawnik",
+                "client": "Klient"
+            },
+            "meta": "{{tier}} • {{role}}",
+            "metaWithCountry": "{{tier}} • {{role}} • {{country}}"
+        },
+        "subscription": {
+            "tiers": {
+                "free": "Free",
+                "plus": "Plus",
+                "premium": "Premium"
+            },
+            "downgrade": {
+                "title": "Zaplanowane obniżenie planu",
+                "messageWithDate": "Przejdziesz na plan {{tier}} w dniu {{date}}.",
+                "messageNoDate": "Przejdziesz na plan {{tier}} pod koniec okresu rozliczeniowego.",
+                "help": "Użyj „Zarządzaj subskrypcją”, jeśli chcesz cofnąć lub zmienić plan.",
+                "cta": "Przejrzyj plan"
+            }
+        },
+        "usage": {
+            "tokenLabel": "Miesięczne tokeny"
+        },
+        "panic": {
+            "title": "Zatrzymała Cię policja",
+            "subtitle": "Szybki dostęp do lokalnych wskazówek"
+        },
+        "quickActions": {
+            "chats": "Czaty",
+            "aiChat": "AI czat prawny",
+            "createDoc": "Utwórz dokument",
+            "cases": "Sprawy",
+            "stopProcedures": "Procedury stop",
+            "notes": "Notatki",
+            "connections": "Kontakty"
+        },
+        "info": {
+            "chats": {
+                "title": "Nieprzeczytane czaty",
+                "loading": "Sprawdzanie czatów…",
+                "unread_zero": "Brak nieprzeczytanych czatów.",
+                "unread_one": "Masz {{count}} nieprzeczytany czat.",
+                "unread_few": "Masz {{count}} nieprzeczytane czaty.",
+                "unread_many": "Masz {{count}} nieprzeczytanych czatów.",
+                "unread_other": "Masz {{count}} nieprzeczytanych czatów."
+            },
+            "lastCase": {
+                "title": "Ostatnia sprawa",
+                "loading": "Ładowanie ostatniej sprawy…",
+                "summary": "{{title}} ({{status}})",
+                "empty": "Brak spraw."
+            }
+        },
+        "cases": {
+            "untitled": "Bez tytułu",
+            "statusUnknown": "Nieznany status"
+        },
+        "common": {
+            "open": "Otwórz"
+        },
+        "menu": {
+            "account": "Konto",
+            "documents": "Dokumenty",
+            "cases": "Moje sprawy",
+            "connections": "Kontakty"
+        },
+        "upgrade": {
+            "title": "Odblokuj dokumenty, sprawy i więcej",
+            "description": "Ulepsz do Plus lub Premium, aby zyskać pełen zestaw funkcji.",
+            "seePricing": "Zobacz ceny",
+            "cta": "Ulepsz"
+        }
+    },
+    "casesPage": {
+        "title": "Sprawy",
+        "actions": {
+            "newCase": "Nowa sprawa",
+            "closeCase": "Zamknij sprawę",
+            "reopenCase": "Otwórz ponownie",
+            "deleteCase": "Usuń"
+        },
+        "filters": {
+            "all": "Wszystkie",
+            "open": "Otwarte",
+            "closed": "Zamknięte",
+            "search": "Szukaj…"
+        },
+        "filtersMenu": {
+            "button": "Filtry",
+            "status": "Status",
+            "updated": "Zaktualizowane w",
+            "time": {
+                "any": "Cały czas",
+                "7d": "Ostatnie 7 dni",
+                "30d": "Ostatnie 30 dni"
+            },
+            "clear": "Wyczyść filtry"
+        },
+        "list": {
+            "empty": "Brak spraw."
+        },
+        "status": {
+            "open": "Otwarte",
+            "closed": "Zamknięte"
+        },
+        "details": {
+            "noDescription": "Brak opisu",
+            "properties": {
+                "title": "Właściwości sprawy",
+                "empty": "Brak właściwości.",
+                "edit": "Edytuj właściwość",
+                "delete": "Usuń właściwość",
+                "nameLabel": "Nazwa",
+                "valueLabel": "Wartość",
+                "add": "Dodaj właściwość"
+            },
+            "notes": {
+                "title": "Notatki",
+                "empty": "Brak notatek.",
+                "placeholder": "Dodaj notatkę…",
+                "addAction": "Dodaj",
+                "edit": "Edytuj",
+                "delete": "Usuń",
+                "roles": {
+                    "lawyer": "Prawnik",
+                    "client": "Klient",
+                    "unknown": "Nieznany"
+                }
+            }
+        },
+        "pagination": {
+            "label": "Strona {{page}} / {{total}}",
+            "prevProperties": "Poprzednie właściwości",
+            "nextProperties": "Następne właściwości",
+            "prevNotes": "Poprzednie notatki",
+            "nextNotes": "Następne notatki"
+        },
+        "dialog": {
+            "deleteNote": {
+                "title": "Usunąć notatkę?",
+                "description": "Tej czynności nie można cofnąć. Na pewno chcesz usunąć tę notatkę?"
+            },
+            "deleteProperty": {
+                "title": "Usunąć właściwość?",
+                "description": "Tej czynności nie można cofnąć. Na pewno chcesz usunąć tę właściwość?"
+            }
+        },
+        "common": {
+            "cancel": "Anuluj",
+            "save": "Zapisz",
+            "delete": "Usuń"
+        },
+        "errors": {
+            "loadCases": "Nie udało się wczytać spraw.",
+            "loadNotes": "Nie udało się wczytać notatek.",
+            "loadProperties": "Nie udało się wczytać właściwości.",
+            "addNote": "Nie udało się dodać notatki.",
+            "updateNote": "Nie udało się zaktualizować notatki.",
+            "deleteNote": "Nie udało się usunąć notatki.",
+            "addProperty": "Nie udało się dodać właściwości.",
+            "updateProperty": "Nie udało się zaktualizować właściwości.",
+            "deleteProperty": "Nie udało się usunąć właściwości.",
+            "updateStatus": "Nie udało się zaktualizować statusu sprawy.",
+            "deleteCase": "Nie udało się usunąć sprawy."
+        },
+        "success": {
+            "noteAdded": "Dodano notatkę.",
+            "noteUpdated": "Zaktualizowano notatkę.",
+            "noteDeleted": "Usunięto notatkę.",
+            "propertyAdded": "Dodano właściwość.",
+            "propertyUpdated": "Zaktualizowano właściwość.",
+            "propertyDeleted": "Usunięto właściwość.",
+            "caseReopened": "Sprawa została ponownie otwarta.",
+            "caseClosed": "Sprawa została zamknięta.",
+            "caseDeleted": "Sprawa została usunięta."
+        },
+        "aria": {
+            "closeDetails": "Zamknij szczegóły sprawy",
+            "slideBack": "Poprzedni widok",
+            "slideNext": "Następny widok"
+        }
+    }
+}

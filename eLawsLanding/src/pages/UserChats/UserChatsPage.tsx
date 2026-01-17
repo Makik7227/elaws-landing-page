@@ -18,6 +18,7 @@ import {
     ListItem,
     ListItemAvatar, ListItemButton,
     ListItemText,
+    Stack,
     TextField,
     Typography,
 } from "@mui/material";
@@ -44,6 +45,7 @@ import { useNavigate } from "react-router-dom";
 import { decryptMessage, generateSecureKey } from "../../utils/encryption";
 import { getChatKey } from "../../utils/getChatKey";
 import { db } from "../../../firebase";
+import { useTranslation } from "react-i18next";
 
 type Chat = {
     id: string;
@@ -66,6 +68,7 @@ export default function UserChatsWeb() {
     const auth = getAuth();
     const user = auth.currentUser;
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [chats, setChats] = useState<Chat[]>([]);
     const [decrypted, setDecrypted] = useState<Record<string, string>>({});
@@ -130,23 +133,23 @@ export default function UserChatsWeb() {
                     try {
                         out[c.id] = decryptMessage(c.lastMessage, key);
                     } catch {
-                        out[c.id] = "Failed to decrypt";
+                        out[c.id] = t("userChats.messages.decryptError");
                     }
                 } else {
-                    out[c.id] = "No messages yet…";
+                    out[c.id] = t("userChats.messages.empty");
                 }
             }
             setDecrypted(out);
         })();
-    }, [chats]);
+    }, [chats, t]);
 
     const handleDeleteChat = async (id: string) => {
-        if (!window.confirm("Delete chat permanently?")) return;
+        if (!window.confirm(t("userChats.confirm.deleteChat"))) return;
         await deleteDoc(doc(db, "userChats", id));
     };
 
     const handleClearChat = async (id: string) => {
-        if (!window.confirm("Clear all messages in this chat?")) return;
+        if (!window.confirm(t("userChats.confirm.clearChat"))) return;
         const msgs = await getDocs(collection(db, `userChats/${id}/messages`));
         const batch = writeBatch(db);
         msgs.forEach((m) => batch.delete(m.ref));
@@ -180,17 +183,30 @@ export default function UserChatsWeb() {
 
     return (
         <Container maxWidth="md" sx={{ py: 5 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h5" fontWeight={900}>Your Chats</Typography>
-                <Button startIcon={<AddRoundedIcon />} variant="contained" onClick={() => setOpenModal(true)}>
-                    Start New
+            <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={{ xs: 1.5, sm: 0 }}
+                alignItems={{ xs: "flex-start", sm: "center" }}
+                justifyContent="space-between"
+                mb={3}
+            >
+                <Typography variant="h5" fontWeight={900}>
+                    {t("userChats.list.title")}
+                </Typography>
+                <Button
+                    startIcon={<AddRoundedIcon />}
+                    variant="contained"
+                    onClick={() => setOpenModal(true)}
+                    sx={{ width: { xs: "100%", sm: "auto" } }}
+                >
+                    {t("userChats.list.startNew")}
                 </Button>
-            </Box>
+            </Stack>
 
             {loading ? (
                 <Box textAlign="center"><CircularProgress /></Box>
             ) : chats.length === 0 ? (
-                <Typography color="text.secondary" align="center">No chats yet. Start a conversation!</Typography>
+                <Typography color="text.secondary" align="center">{t("userChats.list.empty")}</Typography>
             ) : (
                 <List>
                     {chats.map((c) => {
@@ -200,16 +216,30 @@ export default function UserChatsWeb() {
                         return (
                             <Card key={c.id} sx={{ mb: 2, borderRadius: 3 }}>
                                 <CardActionArea onClick={() => navigate(`/userChats/${c.id}`)}>
-                                    <CardContent sx={{ display: "flex", alignItems: "center" }}>
-                                        <ListItemAvatar>
+                                    <CardContent
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: { xs: "flex-start", sm: "center" },
+                                            gap: { xs: 1.25, sm: 2 },
+                                            flexWrap: { xs: "wrap", sm: "nowrap" },
+                                        }}
+                                    >
+                                        <ListItemAvatar sx={{ minWidth: "auto" }}>
                                             <Avatar>{friend ? getInitials(friend.firstName, friend.lastName) : "?"}</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={<Typography fontWeight={700}>{friend ? `${friend.firstName} ${friend.lastName}` : "Unknown"}</Typography>}
-                                            secondary={decrypted[c.id]?.slice(0, 60) ?? "No messages yet…"}
+                                            primary={
+                                                <Typography fontWeight={700}>
+                                                    {friend ? `${friend.firstName} ${friend.lastName}` : t("userChats.list.unknownUser")}
+                                                </Typography>
+                                            }
+                                            secondary={decrypted[c.id]?.slice(0, 60) ?? t("userChats.messages.empty")}
+                                            sx={{ flex: 1, minWidth: 0 }}
                                         />
-                                        {isUnread && <Badge color="primary" variant="dot" />}
-                                        <ChevronRightRoundedIcon color="action" />
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            {isUnread && <Badge color="primary" variant="dot" />}
+                                            <ChevronRightRoundedIcon color="action" />
+                                        </Stack>
                                     </CardContent>
                                 </CardActionArea>
                                 <Box display="flex" justifyContent="flex-end" px={1} pb={1}>
@@ -223,13 +253,13 @@ export default function UserChatsWeb() {
             )}
 
             <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
-                <DialogTitle>Start a New Chat</DialogTitle>
+                <DialogTitle>{t("userChats.list.dialogTitle")}</DialogTitle>
                 <DialogContent>
                     <TextField
                         value={search}
                         onChange={(e) => filterFriends(e.target.value)}
                         fullWidth
-                        placeholder="Search friends..."
+                        placeholder={t("userChats.list.searchPlaceholder")}
                         margin="normal"
                         slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> }}}
                     />
@@ -244,7 +274,11 @@ export default function UserChatsWeb() {
                                 </ListItemButton>
                             </ListItem>
                         ))}
-                        {filtered.length === 0 && <Typography color="text.secondary" align="center">No friends found.</Typography>}
+                        {filtered.length === 0 && (
+                            <Typography color="text.secondary" align="center">
+                                {t("userChats.list.noFriends")}
+                            </Typography>
+                        )}
                     </List>
                 </DialogContent>
             </Dialog>

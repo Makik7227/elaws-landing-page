@@ -19,6 +19,8 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { SubscriptionPaymentDialog } from "../components/SubscriptionPaymentDialog.tsx";
 import type { PaymentDialogState } from "../components/SubscriptionPaymentDialog.tsx";
+import { useTranslation } from "react-i18next";
+import DashboardBackButton from "../components/DashboardBackButton.tsx";
 
 type PlanId = "free" | "plus" | "premium";
 
@@ -29,7 +31,7 @@ interface Plan {
     priceLabel: string;
     priceMonthly: number;
     tokens: string;
-    badge?: "Recommended" | "Best value";
+    badge?: string;
     priceId?: string | null;
     features: string[];
     cta: string;
@@ -53,6 +55,7 @@ type CloudResponse<T> = T & { error?: string };
 const SubscribePage: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
     const [userId, setUserId] = useState<string | null>(null);
     const [activePlan, setActivePlan] = useState<PlanId>("free");
     const [pendingDowngradeTier, setPendingDowngradeTier] = useState<PlanId | null>(null);
@@ -87,90 +90,83 @@ const SubscribePage: React.FC = () => {
 
     const downgradeBanner = useMemo(() => {
         const formatDate = (timestamp: number | null) => {
-            if (!timestamp) return "at the end of your billing cycle";
+            if (!timestamp) return t("subscribePage.banner.when.endOfCycle");
             const date = new Date(timestamp);
-            return `on ${date.toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            })}`;
+            return t("subscribePage.banner.when.date", {
+                date: date.toLocaleDateString(i18n.language, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                }),
+            });
         };
 
         if (pendingDowngradeTier) {
-            const planName = pendingDowngradeTier.charAt(0).toUpperCase() + pendingDowngradeTier.slice(1);
-            return `You've scheduled a downgrade to ${planName}. It will take effect ${formatDate(pendingDowngradeDate)}.`;
+            const planName = t(`subscribePage.plans.${pendingDowngradeTier}.name`);
+            return t("subscribePage.banner.downgrade", {
+                plan: planName,
+                when: formatDate(pendingDowngradeDate),
+            });
         }
 
         if (subscriptionCancelAtPeriodEnd) {
-            return `You've scheduled a downgrade to Free. It will take effect ${formatDate(subscriptionCancelDate)}.`;
+            return t("subscribePage.banner.cancelToFree", {
+                when: formatDate(subscriptionCancelDate),
+            });
         }
 
         return null;
-    }, [pendingDowngradeTier, pendingDowngradeDate, subscriptionCancelAtPeriodEnd, subscriptionCancelDate]);
+    }, [pendingDowngradeTier, pendingDowngradeDate, subscriptionCancelAtPeriodEnd, subscriptionCancelDate, t, i18n.language]);
 
     const plans: Plan[] = useMemo(() => {
         return [
             {
                 id: "free",
-                name: "Free",
-                subtitle: "New Account",
+                name: t("subscribePage.plans.free.name"),
+                subtitle: t("subscribePage.plans.free.subtitle"),
                 priceLabel: "$0",
                 priceMonthly: 0,
-                tokens: "10,000 tokens / mo",
-                features: [
-                    "Chat with AI Law Assistant",
-                    `Access to “I Was Stopped by the Police” panic button`,
-                ],
+                tokens: t("subscribePage.plans.free.tokens"),
+                features: t("subscribePage.plans.free.features", { returnObjects: true }) as string[],
                 cta:
                     activePlan === "free"
-                        ? "You're on Free"
-                        : "Downgrade to Free",
+                        ? t("subscribePage.cta.current", { plan: t("subscribePage.plans.free.name") })
+                        : t("subscribePage.cta.downgrade", { plan: t("subscribePage.plans.free.name") }),
             },
             {
                 id: "plus",
-                name: "Plus",
-                subtitle: "Client Account",
+                name: t("subscribePage.plans.plus.name"),
+                subtitle: t("subscribePage.plans.plus.subtitle"),
                 priceLabel: "$9.99",
                 priceMonthly: 9.99,
-                tokens: "100,000 tokens / mo",
-                badge: "Best value",
+                tokens: t("subscribePage.plans.plus.tokens"),
+                badge: t("subscribePage.plans.plus.badge"),
                 priceId: priceIds.plus,
-                features: [
-                    "Secure document generation",
-                    "Encrypted chat with your lawyer",
-                    "Chat with AI Law Assistant",
-                    `Access to “I Was Stopped by the Police” panic button`,
-                ],
+                features: t("subscribePage.plans.plus.features", { returnObjects: true }) as string[],
                 cta:
                     activePlan === "premium"
-                        ? "Downgrade to Plus"
+                        ? t("subscribePage.cta.downgrade", { plan: t("subscribePage.plans.plus.name") })
                         : activePlan === "plus"
-                            ? "You're on Plus"
-                            : "Upgrade to Plus",
+                            ? t("subscribePage.cta.current", { plan: t("subscribePage.plans.plus.name") })
+                            : t("subscribePage.cta.upgrade", { plan: t("subscribePage.plans.plus.name") }),
             },
             {
                 id: "premium",
-                name: "Premium",
-                subtitle: "Client/Lawyer Account",
+                name: t("subscribePage.plans.premium.name"),
+                subtitle: t("subscribePage.plans.premium.subtitle"),
                 priceLabel: "$19.99",
                 priceMonthly: 19.99,
-                tokens: "500,000 tokens / mo",
-                badge: "Recommended",
+                tokens: t("subscribePage.plans.premium.tokens"),
+                badge: t("subscribePage.plans.premium.badge"),
                 priceId: priceIds.premium,
-                features: [
-                    "Secure document generation",
-                    "Encrypted chat with clients",
-                    "Case management with assigned clients",
-                    "Chat with AI Law Assistant",
-                    `Access to “I Was Stopped by the Police” panic button`,
-                ],
+                features: t("subscribePage.plans.premium.features", { returnObjects: true }) as string[],
                 cta:
                     activePlan === "premium"
-                        ? "You're on Premium"
-                        : "Upgrade to Premium",
+                        ? t("subscribePage.cta.current", { plan: t("subscribePage.plans.premium.name") })
+                        : t("subscribePage.cta.upgrade", { plan: t("subscribePage.plans.premium.name") }),
             },
         ];
-    }, [activePlan]);
+    }, [activePlan, t]);
 
     // 🔹 Handle subscribe, downgrade, and undo
     const handleAction = async (targetPlan: PlanId) => {
@@ -181,12 +177,12 @@ const SubscribePage: React.FC = () => {
 
         try {
             if (pendingDowngradeTier || subscriptionCancelAtPeriodEnd) {
-                setError("You already have a pending downgrade. Undo it before making more changes.");
+                setError(t("subscribePage.errors.pendingDowngrade"));
                 return;
             }
 
             if (targetPlan === activePlan) {
-                setError("You’re already on this plan.");
+                setError(t("subscribePage.errors.samePlan"));
                 return;
             }
 
@@ -203,8 +199,7 @@ const SubscribePage: React.FC = () => {
                 setPendingDowngradeTier(null);
                 setPendingDowngradeDate(null);
                 setSuccessMessage(
-                    data.message ||
-                        "Downgrade scheduled. You’ll keep your current benefits until the billing cycle ends."
+                    data.message || t("subscribePage.success.downgradeScheduled")
                 );
                 return;
             }
@@ -212,21 +207,21 @@ const SubscribePage: React.FC = () => {
             if (activePlan === "plus" && targetPlan === "premium") {
                 const data = await postJson<{ clientSecret?: string }>(ENDPOINTS.premiumUpgrade, { uid: userId });
                 if (!data.clientSecret) {
-                    throw new Error("No client secret returned for the Premium upgrade.");
+                    throw new Error(t("subscribePage.errors.missingClientSecret"));
                 }
                 setPaymentDialog({
                     clientSecret: data.clientSecret,
-                    planName: "Premium upgrade",
-                    amountLabel: "$10.99 upgrade fee",
-                    helperText: "We’ll upgrade you to Premium automatically after the payment succeeds.",
-                    completionMessage: "Upgrade paid. We’ll switch you to Premium as soon as Stripe confirms the charge.",
+                    planName: t("subscribePage.payment.premiumUpgrade.planName"),
+                    amountLabel: t("subscribePage.payment.premiumUpgrade.amount"),
+                    helperText: t("subscribePage.payment.premiumUpgrade.helper"),
+                    completionMessage: t("subscribePage.payment.premiumUpgrade.success"),
                 });
                 return;
             }
 
             const plan = plans.find((p) => p.id === targetPlan);
             if (!plan?.priceId) {
-                setError("Missing Stripe price ID for the selected plan.");
+                setError(t("subscribePage.errors.missingPriceId"));
                 return;
             }
 
@@ -241,18 +236,18 @@ const SubscribePage: React.FC = () => {
             if (data.clientSecret) {
                 setPaymentDialog({
                     clientSecret: data.clientSecret,
-                    planName: `${plan.name} plan`,
+                    planName: t("subscribePage.payment.default.planName", { plan: plan.name }),
                     amountLabel: plan.id === "free" ? plan.priceLabel : `${plan.priceLabel}/mo`,
-                    helperText: "Complete payment to finish updating your subscription.",
-                    completionMessage: "Payment confirmed. Your subscription will update shortly.",
+                    helperText: t("subscribePage.payment.default.helper"),
+                    completionMessage: t("subscribePage.payment.default.success"),
                 });
                 return;
             }
 
-            setSuccessMessage(data.message || "Subscription updated.");
+            setSuccessMessage(data.message || t("subscribePage.success.subscriptionUpdated"));
         } catch (err: unknown) {
             const message =
-                err instanceof Error ? err.message : typeof err === "string" ? err : "Something went wrong.";
+                err instanceof Error ? err.message : typeof err === "string" ? err : t("subscribePage.errors.generic");
             setError(message);
         } finally {
             setLoading(false);
@@ -270,10 +265,10 @@ const SubscribePage: React.FC = () => {
             setPendingDowngradeDate(null);
             setCancelAtPeriodEnd(false);
             setSubscriptionCancelDate(null);
-            setSuccessMessage(data.message || "Downgrade cancelled. You’ll stay on your current plan.");
+            setSuccessMessage(data.message || t("subscribePage.success.undo"));
         } catch (err: unknown) {
             const message =
-                err instanceof Error ? err.message : typeof err === "string" ? err : "An unexpected error occurred.";
+                err instanceof Error ? err.message : typeof err === "string" ? err : t("subscribePage.errors.unexpected");
             setError(message);
         } finally {
             setLoading(false);
@@ -283,13 +278,16 @@ const SubscribePage: React.FC = () => {
     return (
         <Box sx={{ minHeight: "100vh", bgcolor: theme.palette.background.default }}>
             <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
+                <Box sx={{ mb: 3 }}>
+                    <DashboardBackButton />
+                </Box>
                 {/* Header */}
                 <Stack spacing={1} alignItems="center" textAlign="center" mb={4}>
                     <Typography variant="h4" fontWeight={900}>
-                        Manage your E-Lawyer Subscription
+                        {t("subscribePage.hero.title")}
                     </Typography>
                     <Typography variant="subtitle1" sx={{ opacity: 0.85 }}>
-                        Upgrade, downgrade, or undo changes anytime.
+                        {t("subscribePage.hero.subtitle")}
                     </Typography>
                 </Stack>
 
@@ -319,7 +317,7 @@ const SubscribePage: React.FC = () => {
                             disabled={loading}
                             sx={{ borderRadius: 2, fontWeight: 700 }}
                         >
-                            Undo
+                            {t("subscribePage.banner.undo")}
                         </Button>
                     </Box>
                 )}
@@ -424,11 +422,11 @@ const SubscribePage: React.FC = () => {
                                         sx={{ mt: 3, borderRadius: 2, fontWeight: 800 }}
                                     >
                                         {isActive
-                                            ? "You're on this plan"
+                                            ? t("subscribePage.cta.currentPlan")
                                             : isPending
-                                                ? "Downgrade scheduled"
+                                                ? t("subscribePage.cta.pending")
                                                 : loading
-                                                    ? "Processing..."
+                                                    ? t("subscribePage.cta.loading")
                                                     : plan.cta}
                                     </Button>
                                 </CardContent>

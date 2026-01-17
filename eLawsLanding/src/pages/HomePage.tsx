@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    Avatar,
     Box,
     Button,
     Card,
@@ -7,6 +8,7 @@ import {
     Chip,
     Container,
     Divider,
+    LinearProgress,
     Stack,
     Typography,
     alpha,
@@ -18,11 +20,15 @@ import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
-import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
-import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
-import {useEffect, useState} from "react";
-import {onAuthStateChanged, type User} from "firebase/auth";
-import {auth} from "../../firebase.ts";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
+import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { auth } from "../../firebase.ts";
+import { useTranslation } from "react-i18next";
 
 const FeatureCard: React.FC<{
     icon: React.ReactNode;
@@ -117,69 +123,125 @@ const StepCard: React.FC<{
 };
 
 const HERO_METRICS = [
-    { label: "Questions answered", value: "2.3M+" },
-    { label: "Docs drafted", value: "640K" },
-    { label: "Avg. response time", value: "6.4s" },
+    { labelKey: "home.hero.metrics.questions", value: "2.3M+" },
+    { labelKey: "home.hero.metrics.docs", value: "640K" },
+    { labelKey: "home.hero.metrics.response", value: "6.4s" },
 ];
-
-const TRUSTED_LOGOS = ["LexisLink", "NovaLegal", "Atlas Law", "CivicTech"];
 
 const HOW_IT_WORKS = [
-    { step: 1, title: "Pick country & topic", desc: "We tailor the AI context to local legislation and practice." },
-    { step: 2, title: "Chat, draft, or plan", desc: "Ask follow ups, generate filings, or spin up guided procedures." },
-    { step: 3, title: "Save & collaborate", desc: "Store insights, export docs, and loop in lawyers when needed." },
+    { step: 1, titleKey: "home.steps.pickCountry.title", descKey: "home.steps.pickCountry.desc" },
+    { step: 2, titleKey: "home.steps.chatDraft.title", descKey: "home.steps.chatDraft.desc" },
+    { step: 3, titleKey: "home.steps.saveCollaborate.title", descKey: "home.steps.saveCollaborate.desc" },
 ];
 
-const HERO_HIGHLIGHTS = [
-    { icon: <LockRoundedIcon fontSize="small" />, label: "End-to-end security" },
-    { icon: <LanguageRoundedIcon fontSize="small" />, label: "Country-aware guidance" },
-    { icon: <AssessmentRoundedIcon fontSize="small" />, label: "Cited answers" },
+const HERO_STATUS = [
+    { value: "12", labelKey: "home.hero.widget.status.cases" },
+    { value: "5", labelKey: "home.hero.widget.status.tasks" },
+    { value: "6h", labelKey: "home.hero.widget.status.sla" },
 ];
 
 const FEATURE_LIST = [
     {
         icon: <GavelRoundedIcon />,
-        title: "Country-specific chat",
-        desc: "Ask in natural language and get answers tuned to your jurisdiction.",
+        titleKey: "home.features.cards.countryChat.title",
+        descKey: "home.features.cards.countryChat.desc",
     },
     {
         icon: <ChatRoundedIcon />,
-        title: "Topic presets",
-        desc: "Civil, criminal, business, labor, tax… jump in with curated prompts.",
+        titleKey: "home.features.cards.topicPresets.title",
+        descKey: "home.features.cards.topicPresets.desc",
     },
     {
         icon: <LockRoundedIcon />,
-        title: "Privacy by default",
-        desc: "Secure storage, strict access controls, and audit trails built in.",
+        titleKey: "home.features.cards.privacy.title",
+        descKey: "home.features.cards.privacy.desc",
     },
     {
         icon: <BoltRoundedIcon />,
-        title: "Lightning fast",
-        desc: "Optimized pipeline and caching. Answers in seconds, not minutes.",
+        titleKey: "home.features.cards.speed.title",
+        descKey: "home.features.cards.speed.desc",
     },
 ];
 
 const WORKFLOW_POINTS = [
     {
         icon: <ChatRoundedIcon />,
-        title: "Unified workspace",
-        desc: "Chat, notes, cases, and procedures share the same context so nothing gets lost.",
+        titleKey: "home.workflow.points.workspace.title",
+        descKey: "home.workflow.points.workspace.desc",
     },
     {
         icon: <BoltRoundedIcon />,
-        title: "Real-time AI",
-        desc: "We stream responses, highlight citations, and let you branch threads instantly.",
+        titleKey: "home.workflow.points.realtime.title",
+        descKey: "home.workflow.points.realtime.desc",
     },
     {
         icon: <GavelRoundedIcon />,
-        title: "Local expertise",
-        desc: "Country packs bake in regulations, forms, and deadlines unique to your region.",
+        titleKey: "home.workflow.points.local.title",
+        descKey: "home.workflow.points.local.desc",
+    },
+];
+
+const PREVIEW_ITEMS = [
+    { titleKey: "home.workflow.preview.draftNda.title", descKey: "home.workflow.preview.draftNda.desc" },
+    { titleKey: "home.workflow.preview.laborChat.title", descKey: "home.workflow.preview.laborChat.desc" },
+    { titleKey: "home.workflow.preview.immigration.title", descKey: "home.workflow.preview.immigration.desc" },
+];
+
+const VALUE_PROPS = [
+    {
+        icon: <VerifiedRoundedIcon />,
+        titleKey: "home.benefits.compliance.title",
+        descKey: "home.benefits.compliance.desc",
+    },
+    {
+        icon: <DashboardRoundedIcon />,
+        titleKey: "home.benefits.workspace.title",
+        descKey: "home.benefits.workspace.desc",
+    },
+    {
+        icon: <AutoAwesomeRoundedIcon />,
+        titleKey: "home.benefits.guidance.title",
+        descKey: "home.benefits.guidance.desc",
+    },
+    {
+        icon: <ScheduleRoundedIcon />,
+        titleKey: "home.benefits.speed.title",
+        descKey: "home.benefits.speed.desc",
+    },
+];
+
+const TIMELINE_STEPS = [
+    { titleKey: "home.timeline.steps.intake.title", descKey: "home.timeline.steps.intake.desc" },
+    { titleKey: "home.timeline.steps.drafting.title", descKey: "home.timeline.steps.drafting.desc" },
+    { titleKey: "home.timeline.steps.review.title", descKey: "home.timeline.steps.review.desc" },
+    { titleKey: "home.timeline.steps.share.title", descKey: "home.timeline.steps.share.desc" },
+];
+
+const TESTIMONIALS = [
+    {
+        quoteKey: "home.testimonials.items.loop.quote",
+        authorKey: "home.testimonials.items.loop.author",
+        roleKey: "home.testimonials.items.loop.role",
+        initials: "SM",
+    },
+    {
+        quoteKey: "home.testimonials.items.atlas.quote",
+        authorKey: "home.testimonials.items.atlas.author",
+        roleKey: "home.testimonials.items.atlas.role",
+        initials: "AL",
+    },
+    {
+        quoteKey: "home.testimonials.items.pioneer.quote",
+        authorKey: "home.testimonials.items.pioneer.author",
+        roleKey: "home.testimonials.items.pioneer.role",
+        initials: "JP",
     },
 ];
 
 const HomePage: React.FC = () => {
     const theme = useTheme();
     const [user, setUser] = useState<User | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => setUser(u));
@@ -192,11 +254,18 @@ const HomePage: React.FC = () => {
 
     return (
         <>
+            <Box
+                sx={{
+                    height: { xs: "64px", md: "80px" },
+                    background: gradient,
+                }}
+            />
             {/* HERO */}
             <Box
                 component="section"
                 sx={{
-                    pt: { xs: 8, md: 12 },
+                    mt: { xs: -8, md: -10 },
+                    pt: { xs: 10, md: 14 },
                     pb: { xs: 8, md: 12 },
                     background: gradient,
                     position: "relative",
@@ -210,158 +279,294 @@ const HomePage: React.FC = () => {
                         top: -120,
                         right: -80,
                         borderRadius: "50%",
-                        background: alpha(theme.palette.common.white, 0.1),
+                        background: alpha(theme.palette.common.white, 0.14),
                         filter: "blur(40px)",
+                    },
+                    "&:after": {
+                        content: '""',
+                        position: "absolute",
+                        width: 360,
+                        height: 360,
+                        bottom: -160,
+                        left: -120,
+                        borderRadius: "50%",
+                        background: alpha(theme.palette.common.white, 0.08),
+                        filter: "blur(50px)",
                     },
                 }}
             >
                 <Container sx={{ position: "relative" }}>
-                    <Stack spacing={4} alignItems="center" textAlign="center">
-                        <Chip
-                            label="AI legal copilot"
-                            variant="outlined"
-                            sx={{
-                                color: "inherit",
-                                borderColor: alpha(theme.palette.common.white, 0.4),
-                                bgcolor: "transparent",
-                                fontWeight: 600,
-                                px: 2,
-                            }}
-                        />
-                        <Typography
-                            component="h1"
-                            sx={{
-                                fontSize: { xs: 40, sm: 56, md: 64 },
-                                fontWeight: 900,
-                                letterSpacing: -0.8,
-                                lineHeight: 1.02,
-                                maxWidth: 900,
-                            }}
-                        >
-                            E-Laws — legal help, on-demand.
-                        </Typography>
-                        <Typography
-                            sx={{
-                                maxWidth: 780,
-                                opacity: 0.9,
-                                fontSize: { xs: 16, md: 18 },
-                            }}
-                        >
-                            Ask questions, generate documents, and chat with a legal assistant
-                            tuned to your jurisdiction. Privacy-first. Built for legal teams and
-                            solo founders alike.
-                        </Typography>
-
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                            <Button
-                                component={RouterLink}
-                                to={user ? "/dashboard" : "/signup"}
-                                variant="contained"
-                                size="large"
-                                sx={{
-                                    px: 4,
-                                    py: 1.2,
-                                    fontWeight: 800,
-                                }}
-                            >
-                                {user ? "Go to dashboard" : "Create free account"}
-                            </Button>
-                            {!user && (
-                                <Button
-                                    component={RouterLink}
-                                    to="/chat"
+                    <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <Stack spacing={3}>
+                                <Chip
+                                    label={t("home.hero.badge")}
                                     variant="outlined"
-                                    size="large"
                                     sx={{
-                                        px: 4,
-                                        py: 1.2,
-                                        fontWeight: 700,
                                         color: "inherit",
                                         borderColor: alpha(theme.palette.common.white, 0.4),
-                                        bgcolor: alpha(theme.palette.common.white, 0.06),
-                                        "&:hover": { borderColor: "inherit" },
+                                        bgcolor: alpha(theme.palette.common.white, 0.08),
+                                        fontWeight: 600,
+                                        width: "fit-content",
+                                    }}
+                                />
+                                <Stack spacing={1.5}>
+                                    <Typography
+                                        component="h1"
+                                        sx={{
+                                            fontSize: { xs: 40, sm: 56, md: 64 },
+                                            fontWeight: 900,
+                                            letterSpacing: -0.8,
+                                            lineHeight: 1.05,
+                                            maxWidth: 620,
+                                        }}
+                                    >
+                                        {t("home.hero.title")}
+                                    </Typography>
+                                    <Typography sx={{ maxWidth: 560, opacity: 0.92, fontSize: { xs: 16, md: 18 } }}>
+                                        {t("home.hero.subtitle")}
+                                    </Typography>
+                                </Stack>
+                                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                                    <Button
+                                        component={RouterLink}
+                                        to={user ? "/dashboard" : "/signup"}
+                                        variant="contained"
+                                        size="large"
+                                        sx={{
+                                            px: 4,
+                                            py: 1.2,
+                                            fontWeight: 800,
+                                            borderRadius: 3,
+                                        }}
+                                    >
+                                        {user ? t("home.hero.ctaDashboard") : t("home.hero.ctaPrimary")}
+                                    </Button>
+                                    {!user && (
+                                        <Button
+                                            component={RouterLink}
+                                            to="/chat"
+                                            variant="outlined"
+                                            size="large"
+                                            sx={{
+                                                px: 4,
+                                                py: 1.2,
+                                                fontWeight: 700,
+                                                color: "inherit",
+                                                borderColor: alpha(theme.palette.common.white, 0.4),
+                                                bgcolor: alpha(theme.palette.common.white, 0.06),
+                                                borderRadius: 3,
+                                                "&:hover": { borderColor: "inherit" },
+                                            }}
+                                        >
+                                            {t("home.hero.ctaSecondary")}
+                                        </Button>
+                                    )}
+                                </Stack>
+                                <Box
+                                    sx={{
+                                        p: { xs: 2.5, sm: 3 },
+                                        borderRadius: 4,
+                                        bgcolor: alpha(theme.palette.common.white, 0.08),
+                                        border: `1px solid ${alpha(theme.palette.common.white, 0.12)}`,
                                     }}
                                 >
-                                    Try the Demo
-                                </Button>
-                            )}
-                        </Stack>
-
-                        <Stack
-                            direction={{ xs: "column", md: "row" }}
-                            spacing={3}
-                            justifyContent="center"
-                            alignItems="stretch"
-                            sx={{ width: "100%", maxWidth: 900 }}
-                        >
-                            <Card
-                                sx={{
-                                    flex: 1,
-                                    bgcolor: alpha(theme.palette.common.white, 0.08),
-                                    borderColor: alpha(theme.palette.common.white, 0.12),
-                                }}
-                            >
-                                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                                     <Stack
                                         direction={{ xs: "column", sm: "row" }}
-                                        spacing={{ xs: 2, sm: 3 }}
+                                        spacing={{ xs: 2, sm: 5 }}
                                         justifyContent="space-between"
                                         alignItems={{ xs: "flex-start", sm: "center" }}
                                     >
                                         {HERO_METRICS.map((metric) => (
-                                            <Stack key={metric.label} spacing={0.5} alignItems={{ xs: "flex-start", sm: "center" }}>
+                                            <Stack key={metric.labelKey} spacing={0.5}>
                                                 <Typography variant="h4" fontWeight={900}>
                                                     {metric.value}
                                                 </Typography>
                                                 <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                                                    {metric.label}
+                                                    {t(metric.labelKey)}
                                                 </Typography>
                                             </Stack>
                                         ))}
                                     </Stack>
-                                </CardContent>
-                            </Card>
-                        </Stack>
-
-                        <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={1.5}
-                            justifyContent="center"
-                            flexWrap="wrap"
-                        >
-                            {HERO_HIGHLIGHTS.map((item) => (
-                                <Chip
-                                    key={item.label}
-                                    icon={item.icon}
-                                    label={item.label}
-                                    variant="outlined"
-                                    sx={{
-                                        color: "inherit",
-                                        borderColor: alpha(theme.palette.common.white, 0.4),
-                                        bgcolor: alpha(theme.palette.common.white, 0.06),
-                                    }}
-                                />
-                            ))}
-                        </Stack>
-
-                        <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={2}
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{ opacity: 0.8 }}
-                        >
-                            <Typography variant="body2">Trusted by modern legal teams:</Typography>
-                            <Divider flexItem orientation={"vertical"} sx={{ display: { xs: "none", sm: "block" } }} />
-                            <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, sm: 3 }} alignItems="center">
-                                {TRUSTED_LOGOS.map((logo) => (
-                                    <Typography key={logo} variant="body2" sx={{ letterSpacing: 2 }}>
-                                        {logo}
-                                    </Typography>
-                                ))}
+                                </Box>
                             </Stack>
-                        </Stack>
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <Box sx={{ position: "relative" }}>
+                                <Card
+                                    sx={{
+                                        borderRadius: 5,
+                                        p: { xs: 3, md: 4 },
+                                        bgcolor: alpha(theme.palette.background.paper, 0.1),
+                                        border: `1px solid ${alpha(theme.palette.common.white, 0.15)}`,
+                                        boxShadow: "0 25px 65px rgba(15,10,35,0.35)",
+                                        backdropFilter: "blur(6px)",
+                                    }}
+                                >
+                                    <Stack spacing={3}>
+                                        <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Box
+                                                sx={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: 2,
+                                                    bgcolor: alpha(theme.palette.secondary.light, 0.2),
+                                                    display: "grid",
+                                                    placeItems: "center",
+                                                }}
+                                            >
+                                                <AutoAwesomeRoundedIcon />
+                                            </Box>
+                                            <Box>
+                                                <Typography variant="subtitle2" fontWeight={700} sx={{ opacity: 0.9 }}>
+                                                    {t("home.hero.widget.title")}
+                                                </Typography>
+                                                <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                                                    {t("home.hero.widget.subtitle")}
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                        <Typography variant="h5" fontWeight={800}>
+                                            {t("home.hero.widget.headline")}
+                                        </Typography>
+                                        <Box>
+                                            <Stack direction="row" justifyContent="space-between" mb={0.5}>
+                                                <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                                                    {t("home.hero.widget.progressLabel")}
+                                                </Typography>
+                                                <Typography variant="caption" fontWeight={700}>
+                                                    86%
+                                                </Typography>
+                                            </Stack>
+                                            <LinearProgress
+                                                variant="determinate"
+                                                value={86}
+                                                sx={{
+                                                    height: 10,
+                                                    borderRadius: 999,
+                                                    bgcolor: alpha(theme.palette.common.white, 0.2),
+                                                    "& .MuiLinearProgress-bar": {
+                                                        borderRadius: 999,
+                                                        background: "linear-gradient(90deg, #FCE7B0, #FFD37A, #FFB347)",
+                                                    },
+                                                }}
+                                            />
+                                        </Box>
+                                        <Stack direction="row" spacing={2} justifyContent="space-between">
+                                            {HERO_STATUS.map((item) => (
+                                                <Box key={item.labelKey}>
+                                                    <Typography variant="h6" fontWeight={800}>
+                                                        {item.value}
+                                                    </Typography>
+                                                    <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                                                        {t(item.labelKey)}
+                                                    </Typography>
+                                                </Box>
+                                            ))}
+                                        </Stack>
+                                    </Stack>
+                                </Card>
+                                <Card
+                                    sx={{
+                                        borderRadius: 4,
+                                        p: 2.5,
+                                        width: 280,
+                                        position: { xs: "relative", md: "absolute" },
+                                        bottom: { xs: -24, md: -32 },
+                                        right: { xs: "auto", md: -32 },
+                                        mt: { xs: 3, md: 0 },
+                                        bgcolor: theme.palette.background.paper,
+                                        boxShadow: theme.palette.mode === "light" ? "0 20px 45px rgba(10,0,30,0.25)" : "0 20px 45px rgba(0,0,0,0.65)",
+                                    }}
+                                >
+                                    <Stack spacing={1.5}>
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            <Avatar sx={{ bgcolor: theme.palette.primary.main }}>SM</Avatar>
+                                            <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>DL</Avatar>
+                                            <Avatar sx={{ bgcolor: theme.palette.grey[500] }}>AZ</Avatar>
+                                        </Stack>
+                                        <Typography variant="subtitle2" fontWeight={700}>
+                                            {t("home.hero.widget.supportTitle")}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {t("home.hero.widget.supportDesc")}
+                                        </Typography>
+                                        <Chip
+                                            label={t("home.hero.widget.supportStatus")}
+                                            size="small"
+                                            color="primary"
+                                            icon={<ScheduleRoundedIcon fontSize="small" />}
+                                            sx={{ width: "fit-content", borderRadius: 999 }}
+                                        />
+                                    </Stack>
+                                </Card>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Container>
+            </Box>
+
+            {/* VALUE PROPS */}
+            <Box
+                component="section"
+                sx={{
+                    py: { xs: 8, md: 10 },
+                    bgcolor: theme.palette.background.default,
+                }}
+            >
+                <Container>
+                    <Stack spacing={1} mb={5} textAlign="center">
+                        <Typography variant="overline" color="text.secondary">
+                            {t("home.benefits.overline")}
+                        </Typography>
+                        <Typography variant="h4" fontWeight={800}>
+                            {t("home.benefits.title")}
+                        </Typography>
+                        <Typography color="text.secondary" maxWidth={680} mx="auto">
+                            {t("home.benefits.subtitle")}
+                        </Typography>
                     </Stack>
+                    <Grid container spacing={3}>
+                        {VALUE_PROPS.map((card) => (
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={card.titleKey}>
+                                <Card
+                                    sx={{
+                                        height: "100%",
+                                        borderRadius: 4,
+                                        p: 3,
+                                        border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+                                        background: theme.palette.mode === "light"
+                                            ? "linear-gradient(180deg, rgba(255,255,255,0.9), rgba(248,248,255,1))"
+                                            : alpha(theme.palette.background.paper, 0.8),
+                                        boxShadow:
+                                            theme.palette.mode === "light"
+                                                ? "0 25px 60px rgba(18,10,40,0.08)"
+                                                : "0 25px 60px rgba(0,0,0,0.55)",
+                                    }}
+                                >
+                                    <Stack spacing={2}>
+                                        <Box
+                                            sx={{
+                                                width: 48,
+                                                height: 48,
+                                                borderRadius: 2,
+                                                display: "grid",
+                                                placeItems: "center",
+                                                bgcolor: alpha(theme.palette.primary.main, 0.12),
+                                                color: theme.palette.primary.main,
+                                            }}
+                                        >
+                                            {card.icon}
+                                        </Box>
+                                        <Typography fontWeight={700}>{t(card.titleKey)}</Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {t(card.descKey)}
+                                        </Typography>
+                                    </Stack>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
                 </Container>
             </Box>
 
@@ -370,19 +575,23 @@ const HomePage: React.FC = () => {
                 <Container>
                     <Stack spacing={1} mb={4} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
-                            What you get
+                            {t("home.features.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
-                            Built for real-world legal tasks
+                            {t("home.features.title")}
                         </Typography>
                         <Typography color="text.secondary">
-                            Designed for SaaS simplicity: clear modules, instant context, and beautiful defaults.
+                            {t("home.features.subtitle")}
                         </Typography>
                     </Stack>
                     <Grid container spacing={3}>
                         {FEATURE_LIST.map((feature) => (
-                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={feature.title}>
-                                <FeatureCard {...feature} />
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={feature.titleKey}>
+                                <FeatureCard
+                                    icon={feature.icon}
+                                    title={t(feature.titleKey)}
+                                    desc={t(feature.descKey)}
+                                />
                             </Grid>
                         ))}
                     </Grid>
@@ -395,16 +604,16 @@ const HomePage: React.FC = () => {
                     <Grid container spacing={{ xs: 4, md: 6 }} alignItems="center">
                         <Grid size={{ xs: 12, md: 6 }}>
                             <Stack spacing={2}>
-                                <Chip label="Workflow" color="primary" variant="outlined" sx={{ width: "fit-content" }} />
+                                <Chip label={t("home.workflow.badge")} color="primary" variant="outlined" sx={{ width: "fit-content" }} />
                                 <Typography variant="h4" fontWeight={800}>
-                                    Everything teams need—without the clunky UI.
+                                    {t("home.workflow.title")}
                                 </Typography>
                                 <Typography color="text.secondary">
-                                    We borrowed the best SaaS patterns: left-hand navigation, delightful cards, progressive disclosure, and optional dark mode. It feels like your favorite productivity suite, not old-school legal tech.
+                                    {t("home.workflow.description")}
                                 </Typography>
                                 <Stack spacing={2}>
                                     {WORKFLOW_POINTS.map((point) => (
-                                        <Stack direction="row" spacing={2} key={point.title} alignItems="flex-start">
+                                        <Stack direction="row" spacing={2} key={point.titleKey} alignItems="flex-start">
                                             <Box
                                                 sx={{
                                                     width: 44,
@@ -419,9 +628,9 @@ const HomePage: React.FC = () => {
                                                 {point.icon}
                                             </Box>
                                             <Box>
-                                                <Typography fontWeight={700}>{point.title}</Typography>
+                                                <Typography fontWeight={700}>{t(point.titleKey)}</Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {point.desc}
+                                                    {t(point.descKey)}
                                                 </Typography>
                                             </Box>
                                         </Stack>
@@ -429,10 +638,10 @@ const HomePage: React.FC = () => {
                                 </Stack>
                                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
                                     <Button component={RouterLink} to="/features" variant="contained">
-                                        Explore the product
+                                        {t("home.workflow.primaryCta")}
                                     </Button>
                                     <Button component={RouterLink} to="/pricing" variant="text">
-                                        View pricing →
+                                        {t("home.workflow.secondaryCta")}
                                     </Button>
                                 </Stack>
                             </Stack>
@@ -452,11 +661,14 @@ const HomePage: React.FC = () => {
                                 }}
                             >
                                 <Typography variant="subtitle2" fontWeight={700} mb={2}>
-                                    Live preview
+                                    {t("home.workflow.preview.title")}
                                 </Typography>
                                 <Stack spacing={2}>
-                                    {["Draft NDA", "Labor dispute chat", "Immigration checklist"].map((title, idx) => (
-                                        <Card key={title} sx={{ borderRadius: 4, borderColor: alpha(theme.palette.primary.main, 0.08) }}>
+                                    {PREVIEW_ITEMS.map((item, idx) => (
+                                        <Card
+                                            key={item.titleKey}
+                                            sx={{ borderRadius: 4, borderColor: alpha(theme.palette.primary.main, 0.08) }}
+                                        >
                                             <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                                                 <Box
                                                     sx={{
@@ -472,11 +684,9 @@ const HomePage: React.FC = () => {
                                                     {idx + 1}
                                                 </Box>
                                                 <Box>
-                                                    <Typography fontWeight={700}>{title}</Typography>
+                                                    <Typography fontWeight={700}>{t(item.titleKey)}</Typography>
                                                     <Typography variant="body2" color="text.secondary">
-                                                        {idx === 0 && "AI-built in 35 seconds."}
-                                                        {idx === 1 && "Summaries + citations ready to share."}
-                                                        {idx === 2 && "Checklist auto-adjusts to your country."}
+                                                        {t(item.descKey)}
                                                     </Typography>
                                                 </Box>
                                             </CardContent>
@@ -492,12 +702,84 @@ const HomePage: React.FC = () => {
                                         textAlign: "center",
                                     }}
                                 >
-                                    <Typography fontWeight={700}>Dark mode ready</Typography>
+                                    <Typography fontWeight={700}>{t("home.workflow.preview.footerTitle")}</Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Toggle it anytime from the nav.
+                                        {t("home.workflow.preview.footerDesc")}
                                     </Typography>
                                 </Box>
                             </Box>
+                        </Grid>
+                    </Grid>
+                </Container>
+            </Box>
+
+            {/* TIMELINE */}
+            <Box component="section" sx={{ py: { xs: 8, md: 10 }, bgcolor: alpha(theme.palette.primary.main, 0.02) }}>
+                <Container>
+                    <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
+                        <Grid size={{ xs: 12, md: 5 }}>
+                            <Stack spacing={2}>
+                                <Chip label={t("home.timeline.badge")} color="primary" variant="outlined" sx={{ width: "fit-content" }} />
+                                <Typography variant="h4" fontWeight={800}>
+                                    {t("home.timeline.title")}
+                                </Typography>
+                                <Typography color="text.secondary">
+                                    {t("home.timeline.subtitle")}
+                                </Typography>
+                                <Stack spacing={1}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t("home.timeline.etaLabel")}
+                                    </Typography>
+                                    <LinearProgress
+                                        variant="determinate"
+                                        value={92}
+                                        sx={{
+                                            height: 12,
+                                            borderRadius: 999,
+                                            bgcolor: alpha(theme.palette.primary.main, 0.08),
+                                            "& .MuiLinearProgress-bar": {
+                                                borderRadius: 999,
+                                                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                                            },
+                                        }}
+                                    />
+                                </Stack>
+                                <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                                    <Button component={RouterLink} to="/procedures" variant="contained">
+                                        {t("home.timeline.primaryCta")}
+                                    </Button>
+                                    <Button component={RouterLink} to="/dashboard" variant="text">
+                                        {t("home.timeline.secondaryCta")}
+                                    </Button>
+                                </Stack>
+                            </Stack>
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 7 }}>
+                            <Stack spacing={2}>
+                                {TIMELINE_STEPS.map((step, idx) => (
+                                    <Card
+                                        key={step.titleKey}
+                                        sx={{
+                                            p: 3,
+                                            borderRadius: 4,
+                                            border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+                                            background: theme.palette.mode === "light"
+                                                ? "linear-gradient(120deg, rgba(255,255,255,0.95), rgba(249,249,255,0.86))"
+                                                : alpha(theme.palette.background.paper, 0.8),
+                                        }}
+                                    >
+                                        <Stack direction="row" spacing={2} alignItems="flex-start">
+                                            <Chip label={`0${idx + 1}`} color="primary" variant="filled" sx={{ borderRadius: 999 }} />
+                                            <Box>
+                                                <Typography fontWeight={700}>{t(step.titleKey)}</Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {t(step.descKey)}
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                    </Card>
+                                ))}
+                            </Stack>
                         </Grid>
                     </Grid>
                 </Container>
@@ -514,23 +796,87 @@ const HomePage: React.FC = () => {
                 <Container>
                     <Stack spacing={1.5} mb={5} textAlign="center">
                         <Typography variant="overline" color="text.secondary">
-                            How it works
+                            {t("home.steps.overline")}
                         </Typography>
                         <Typography variant="h4" fontWeight={800}>
-                            Three steps. Zero confusion.
+                            {t("home.steps.title")}
                         </Typography>
                         <Typography color="text.secondary">
-                            Guided flows keep complex procedures approachable. Every workspace feels familiar.
+                            {t("home.steps.subtitle")}
                         </Typography>
                     </Stack>
 
                     <Grid container spacing={3} justifyContent="center">
                         {HOW_IT_WORKS.map((step) => (
                             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={step.step}>
-                                <StepCard {...step} />
+                                <StepCard
+                                    step={step.step}
+                                    title={t(step.titleKey)}
+                                    desc={t(step.descKey)}
+                                />
                             </Grid>
                         ))}
                     </Grid>
+                </Container>
+            </Box>
+
+            {/* TESTIMONIALS */}
+            <Box component="section" sx={{ py: { xs: 8, md: 10 } }}>
+                <Container>
+                    <Stack spacing={1} mb={5} textAlign="center">
+                        <Typography variant="overline" color="text.secondary">
+                            {t("home.testimonials.overline")}
+                        </Typography>
+                        <Typography variant="h4" fontWeight={800}>
+                            {t("home.testimonials.title")}
+                        </Typography>
+                        <Typography color="text.secondary" maxWidth={640} mx="auto">
+                            {t("home.testimonials.subtitle")}
+                        </Typography>
+                    </Stack>
+                    <Grid container spacing={3}>
+                        {TESTIMONIALS.map((testimonial) => (
+                            <Grid size={{ xs: 12, md: 4 }} key={testimonial.quoteKey}>
+                                <Card
+                                    sx={{
+                                        height: "100%",
+                                        borderRadius: 4,
+                                        p: 3,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: 2,
+                                        border: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
+                                        boxShadow: theme.palette.mode === "light"
+                                            ? "0 20px 50px rgba(18,10,40,0.06)"
+                                            : "0 20px 50px rgba(0,0,0,0.55)",
+                                    }}
+                                >
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography variant="body1" sx={{ fontStyle: "italic" }}>
+                                            "{t(testimonial.quoteKey)}"
+                                        </Typography>
+                                    </Box>
+                                    <Divider flexItem />
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.18), color: theme.palette.primary.main }}>
+                                            {testimonial.initials}
+                                        </Avatar>
+                                        <Box>
+                                            <Typography fontWeight={700}>{t(testimonial.authorKey)}</Typography>
+                                            <Typography variant="caption" color="text.secondary">
+                                                {t(testimonial.roleKey)}
+                                            </Typography>
+                                        </Box>
+                                    </Stack>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                    <Stack mt={4} alignItems="center">
+                        <Button component={RouterLink} to="/about" variant="text" endIcon={<ArrowForwardIcon />}>
+                            {t("home.testimonials.cta")}
+                        </Button>
+                    </Stack>
                 </Container>
             </Box>
 
@@ -557,10 +903,10 @@ const HomePage: React.FC = () => {
                             >
                                 <Box>
                                     <Typography variant="h5" fontWeight={800}>
-                                        Start your first case in minutes
+                                        {t("home.ctaBand.title")}
                                     </Typography>
                                     <Typography sx={{opacity: 0.9}}>
-                                        Free plan available. Upgrade anytime.
+                                        {t("home.ctaBand.subtitle")}
                                     </Typography>
                                 </Box>
                                 <Stack direction={{xs: "column", sm: "row"}} spacing={1.5}>
@@ -571,7 +917,7 @@ const HomePage: React.FC = () => {
                                         size="large"
                                         sx={{borderRadius: 3, fontWeight: 800}}
                                     >
-                                        Create account
+                                        {t("home.ctaBand.primary")}
                                     </Button>
                                     <Button
                                         component={RouterLink}
@@ -585,7 +931,7 @@ const HomePage: React.FC = () => {
                                             "&:hover": {borderColor: "currentColor"},
                                         }}
                                     >
-                                        See pricing
+                                        {t("home.ctaBand.secondary")}
                                     </Button>
                                 </Stack>
                             </Stack>
@@ -621,7 +967,7 @@ const HomePage: React.FC = () => {
                                 variant="body2"
                                 sx={{ "&:hover": { color: "text.primary" } }}
                             >
-                                Privacy
+                                {t("home.footer.privacy")}
                             </Typography>
                             <Typography
                                 component={RouterLink}
@@ -630,7 +976,7 @@ const HomePage: React.FC = () => {
                                 variant="body2"
                                 sx={{ "&:hover": { color: "text.primary" } }}
                             >
-                                Terms
+                                {t("home.footer.terms")}
                             </Typography>
                             <Typography
                                 component={RouterLink}
@@ -639,7 +985,7 @@ const HomePage: React.FC = () => {
                                 variant="body2"
                                 sx={{ "&:hover": { color: "text.primary" } }}
                             >
-                                Contact
+                                {t("home.footer.contact")}
                             </Typography>
                         </Stack>
                     </Stack>

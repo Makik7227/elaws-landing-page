@@ -1,0 +1,1485 @@
+{
+    "common": {
+        "language": {
+            "tooltip": "Switch language to {{language}}",
+            "names": {
+                "en": "English",
+                "pl": "Polish"
+            },
+            "short": {
+                "en": "EN",
+                "pl": "PL"
+            },
+            "aria": "Toggle language"
+        },
+        "backToDashboard": "Back to dashboard"
+    },
+    "nav": {
+        "home": "Home",
+        "features": "Features",
+        "pricing": "Pricing",
+        "about": "About",
+        "contact": "Contact",
+        "dashboard": "Dashboard",
+        "aiChat": "AI Chat",
+        "documents": "Documents",
+        "procedures": "Procedures",
+        "notes": "Notes",
+        "connections": "Connections"
+    },
+    "auth": {
+        "account": "Account",
+        "logout": "Logout",
+        "login": "Login",
+        "signup": "Sign Up",
+        "createAccount": "Create account"
+    },
+    "topBar": {
+        "menu": "Menu",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "themeToggle": "Toggle theme"
+    },
+    "home": {
+        "hero": {
+            "badge": "AI legal copilot",
+            "title": "E-Laws — legal help, on-demand.",
+            "subtitle": "Ask questions, generate documents, and chat with a legal assistant tuned to your jurisdiction. Privacy-first. Built for legal teams and solo founders alike.",
+            "ctaDashboard": "Go to dashboard",
+            "ctaPrimary": "Create free account",
+            "ctaSecondary": "Try the Demo",
+            "metrics": {
+                "questions": "Questions answered",
+                "docs": "Docs drafted",
+                "response": "Avg. response time"
+            },
+            "highlights": {
+                "security": "End-to-end security",
+                "localization": "Country-aware guidance",
+                "citations": "Cited answers"
+            },
+            "trustedBy": "Trusted by modern legal teams:",
+            "widget": {
+                "title": "Live case hub",
+                "subtitle": "Employment contract kit · Spain",
+                "headline": "All stakeholders aligned",
+                "progressLabel": "Documents completed",
+                "status": {
+                    "cases": "Open matters",
+                    "tasks": "AI suggestions",
+                    "sla": "Avg. SLA"
+                },
+                "supportTitle": "Compliance reviewers online",
+                "supportDesc": "Local experts jump in the moment you invite them to a workspace.",
+                "supportStatus": "Live within 5 min"
+            }
+        },
+        "benefits": {
+            "overline": "Why teams switch",
+            "title": "Modern UI meets legal precision.",
+            "subtitle": "Layers of thoughtful UI reduce onboarding time, while AI keeps the workflow fast, compliant, and friendly for every stakeholder.",
+            "compliance": {
+                "title": "Regulation-ready",
+                "desc": "Country packs, citation history, and audit logs keep every answer defensible."
+            },
+            "workspace": {
+                "title": "One shared workspace",
+                "desc": "Cases, docs, notes, and chat live together so no context is lost."
+            },
+            "guidance": {
+                "title": "Guided decisions",
+                "desc": "Highlight risks, surface required forms, and collect missing facts dynamically."
+            },
+            "speed": {
+                "title": "Faster than email",
+                "desc": "Notifications, summaries, and templates help your team close tickets 3× faster."
+            }
+        },
+        "features": {
+            "overline": "What you get",
+            "title": "Built for real-world legal tasks",
+            "subtitle": "Designed for SaaS simplicity: clear modules, instant context, and beautiful defaults.",
+            "cards": {
+                "countryChat": {
+                    "title": "Country-specific chat",
+                    "desc": "Ask in natural language and get answers tuned to your jurisdiction."
+                },
+                "topicPresets": {
+                    "title": "Topic presets",
+                    "desc": "Civil, criminal, business, labor, tax… jump in with curated prompts."
+                },
+                "privacy": {
+                    "title": "Privacy by default",
+                    "desc": "Secure storage, strict access controls, and audit trails built in."
+                },
+                "speed": {
+                    "title": "Lightning fast",
+                    "desc": "Optimized pipeline and caching. Answers in seconds, not minutes."
+                }
+            }
+        },
+        "workflow": {
+            "badge": "Workflow",
+            "title": "Everything teams need—without the clunky UI.",
+            "description": "We borrowed the best SaaS patterns: left-hand navigation, delightful cards, progressive disclosure, and optional dark mode. It feels like your favorite productivity suite, not old-school legal tech.",
+            "points": {
+                "workspace": {
+                    "title": "Unified workspace",
+                    "desc": "Chat, notes, cases, and procedures share the same context so nothing gets lost."
+                },
+                "realtime": {
+                    "title": "Real-time AI",
+                    "desc": "We stream responses, highlight citations, and let you branch threads instantly."
+                },
+                "local": {
+                    "title": "Local expertise",
+                    "desc": "Country packs bake in regulations, forms, and deadlines unique to your region."
+                }
+            },
+            "primaryCta": "Explore the product",
+            "secondaryCta": "View pricing →",
+            "preview": {
+                "title": "Live preview",
+                "draftNda": {
+                    "title": "Draft NDA",
+                    "desc": "AI-built in 35 seconds."
+                },
+                "laborChat": {
+                    "title": "Labor dispute chat",
+                    "desc": "Summaries + citations ready to share."
+                },
+                "immigration": {
+                    "title": "Immigration checklist",
+                    "desc": "Checklist auto-adjusts to your country."
+                },
+                "footerTitle": "Dark mode ready",
+                "footerDesc": "Toggle it anytime from the nav."
+            }
+        },
+        "timeline": {
+            "badge": "Turnaround",
+            "title": "From intake to share-ready in minutes",
+            "subtitle": "Structured blocks + AI assistance guide every matter forward without the chaos.",
+            "etaLabel": "Avg. time saved per case",
+            "primaryCta": "Browse procedures",
+            "secondaryCta": "Open the app",
+            "steps": {
+                "intake": {
+                    "title": "Smart intake",
+                    "desc": "Collect facts with adaptive questions that reflect local law."
+                },
+                "drafting": {
+                    "title": "Draft + cite",
+                    "desc": "Generate filings with editable sections and auto citations."
+                },
+                "review": {
+                    "title": "Review loop",
+                    "desc": "Loop in counsel or clients with tracked suggestions."
+                },
+                "share": {
+                    "title": "Export & sign",
+                    "desc": "Send polished PDFs or copy clauses straight into your tools."
+                }
+            }
+        },
+        "steps": {
+            "overline": "How it works",
+            "title": "Three steps. Zero confusion.",
+            "subtitle": "Guided flows keep complex procedures approachable. Every workspace feels familiar.",
+            "pickCountry": {
+                "title": "Pick country & topic",
+                "desc": "We tailor the AI context to local legislation and practice."
+            },
+            "chatDraft": {
+                "title": "Chat, draft, or plan",
+                "desc": "Ask follow ups, generate filings, or spin up guided procedures."
+            },
+            "saveCollaborate": {
+                "title": "Save & collaborate",
+                "desc": "Store insights, export docs, and loop in lawyers when needed."
+            }
+        },
+        "testimonials": {
+            "overline": "Social proof",
+            "title": "Loved by modern legal teams",
+            "subtitle": "Design partners from tech, finance, and public institutions shaped every detail.",
+            "cta": "See customer stories",
+            "items": {
+                "loop": {
+                    "quote": "Our founders self-serve 80% of legal questions now. The UI feels like Notion, not a dated government portal.",
+                    "author": "Sofia Malik",
+                    "role": "Head of Legal, Loop"
+                },
+                "atlas": {
+                    "quote": "Case threads stay organized, multilingual, and searchable. It replaced five disconnected dashboards.",
+                    "author": "Andre Lima",
+                    "role": "Operations Lead, Atlas Mobility"
+                },
+                "pioneer": {
+                    "quote": "The AI suggestions surface risk instantly, so our lawyers can review, not hunt for context.",
+                    "author": "Jules Park",
+                    "role": "Partner, Pioneer Law"
+                }
+            }
+        },
+        "ctaBand": {
+            "title": "Start your first case in minutes",
+            "subtitle": "Free plan available. Upgrade anytime.",
+            "primary": "Create account",
+            "secondary": "See pricing"
+        },
+        "footer": {
+            "privacy": "Privacy",
+            "terms": "Terms",
+            "contact": "Contact"
+        }
+    },
+    "featuresPage": {
+        "hero": {
+            "badge": "Features",
+            "title": "Built for real-world legal work",
+            "subtitle": "From quick answers to full documents and organized cases — all in one place.",
+            "primaryCta": "Get started",
+            "secondaryCta": "See pricing"
+        },
+        "coreSection": {
+            "overline": "Core",
+            "title": "Everything you need to get moving"
+        },
+        "moreSection": {
+            "overline": "And more",
+            "title": "Practical details that actually matter",
+            "cta": "See pricing"
+        },
+        "cards": {
+            "defaultCta": "Explore"
+        },
+        "core": {
+            "aiChat": {
+                "title": "AI Legal Chat",
+                "desc": "Ask jurisdiction-aware legal questions and get concise, cited guidance.",
+                "cta": "Start chatting"
+            },
+            "documents": {
+                "title": "Generate Documents",
+                "desc": "Draft contracts, letters, and filings with AI, then edit and export.",
+                "cta": "Create a doc"
+            },
+            "cases": {
+                "title": "Manage Cases",
+                "desc": "Open, track, and review your legal matters in one place.",
+                "cta": "View cases"
+            },
+            "notes": {
+                "title": "Saved Notes",
+                "desc": "Capture important answers and keep them organized by topic.",
+                "cta": "Open notes"
+            }
+        },
+        "more": {
+            "procedures": {
+                "title": "Country-specific Procedures",
+                "desc": "Step-by-step playbooks tailored to your country’s rules.",
+                "cta": "Browse procedures"
+            },
+            "presets": {
+                "title": "Legal Topics Presets",
+                "desc": "Jump straight into Civil, Criminal, Business, Labor, Tax, and more.",
+                "cta": "Choose a topic"
+            },
+            "privacy": {
+                "title": "Privacy by Default",
+                "desc": "Your data stays yours — secure storage and strict access controls."
+            },
+            "speed": {
+                "title": "Fast & Reliable",
+                "desc": "Optimized pipeline and caching for snappy, consistent responses."
+            }
+        }
+    },
+    "pricingPage": {
+        "hero": {
+            "badge": "Pricing",
+            "title": "Protect your legal workflow",
+            "subtitle": "Free is a trial. Upgrade when you need reliable guidance, documents, and case control.",
+            "secondaryCta": "See features",
+            "openApp": "Open App"
+        },
+        "plans": {
+            "perMonth": "/ month",
+            "free": {
+                "name": "Free",
+                "tokens": "Single panic run • schema preview only",
+                "features": {
+                    "chatBasic": "Legal chat (trial bandwidth)",
+                    "policeShortcut": "One “Stopped by Police” activation"
+                }
+            },
+            "plus": {
+                "name": "Plus",
+                "tokens": "5 document runs • unlimited panic",
+                "features": {
+                    "documents": "Secure document generation (5/month)",
+                    "encryptedChat": "Encrypted chat with your lawyer",
+                    "chatEnhanced": "Legal chat with priority bandwidth",
+                    "policeShortcut": "Unlimited “Stopped by Police” shortcuts"
+                }
+            },
+            "premium": {
+                "name": "Premium",
+                "tokens": "Unlimited panic • unlimited documents • cases",
+                "features": {
+                    "plusAll": "Everything in Plus",
+                    "clientChat": "Encrypted chat with your clients",
+                    "caseManagement": "Full case management + role switching",
+                    "prioritySupport": "Priority support"
+                }
+            },
+            "recommendedTag": "Recommended",
+            "currentLabel": "Current Plan"
+        },
+        "cta": {
+            "startFree": "Start for Free",
+            "upgradeTo": "Upgrade to {{plan}}",
+            "currentPlan": "You're on this plan",
+            "downgradeTo": "Downgrade to {{plan}}",
+            "selectPlan": "Select {{plan}}"
+        },
+        "included": {
+            "overline": "What’s included",
+            "title": "Every plan ships with legal safeguards",
+            "chat": "Legal guidance chat",
+            "docs": "Document schematics",
+            "localGuidance": "Country-aware procedures",
+            "security": "Privacy-first security",
+            "speed": "Fast & reliable",
+            "manageButton": "Manage subscription",
+            "createAccountButton": "Create your account"
+        }
+    },
+    "contactPage": {
+        "hero": {
+            "badge": "Contact",
+            "title": "Let's talk",
+            "subtitle": "Questions, partnerships, or feedback? Reach out directly.",
+            "primaryCta": "Email Maksymilian"
+        },
+        "card": {
+            "title": "Direct contact"
+        },
+        "details": {
+            "nameLabel": "Name",
+            "roleLabel": "Role",
+            "emailLabel": "Email",
+            "roleValue": "CEO and Lead Developer at E-Laws"
+        }
+    },
+    "loginPage": {
+        "hero": {
+            "badge": "Security-first",
+            "title": "Welcome back 👋",
+            "subtitle": "Pick up any case, chat thread, or document exactly where you left it. Your workspace syncs instantly across devices.",
+            "features": {
+                "featureOne": "Access AI chat, docs, cases, and notes",
+                "featureTwo": "Stay in sync with real-time collaboration",
+                "featureThree": "SOC2-friendly architecture with audit trails"
+            }
+        },
+        "form": {
+            "badge": "Sign in",
+            "title": "Enter your workspace",
+            "subtitle": "Use your account email and password. Two-factor kicks in automatically if enabled.",
+            "emailLabel": "Email",
+            "passwordLabel": "Password",
+            "submit": "Sign in"
+        },
+        "links": {
+            "forgotPassword": "Forgot password?",
+            "newHere": "New here?",
+            "createAccount": "Create account",
+            "backToSite": "← Back to site"
+        },
+        "errors": {
+            "invalidCredentials": "Invalid email or password"
+        }
+    },
+    "signupPage": {
+        "hero": {
+            "badge": "Create an account",
+            "title": "Onboard in minutes, not weeks.",
+            "subtitle": "Your AI legal workspace with SaaS-level polish. Start on the free tier and invite teammates when you’re ready.",
+            "benefits": {
+                "benefitOne": "Unlimited saved notes on every plan",
+                "benefitTwo": "Country-specific procedures included",
+                "benefitThree": "Downgrade anytime right inside the app"
+            }
+        },
+        "expect": {
+            "title": "What to expect",
+            "subtitle": "Answer a few basics, pick your jurisdiction, and you’re inside the dashboard with a guided tour.",
+            "steps": {
+                "stepOne": {
+                    "title": "Tell us who you are",
+                    "description": "We use your name and username for workspace personalization."
+                },
+                "stepTwo": {
+                    "title": "Add your jurisdiction",
+                    "description": "Country selection unlocks localized procedures and regulations."
+                },
+                "stepThree": {
+                    "title": "Secure your credentials",
+                    "description": "Strong passwords + optional 2FA keep everything safe."
+                }
+            }
+        },
+        "form": {
+            "badge": "Your details",
+            "title": "Create your workspace",
+            "subtitle": "All fields are required so we can generate the right legal context.",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Email",
+            "username": "Username",
+            "usernameHelper": "Starts with @, letters/numbers/._- only",
+            "country": "Country",
+            "password": "Password",
+            "confirmPassword": "Confirm password",
+            "passwordHelper": "Min 8 chars, include a number or special character"
+        },
+        "cta": {
+            "submit": "Create account",
+            "loading": "Creating..."
+        },
+        "links": {
+            "existing": "Already have an account?",
+            "login": "Log in",
+            "backToSite": "← Back to site"
+        },
+        "errors": {
+            "missingName": "First and last name are required.",
+            "invalidEmailFormat": "Invalid email format.",
+            "passwordMismatch": "Passwords do not match.",
+            "passwordWeak": "Password must be at least 8 chars, with a number or special char.",
+            "usernameLength": "Username must be at least 2 characters after @.",
+            "usernameChars": "Username can only use a-z, 0-9, dots, underscores, and dashes.",
+            "usernameTaken": "Username is already taken. Pick another.",
+            "usernameJustTaken": "Username just got taken — try another.",
+            "emailInUse": "That email is already registered. Try logging in.",
+            "passwordTooWeak": "Password too weak. Use a longer or stronger one.",
+            "invalidEmail": "Invalid email.",
+            "generic": "Something went wrong. Please try again."
+        }
+    },
+    "about": {
+        "hero": {
+            "badge": "About",
+            "title": "Making legal help fast, clear, and accessible",
+            "subtitle": "E-Laws is your AI legal copilot — built to answer questions, generate documents, and guide you through procedures with privacy by default.",
+            "secondaryCta": "Our Features",
+            "primaryCta": "Get Started"
+        },
+        "mission": {
+            "title": "Our mission",
+            "subtitle": "People deserve understandable, actionable legal guidance — not endless jargon and wait times. We combine reliable AI with country-aware context to help you draft, decide, and move forward.",
+            "pills": {
+                "jurisdiction": "Jurisdiction-aware answers",
+                "local": "Local procedures & presets",
+                "privacy": "Privacy-first by design",
+                "speed": "Fast and reliable responses"
+            }
+        },
+        "stats": {
+            "users": "Users helped",
+            "countries": "Countries supported",
+            "response": "Avg. response prep"
+        },
+        "trust": {
+            "overline": "Trust & Safety",
+            "title": "Designed to be dependable",
+            "points": {
+                "citations": "Clear citations and jurisdictional hints where relevant",
+                "control": "No sale of your personal data — you control exports",
+                "security": "Role-based access and encryption at rest",
+                "editable": "Human-readable docs you can edit and sign"
+            }
+        },
+        "story": {
+            "overline": "Our story",
+            "title": "From idea to everyday copilot",
+            "timeline": {
+                "2024": {
+                    "title": "Prototype",
+                    "desc": "We shipped our first jurisdiction-aware chat with document drafting."
+                },
+                "2025": {
+                    "title": "Cases & Procedures",
+                    "desc": "Added local procedures, saved notes, and structured case management."
+                },
+                "today": {
+                    "title": "Scaling globally",
+                    "desc": "Improving multilingual guidance, performance, and lawyer workflows."
+                }
+            }
+        },
+        "cta": {
+            "title": "Want to partner or have feedback?",
+            "subtitle": "We collaborate with lawyers and organizations to make legal help accessible.",
+            "primary": "Contact us",
+            "secondary": "See pricing"
+        }
+    },
+    "aiChat": {
+        "topics": {
+            "civil": "Civil Law",
+            "criminal": "Criminal Law",
+            "business": "Business Law",
+            "labor": "Labor Law",
+            "tax": "Tax Law",
+            "other": "Other"
+        },
+        "context": {
+            "title": "Context",
+            "description": "Country-aware AI with topic presets and quick prompt suggestions."
+        },
+        "labels": {
+            "topic": "Topic",
+            "country": "Country",
+            "topicPlaceholder": "Choose a topic",
+            "anyCountry": "Any country"
+        },
+        "buttons": {
+            "changeTopic": "Change topic",
+            "saveToNotes": "Save to Notes",
+            "send": "Send"
+        },
+        "inputs": {
+            "questionPlaceholder": "Type your legal question…"
+        },
+        "dialog": {
+            "title": "Title your note",
+            "generating": "Generating suggestions…",
+            "suggestions": "Suggestions",
+            "customTitle": "Or write your own",
+            "placeholder": "Enter a custom title",
+            "cancel": "Cancel",
+            "save": "Save",
+            "untitled": "Untitled Note"
+        },
+        "snackbar": {
+            "profileError": "Could not load your profile. Refresh and try again.",
+            "sendError": "Failed to send message.",
+            "saveSuccess": "Saved to My Notes ✅",
+            "saveError": "Failed to save note."
+        },
+        "loading": {
+            "preparing": "Preparing your workspace…"
+        },
+        "tokens": {
+            "usage": "{{used}} / {{limit}} legal bandwidth",
+            "cta": "Upgrade bandwidth",
+            "freeWarning": "You’re almost out of Free bandwidth. Upgrade to Plus so chat guidance stays responsive.",
+            "plusWarning": "Plus bandwidth is nearly exhausted. Upgrade to Premium to keep legal chat online."
+        },
+        "empty": {
+            "countryTitle": "Choose your jurisdiction",
+            "countryDescription": "We preload relevant regulations and forms the moment you confirm the country.",
+            "topicTitle": "What do you need help with?",
+            "topicDescription": "Pick a preset to tailor the AI prompt. You can always switch later."
+        }
+    },
+    "components": {
+        "countryPicker": {
+            "trigger": "Select a country",
+            "dialogTitle": "Select country",
+            "searchPlaceholder": "Search country...",
+            "empty": "No countries found."
+        },
+        "datePicker": {
+            "today": "Today",
+            "close": "Close"
+        },
+        "panicButton": {
+            "trigger": "Emergency legal shield",
+            "dialogTitle": "Police encounter protocol",
+            "dialogDescription": "Confirm your jurisdiction to load the exact stop-and-search procedure. Free plans unlock a single run.",
+            "submit": "Get procedures",
+            "cancel": "Cancel",
+            "trialLabel": "One emergency run on Free",
+            "unlimited": "Unlimited panic runs",
+            "lockedLabel": "Emergency run exhausted",
+            "lockedHint": "Upgrade to Plus for unlimited emergency guidance.",
+            "lockedCta": "Upgrade for safety"
+        },
+        "subscriptionButton": {
+            "upgrade": "Upgrade",
+            "manage": "Manage subscription"
+        },
+        "subscriptionPayment": {
+            "title": "Confirm payment",
+            "planLabel": "Plan",
+            "cancel": "Cancel",
+            "processing": "Processing…",
+            "submit": "Pay & Continue",
+            "error": "Payment failed. Try again."
+        }
+    },
+    "upgradePrompt": {
+        "requiredTier": "Requires {{tier}}",
+        "secondary": "Not now",
+        "primary": "Upgrade now",
+        "panic": {
+            "title": "Keep your emergency line live",
+            "description": "Free plans include one police-stop protocol. Upgrade to Plus for unlimited panic activations and saved playbooks.",
+            "highlight": "Plus members store every stop procedure for instant recall."
+        },
+        "documents": {
+            "title": "Unlock legal document runs",
+            "description": "You’ve used every document generation run included in your tier. Upgrade to keep generating filings, contracts, and evidence packs.",
+            "highlight": "Plus includes 5 runs/month. Premium removes the cap completely."
+        },
+        "cases": {
+            "title": "Case workflows live in Premium",
+            "description": "Case creation, assignments, and role switching are Premium-only. Upgrade to open matters, add clients, and link notes.",
+            "highlight": "Premium keeps every case, note, and procedure in one protected workspace."
+        },
+        "tokens": {
+            "title": "You’re almost out of legal bandwidth",
+            "description": "Once your token buffer is depleted, panic runs, chat responses, and document drafts may stall. Upgrade before the wall hits.",
+            "highlight": "At 80% usage, we recommend moving to the next tier to avoid outages."
+        }
+    },
+    "userChats": {
+        "list": {
+            "title": "Your chats",
+            "startNew": "Start new",
+            "empty": "No chats yet. Start a conversation!",
+            "dialogTitle": "Start a new chat",
+            "searchPlaceholder": "Search friends...",
+            "noFriends": "No friends found.",
+            "unknownUser": "Unknown"
+        },
+        "messages": {
+            "title": "Chat",
+            "placeholder": "Type your message…",
+            "send": "Send",
+            "empty": "No messages yet…",
+            "decryptError": "Failed to decrypt"
+        },
+        "confirm": {
+            "deleteChat": "Delete chat permanently?",
+            "clearChat": "Clear all messages in this chat?"
+        }
+    },
+    "createCasePage": {
+        "title": "Create Case",
+        "breadcrumbs": "Dashboard / Cases",
+        "auth": {
+            "title": "Sign in required",
+            "description": "Please sign in to create a case.",
+            "cta": "Go to Login"
+        },
+        "actions": {
+            "back": "Back to Cases",
+            "cancel": "Cancel",
+            "submit": "Create Case",
+            "submitting": "Creating..."
+        },
+        "form": {
+            "titleLabel": "Case title",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Add additional context for this case...",
+            "clientLabel": "Assign to client",
+            "clientPlaceholder": "Start typing a client's name...",
+            "clientHelper": "You need to add clients before creating a case."
+        },
+        "errors": {
+            "profileIncomplete": "Complete your profile before creating cases.",
+            "profileLoad": "Failed to load your profile.",
+            "clientsLoad": "Failed to load clients.",
+            "lawyerOnly": "Only lawyers can create new cases.",
+            "titleRequired": "Please enter a case title.",
+            "clientRequired": "Please assign the case to a client.",
+            "createFailed": "Failed to create case."
+        },
+        "clients": {
+            "unnamed": "Unnamed client"
+        },
+        "plan": {
+            "banner": "Case creation is reserved for Premium workspaces.",
+            "cta": "Upgrade for cases",
+            "locked": "Premium keeps case workflows, assignments, and role switching online.",
+            "dialogTitle": "Upgrade to manage cases",
+            "dialogDescription": "Premium unlocks case creation, case-linked notes, and client assignments."
+        }
+    },
+    "documentsLanding": {
+        "hero": {
+            "title": "Legal documents, organized",
+            "subtitle": "Generate AI-powered contracts and store every PDF in one secure workspace."
+        },
+        "generate": {
+            "title": "Generate a document",
+            "description": "Pick a template, fill the fields, and produce a production-ready contract in seconds.",
+            "primaryCta": "Start generating",
+            "secondaryCta": "View saved documents"
+        },
+        "library": {
+            "title": "Browse your files",
+            "description": "Everything you create or upload syncs here. Download, copy, or delete with one click.",
+            "primaryCta": "My documents",
+            "secondaryCta": "Generate new"
+        }
+    },
+    "generateDoc": {
+        "loading": "Preparing your workspace…",
+        "hero": {
+            "title": "Generate a document",
+            "subtitle": "Choose a schema, fill in the required data, and let AI craft the draft.",
+            "savedCta": "View saved docs →"
+        },
+        "templates": {
+            "title": "Templates",
+            "description": "Templates sync from your mobile workspace and are cached locally for faster loads.",
+            "loading": "Fetching templates…",
+            "inputLabel": "Choose a template",
+            "missingIntro": "Missing required fields:",
+            "emptyState": "Select a template from the left to start filling the form."
+        },
+        "form": {
+            "list": {
+                "add": "Add"
+            },
+            "dropdownPlaceholder": "Select…"
+        },
+        "actions": {
+            "generating": "Generating…",
+            "generate": "Generate document",
+            "generateLocked": "Upgrade to {{tier}}"
+        },
+        "preview": {
+            "title": "Preview",
+            "cached": "Cached result",
+            "tokens": "{{count}} tokens"
+        },
+        "limits": {
+            "unlimited": "Unlimited legal documents",
+            "counter": "{{remaining}} / {{limit}} document runs left",
+            "remaining": "{{count}} run(s) left this month",
+            "cta": "Upgrade for documents",
+            "freeInline": "Document export stays locked on the Free trial. Upgrade to Plus to generate filings.",
+            "plusInline": "You’ve used all {{limit}} document runs included in Plus.",
+            "plusHighlight": "Plus includes {{limit}} document runs each month.",
+            "freeTitle": "Document runs locked",
+            "freeDescription": "Free plans can preview templates but cannot export final paperwork.",
+            "plusTitle": "Plus document limit reached",
+            "plusDescription": "Upgrade to Premium for unlimited legal document generation.",
+            "dialogTitle": "Upgrade for documents",
+            "dialogDescription": "Premium removes document caps so procedures never stall."
+        },
+        "save": {
+            "fileNameLabel": "Document name",
+            "fileNamePlaceholder": "e.g. Consulting_Agreement",
+            "saving": "Saving…",
+            "cta": "Save to My Documents",
+            "success": "Saved to My Documents."
+        },
+        "errors": {
+            "schemasLoad": "Failed to load templates.",
+            "selectTemplate": "Select a template to continue.",
+            "missingFieldsInline": "Missing required fields: {{fields}}",
+            "generateFailed": "Failed to generate document.",
+            "authRequired": "You must be signed in.",
+            "noOutput": "Generate a document first.",
+            "saveFailed": "Failed to save document."
+        }
+    },
+    "manageAccount": {
+        "loading": "Loading your account…",
+        "hero": {
+            "title": "Manage Account",
+            "meta": "{{email}} • {{tier}}"
+        },
+        "profile": {
+            "chip": "Profile",
+            "title": "Personal info",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "Email",
+            "emailHelper": "Email is managed by your login. Contact support to change.",
+            "username": "Username",
+            "usernameHelper": "Starts with @ · letters/numbers/._- only",
+            "country": "Country",
+            "roleLabel": "Account role",
+            "roleField": "Role",
+            "roleHelper": "Upgrade to Premium to change your role.",
+            "save": "Save changes",
+            "manageSubscription": "Manage subscription"
+        },
+        "role": {
+            "client": "Client",
+            "lawyer": "Lawyer"
+        },
+        "security": {
+            "chip": "Security",
+            "title": "Change password",
+            "current": "Current password",
+            "new": "New password",
+            "newHelper": "Min 8 chars and include a number or symbol",
+            "confirm": "Confirm new password",
+            "change": "Change password",
+            "changing": "Changing…",
+            "help": "Need help?"
+        },
+        "shortcuts": {
+            "title": "Shortcuts",
+            "cases": "Go to My Cases",
+            "notes": "Saved Notes",
+            "procedures": "Procedures",
+            "connections": "Manage Connections",
+            "footer": "Invite or remove collaborators from the Connections page."
+        },
+        "errors": {
+            "profileLoad": "Failed to load your profile.",
+            "nameRequired": "First and last name are required.",
+            "invalidEmail": "Your account email looks invalid.",
+            "usernameInvalid": "Username must be at least 2 chars and use only a-z, 0-9, dot, underscore, dash.",
+            "profileSave": "Could not save your profile. Try again.",
+            "passwordFields": "Fill all password fields.",
+            "passwordMismatch": "New passwords do not match.",
+            "passwordWeak": "Password must be at least 8 chars and include a number or symbol.",
+            "passwordSame": "New password must be different from current password.",
+            "passwordChange": "Failed to change password. Check your current password."
+        },
+        "success": {
+            "profileSaved": "Profile saved.",
+            "passwordChanged": "Password changed successfully."
+        }
+    },
+    "connections": {
+        "loading": "Loading your connections…",
+        "title": "Connections",
+        "subtitle": "Invite trusted lawyers or clients and manage requests from one place.",
+        "search": {
+            "title": "Find people",
+            "subtitle": "Search by username or email to invite someone to your workspace.",
+            "username": "@username",
+            "email": "Email",
+            "usernameLabel": "Search @username",
+            "emailLabel": "Search by email",
+            "usernamePlaceholder": "@legal.partner",
+            "emailPlaceholder": "user@example.com",
+            "cta": "Search",
+            "searching": "Searching…",
+            "helper": "Enter a username or email to start searching.",
+            "noResults": "No matching users found."
+        },
+        "results": {
+            "request": "Request",
+            "requested": "Requested"
+        },
+        "requests": {
+            "title": "Requests",
+            "subtitle": "Approve new invitations or track the ones you have sent.",
+            "incoming": "Incoming ({{count}})",
+            "outgoing": "Outgoing ({{count}})",
+            "incomingEmpty": "No incoming requests 🎉",
+            "outgoingEmpty": "No outgoing requests.",
+            "incomingLabel": "Incoming request",
+            "outgoingLabel": "Pending"
+        },
+        "actions": {
+            "accept": "Accept",
+            "reject": "Reject"
+        },
+        "list": {
+            "title": "Connections ({{count}})",
+            "empty": "No connections yet. Start by sending a request."
+        },
+        "messages": {
+            "requestSent": "Request sent.",
+            "requestAccepted": "Request accepted.",
+            "requestRejected": "Request rejected.",
+            "connectionRemoved": "Connection removed.",
+            "searchFailed": "Search failed. Try again.",
+            "sendFailed": "Could not send request.",
+            "acceptFailed": "Could not accept request.",
+            "rejectFailed": "Could not reject request.",
+            "removeFailed": "Could not remove connection."
+        }
+    },
+    "myDocuments": {
+        "loadingAuth": "Checking your account…",
+        "hero": {
+            "title": "My Documents",
+            "subtitle": "Download, copy, or delete any generated files.",
+            "new": "New document"
+        },
+        "filters": {
+            "search": "Search",
+            "all": "All",
+            "pdf": "PDF",
+            "images": "Images",
+            "docs": "Docs",
+            "refresh": "Refresh",
+            "refreshing": "Refreshing…"
+        },
+        "loadingDocs": "Loading your documents…",
+        "empty": {
+            "title": "No documents yet",
+            "subtitle": "Generate a document or adjust your filters.",
+            "cta": "Generate document"
+        },
+        "when": {
+            "justNow": "just now",
+            "minutesAgo": "{{count}} min ago",
+            "minutesAgo_other": "{{count}} mins ago",
+            "hoursAgo": "{{count}} hr ago",
+            "hoursAgo_other": "{{count}} hrs ago",
+            "daysAgo": "{{count}} day ago",
+            "daysAgo_other": "{{count}} days ago",
+            "date": "{{value}}",
+            "unknown": "unknown"
+        },
+        "actions": {
+            "open": "Open in new tab",
+            "download": "Download",
+            "copy": "Copy link",
+            "delete": "Delete document"
+        },
+        "delete": {
+            "confirm": "Delete \"{{name}}\"?"
+        },
+        "errors": {
+            "load": "Failed to load documents.",
+            "delete": "Unable to delete document.",
+            "clipboard": "Clipboard unavailable."
+        },
+        "success": {
+            "deleted": "Document deleted.",
+            "copied": "Link copied to clipboard.",
+            "download": "Download started."
+        }
+    },
+    "notesPage": {
+        "hero": {
+            "title": "My Notes",
+            "subtitle": "Save, search, and organize every answer from the AI.",
+            "count": "{{count}} notes"
+        },
+        "search": {
+            "placeholder": "Search notes..."
+        },
+        "filters": {
+            "menu": "Filters",
+            "created": "Created",
+            "time": {
+                "any": "Any time",
+                "7d": "Last 7 days",
+                "30d": "Last 30 days"
+            },
+            "case": "Linked case",
+            "caseAll": "All cases",
+            "noCases": "No cases available yet.",
+            "clear": "Clear filters"
+        },
+        "actions": {
+            "createFromChat": "Create from chat",
+            "createManual": "Add manual note"
+        },
+        "limit": {
+            "label": "{{used}} / {{limit}} notes",
+            "unlimited": "Unlimited notes",
+            "cta": "Upgrade for more notes",
+            "freeMessage": "Free plans only store a handful of notes. Upgrade to Plus for a real notebook.",
+            "plusMessage": "Plus allows {{limit}} notes each month. Premium keeps every case note forever.",
+            "dialogTitle": "Upgrade for more notes",
+            "dialogFree": "You’ve reached the Free note limit. Upgrade to Plus to keep saving legal guidance.",
+            "dialogPlus": "You’ve hit the Plus note cap. Upgrade to Premium for unlimited notes and case links.",
+            "dialogHighlight": "{{limit}} notes/month are included with your current plan."
+        },
+        "loading": "Loading notes...",
+        "empty": "No notes found.",
+        "note": {
+            "untitled": "Untitled Note",
+            "initialFallback": "N",
+            "topic": "Topic: {{topic}}",
+            "country": "Jurisdiction: {{country}}",
+            "linkedCase": "Linked to case: {{case}}",
+            "unknownCase": "Untitled case",
+            "viewCase": "Open case"
+        },
+        "dialog": {
+            "title": "Delete Note",
+            "description": "Are you sure you want to delete this note? This action cannot be undone.",
+            "cancel": "Cancel",
+            "confirm": "Delete"
+        },
+        "manualDialog": {
+            "title": "Add manual note",
+            "description": "Write a note manually and optionally link it to one of your cases.",
+            "titleLabel": "Title",
+            "contentLabel": "Content",
+            "caseLabel": "Link to case",
+            "caseHelper": "Select a case to keep this note attached to it.",
+            "caseEmpty": "You don't have any active cases yet.",
+            "caseNone": "Don't link this note",
+            "cancel": "Cancel",
+            "save": "Save note",
+            "saving": "Saving...",
+            "success": "Note saved.",
+            "errors": {
+                "content": "Content is required.",
+                "save": "Failed to save note. Please try again.",
+                "limit": "You’ve reached your note limit for this plan."
+            }
+        }
+    },
+    "proceduresPage": {
+        "title": "Police Stop Procedures",
+        "country": "for {{country}}",
+        "empty": "No procedures found.",
+        "unknown": "Unknown",
+        "back": "Ok, got it!"
+    },
+    "savedProcedures": {
+        "title": "Saved Procedures",
+        "filter": "Filter by country code",
+        "empty": "No saved procedures found.",
+        "country": "Country: {{country}} ({{code}})"
+    },
+    "countries": {
+        "AE": "United Arab Emirates",
+        "AR": "Argentina",
+        "AT": "Austria",
+        "AU": "Australia",
+        "BE": "Belgium",
+        "BR": "Brazil",
+        "CA": "Canada",
+        "CH": "Switzerland",
+        "CL": "Chile",
+        "CN": "China",
+        "CO": "Colombia",
+        "DK": "Denmark",
+        "DE": "Germany",
+        "EG": "Egypt",
+        "ES": "Spain",
+        "FI": "Finland",
+        "FR": "France",
+        "GB": "United Kingdom",
+        "GR": "Greece",
+        "IE": "Ireland",
+        "IL": "Israel",
+        "IN": "India",
+        "IT": "Italy",
+        "JP": "Japan",
+        "KR": "South Korea",
+        "MX": "Mexico",
+        "MY": "Malaysia",
+        "NL": "Netherlands",
+        "NO": "Norway",
+        "NZ": "New Zealand",
+        "PE": "Peru",
+        "PH": "Philippines",
+        "PL": "Poland",
+        "PT": "Portugal",
+        "RU": "Russia",
+        "SA": "Saudi Arabia",
+        "SE": "Sweden",
+        "SG": "Singapore",
+        "TH": "Thailand",
+        "TR": "Turkey",
+        "US": "United States",
+        "VN": "Vietnam",
+        "ZA": "South Africa"
+    },
+    "caseProperties": {
+        "labels": {
+            "case_number": "Case Number",
+            "client_id": "Client ID",
+            "lawyer_id": "Lawyer ID",
+            "court_name": "Court Name",
+            "court_address": "Court Address",
+            "judge": "Judge",
+            "magistrate": "Magistrate",
+            "clerk": "Court Clerk",
+            "opposing_party": "Opposing Party",
+            "opposing_counsel": "Opposing Counsel",
+            "filing_date": "Filing Date",
+            "service_date": "Service Date",
+            "hearing_date": "Hearing Date",
+            "trial_date": "Trial Date",
+            "appeal_hearing_date": "Appeal Hearing Date",
+            "next_deadline": "Next Deadline",
+            "case_type": "Case Type",
+            "case_category": "Case Category",
+            "jurisdiction": "Jurisdiction",
+            "venue": "Venue",
+            "status_detail": "Detailed Status",
+            "priority": "Priority",
+            "assigned_team": "Assigned Team",
+            "lead_lawyer": "Lead Lawyer",
+            "paralegal": "Assigned Paralegal",
+            "contact_email": "Contact Email",
+            "contact_phone": "Contact Phone",
+            "address": "Client Address",
+            "dob": "Date of Birth",
+            "ssn": "Social Security Number",
+            "citizenship": "Citizenship",
+            "occupation": "Occupation",
+            "employer": "Employer",
+            "marital_status": "Marital Status",
+            "dependents": "Dependents",
+            "opposing_contact": "Opposing Contact Info",
+            "evidence_list": "Evidence List",
+            "exhibits": "Exhibits",
+            "witness_list": "Witness List",
+            "expert_witnesses": "Expert Witnesses",
+            "affidavits": "Affidavits",
+            "subpoenas": "Subpoenas",
+            "discovery_status": "Discovery Status",
+            "discovery_deadline": "Discovery Deadline",
+            "documents_filed": "Documents Filed",
+            "motions_filed": "Motions Filed",
+            "orders_issued": "Orders Issued",
+            "court_fees": "Court Fees",
+            "legal_fees": "Legal Fees",
+            "billing_status": "Billing Status",
+            "retainer_amount": "Retainer Amount",
+            "retainer_balance": "Retainer Balance",
+            "hourly_rate": "Hourly Rate",
+            "total_hours": "Total Hours Worked",
+            "settlement_offers": "Settlement Offers",
+            "settlement_status": "Settlement Status",
+            "mediation_date": "Mediation Date",
+            "arbitration_date": "Arbitration Date",
+            "appeal_status": "Appeal Status",
+            "appeal_filing_date": "Appeal Filing Date",
+            "appeal_outcome": "Appeal Outcome",
+            "sentence": "Sentence / Judgment",
+            "probation_terms": "Probation Terms",
+            "bail_amount": "Bail Amount",
+            "bond_status": "Bond Status",
+            "incarceration_status": "Incarceration Status",
+            "parole_eligibility": "Parole Eligibility",
+            "release_date": "Release Date",
+            "compliance_requirements": "Compliance Requirements",
+            "supervision_officer": "Supervision Officer",
+            "risk_level": "Risk Level",
+            "insurance_claims": "Insurance Claims",
+            "damages_claimed": "Damages Claimed",
+            "damages_awarded": "Damages Awarded",
+            "restitution_amount": "Restitution Amount",
+            "liens": "Liens",
+            "assets_seized": "Assets Seized",
+            "case_notes": "Case Notes",
+            "internal_memos": "Internal Memos",
+            "strategy_notes": "Strategy Notes",
+            "related_cases": "Related Cases",
+            "precedent_references": "Precedent References",
+            "citations": "Legal Citations",
+            "conflict_check": "Conflict Check Status",
+            "nda_signed": "NDA Signed",
+            "engagement_letter": "Engagement Letter Signed",
+            "client_intake_date": "Client Intake Date",
+            "client_preferences": "Client Preferences",
+            "language": "Preferred Language",
+            "communication_method": "Preferred Communication Method",
+            "closing_date": "Closing Date",
+            "archived": "Archived",
+            "reviewed_by": "Reviewed By",
+            "last_review_date": "Last Review Date",
+            "follow_up_date": "Follow-up Date",
+            "next_action": "Next Action"
+        }
+    },
+    "subscribePage": {
+        "hero": {
+            "title": "Manage your E-Lawyer Subscription",
+            "subtitle": "Upgrade, downgrade, or undo changes anytime."
+        },
+        "banner": {
+            "downgrade": "You've scheduled a downgrade to {{plan}}. It will take effect {{when}}.",
+            "cancelToFree": "You've scheduled a downgrade to Free. It will take effect {{when}}.",
+            "when": {
+                "endOfCycle": "at the end of your billing cycle",
+                "date": "on {{date}}"
+            },
+            "undo": "Undo"
+        },
+        "plans": {
+            "free": {
+                "name": "Free",
+                "subtitle": "New Account",
+                "tokens": "10,000 tokens / mo",
+                "features": [
+                    "Chat with AI Law Assistant",
+                    "Access to “I Was Stopped by the Police” panic button"
+                ]
+            },
+            "plus": {
+                "name": "Plus",
+                "subtitle": "Client Account",
+                "tokens": "100,000 tokens / mo",
+                "badge": "Best value",
+                "features": [
+                    "Secure document generation",
+                    "Encrypted chat with your lawyer",
+                    "Chat with AI Law Assistant",
+                    "Access to “I Was Stopped by the Police” panic button"
+                ]
+            },
+            "premium": {
+                "name": "Premium",
+                "subtitle": "Client/Lawyer Account",
+                "tokens": "500,000 tokens / mo",
+                "badge": "Recommended",
+                "features": [
+                    "Secure document generation",
+                    "Encrypted chat with clients",
+                    "Case management with assigned clients",
+                    "Chat with AI Law Assistant",
+                    "Access to “I Was Stopped by the Police” panic button"
+                ]
+            }
+        },
+        "cta": {
+            "upgrade": "Upgrade to {{plan}}",
+            "downgrade": "Downgrade to {{plan}}",
+            "current": "You're on {{plan}}",
+            "currentPlan": "You're on this plan",
+            "pending": "Downgrade scheduled",
+            "loading": "Processing..."
+        },
+        "success": {
+            "downgradeScheduled": "Downgrade scheduled. You’ll keep your current benefits until the billing cycle ends.",
+            "subscriptionUpdated": "Subscription updated.",
+            "undo": "Downgrade cancelled. You’ll stay on your current plan."
+        },
+        "errors": {
+            "pendingDowngrade": "You already have a pending downgrade. Undo it before making more changes.",
+            "samePlan": "You’re already on this plan.",
+            "missingClientSecret": "No client secret returned for the Premium upgrade.",
+            "missingPriceId": "Missing Stripe price ID for the selected plan.",
+            "generic": "Something went wrong.",
+            "unexpected": "An unexpected error occurred."
+        },
+        "payment": {
+            "premiumUpgrade": {
+                "planName": "Premium upgrade",
+                "amount": "$10.99 upgrade fee",
+                "helper": "We’ll upgrade you to Premium automatically after the payment succeeds.",
+                "success": "Upgrade paid. We’ll switch you to Premium as soon as Stripe confirms the charge."
+            },
+            "default": {
+                "planName": "{{plan}} plan",
+                "helper": "Complete payment to finish updating your subscription.",
+                "success": "Payment confirmed. Your subscription will update shortly."
+            }
+        }
+    },
+    "dashboard": {
+        "loading": "Loading your dashboard…",
+        "hero": {
+            "welcome": "Welcome, {{name}}",
+            "anonymous": "there",
+            "roles": {
+                "lawyer": "Lawyer",
+                "client": "Client"
+            },
+            "meta": "{{tier}} • {{role}}",
+            "metaWithCountry": "{{tier}} • {{role}} • {{country}}"
+        },
+        "subscription": {
+            "tiers": {
+                "free": "Free",
+                "plus": "Plus",
+                "premium": "Premium"
+            },
+            "downgrade": {
+                "title": "Downgrade scheduled",
+                "messageWithDate": "You’ll move to {{tier}} on {{date}}.",
+                "messageNoDate": "You’ll move to {{tier}} at period end.",
+                "help": "Use “Manage subscription” if you want to undo or change your plan.",
+                "cta": "Review plan"
+            }
+        },
+        "usage": {
+            "tokenLabel": "Legal bandwidth",
+            "actionsTitle": "Protected workflows this month",
+            "docUnlimited": "Unlimited document runs",
+            "docLabel": "{{remaining}} / {{limit}} document runs left",
+            "panicLocked": "Emergency run used",
+            "panicAvailable": "Emergency run ready",
+            "panicUnlimited": "Unlimited emergency playbooks",
+            "warningCta": "Upgrade protection",
+            "warningCopy": "You’re almost out of guidance bandwidth. Upgrade now to keep panic, chat, and documents online."
+        },
+        "panic": {
+            "title": "Emergency legal response",
+            "subtitle": "Instant police-stop procedures"
+        },
+        "quickActions": {
+            "chats": "Chats",
+            "aiChat": "AI Legal Chat",
+            "createDoc": "Create Doc",
+            "cases": "Cases",
+            "stopProcedures": "Stop Procedures",
+            "notes": "Notes",
+            "connections": "Connections",
+            "locked": {
+                "cases": "Premium unlocks case creation and management.",
+                "procedures": "Saved stop procedures are available on Plus."
+            }
+        },
+        "info": {
+            "chats": {
+                "title": "Unread chats",
+                "loading": "Checking chats…",
+                "unread_zero": "No unread chats.",
+                "unread_one": "You have {{count}} unread chat.",
+                "unread_other": "You have {{count}} unread chats."
+            },
+            "lastCase": {
+                "title": "Last case",
+                "loading": "Loading your last case…",
+                "summary": "{{title}} ({{status}})",
+                "empty": "No cases found."
+            }
+        },
+        "cases": {
+            "untitled": "Untitled",
+            "statusUnknown": "Unknown status"
+        },
+        "common": {
+            "open": "Open"
+        },
+        "menu": {
+            "account": "Account",
+            "documents": "Documents",
+            "cases": "My Cases",
+            "connections": "Connections"
+        },
+        "upgrade": {
+            "title": "Free is a trial—protect your workflow",
+            "description": "Upgrade for unlimited panic runs, document generation, and full case management.",
+            "seePricing": "See Pricing",
+            "cta": "Upgrade protection"
+        }
+    },
+    "casesPage": {
+        "title": "Cases",
+        "actions": {
+            "newCase": "New case",
+            "closeCase": "Close case",
+            "reopenCase": "Reopen case",
+            "deleteCase": "Delete"
+        },
+        "filters": {
+            "all": "All",
+            "open": "Open",
+            "closed": "Closed",
+            "search": "Search…"
+        },
+        "filtersMenu": {
+            "button": "Filters",
+            "status": "Status",
+            "updated": "Updated within",
+            "time": {
+                "any": "Any time",
+                "7d": "Last 7 days",
+                "30d": "Last 30 days"
+            },
+            "clear": "Clear filters"
+        },
+        "list": {
+            "empty": "No cases found."
+        },
+        "status": {
+            "open": "Open",
+            "closed": "Closed"
+        },
+        "details": {
+            "noDescription": "No description",
+            "properties": {
+                "title": "Case properties",
+                "empty": "No properties yet.",
+                "edit": "Edit property",
+                "delete": "Delete property",
+                "nameLabel": "Name",
+                "valueLabel": "Value",
+                "add": "Add property"
+            },
+            "notes": {
+                "title": "Notes",
+                "empty": "No notes yet.",
+                "placeholder": "Add note…",
+                "addAction": "Add",
+                "edit": "Edit",
+                "delete": "Delete",
+                "roles": {
+                    "lawyer": "Lawyer",
+                    "client": "Client",
+                    "unknown": "Unknown"
+                }
+            }
+        },
+        "pagination": {
+            "label": "Page {{page}} / {{total}}",
+            "prevProperties": "Previous properties page",
+            "nextProperties": "Next properties page",
+            "prevNotes": "Previous notes page",
+            "nextNotes": "Next notes page"
+        },
+        "dialog": {
+            "deleteNote": {
+                "title": "Delete note?",
+                "description": "This action can’t be undone. Do you really want to delete this note?"
+            },
+            "deleteProperty": {
+                "title": "Delete property?",
+                "description": "This action can’t be undone. Do you really want to delete this property?"
+            }
+        },
+        "common": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "delete": "Delete"
+        },
+        "errors": {
+            "loadCases": "Failed to load cases.",
+            "loadNotes": "Failed to load notes.",
+            "loadProperties": "Failed to load properties.",
+            "addNote": "Failed to add note.",
+            "updateNote": "Failed to update note.",
+            "deleteNote": "Failed to delete note.",
+            "addProperty": "Failed to add property.",
+            "updateProperty": "Failed to update property.",
+            "deleteProperty": "Failed to delete property.",
+            "updateStatus": "Failed to update case status.",
+            "deleteCase": "Failed to delete case."
+        },
+        "success": {
+            "noteAdded": "Note added.",
+            "noteUpdated": "Note updated.",
+            "noteDeleted": "Note deleted.",
+            "propertyAdded": "Property added.",
+            "propertyUpdated": "Property updated.",
+            "propertyDeleted": "Property deleted.",
+            "caseReopened": "Case reopened.",
+            "caseClosed": "Case closed.",
+            "caseDeleted": "Case deleted."
+        },
+        "aria": {
+            "closeDetails": "Close case detail",
+            "slideBack": "Back",
+            "slideNext": "Next"
+        },
+        "plan": {
+            "lockedTitle": "Cases live on Premium",
+            "lockedDescription": "Case lists, notes, and workflows unlock with Premium. Upgrade to reopen your legal workspace.",
+            "cta": "Upgrade to Premium",
+            "dialogTitle": "Upgrade for case management",
+            "dialogDescription": "Premium keeps case creation, assignments, and linked notes online without limits."
+        }
+    }
+}
