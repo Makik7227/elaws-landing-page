@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Alert,
     Avatar,
@@ -55,6 +55,7 @@ import {
 import type { FriendRequest, UserProfile } from "../api/connections";
 import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
+import PageHero from "../components/PageHero";
 
 type RequestWithEmail = FriendRequest & { id: string; email: string };
 type SnackState = { open: boolean; message: string; severity: "success" | "error" | "info" };
@@ -181,12 +182,6 @@ const ConnectionsPage: React.FC = () => {
             unsubFriends();
         };
     }, [uid]);
-
-    const heroGradient = useMemo(
-        () =>
-            `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 55%, ${theme.palette.primary.main} 100%)`,
-        [theme]
-    );
 
     const isHidden = (otherUid: string) => {
         if (!uid) return false;
@@ -321,21 +316,15 @@ const ConnectionsPage: React.FC = () => {
 
     return (
         <>
-            <Box sx={{ height: { xs: 64, md: 80 }, background: heroGradient }} />
-            <Box sx={{ background: heroGradient, color: theme.palette.getContrastText(theme.palette.primary.main), py: 6 }}>
-                <Container maxWidth="md">
-                    <Typography variant="h3" fontWeight={800} gutterBottom>
-                        {t("connections.title")}
-                    </Typography>
-                    <Typography variant="h6" sx={{ maxWidth: 640, opacity: 0.85 }}>
-                        {t("connections.subtitle")}
-                    </Typography>
-                </Container>
-            </Box>
+            <PageHero
+                title={t("connections.title")}
+                subtitle={t("connections.subtitle")}
+                icon={<GroupsRoundedIcon />}
+                actions={<DashboardBackButton />}
+                maxWidth="md"
+                variant="soft"
+            />
             <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
-                <Box sx={{ mb: 3 }}>
-                    <DashboardBackButton />
-                </Box>
                 <Stack spacing={4}>
                     <Card elevation={3} sx={{ borderRadius: 4 }}>
                         <CardHeader

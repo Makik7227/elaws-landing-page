@@ -99,6 +99,7 @@ const TopBar = () => {
                     trigger
                         ? alpha(theme.palette.background.paper, 0.9)
                         : alpha(theme.palette.background.paper, 0.6),
+                borderBottom: (theme) => `1px solid ${alpha(theme.palette.divider, 0.6)}`,
                 transition: "all 0.3s ease",
                 borderRadius: 0,
                 top: 0,

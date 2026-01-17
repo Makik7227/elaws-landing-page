@@ -709,6 +709,9 @@
         "confirm": {
             "deleteChat": "Delete chat permanently?",
             "clearChat": "Clear all messages in this chat?"
+        },
+        "actions": {
+            "newChat": "New chat"
         }
     },
     "createCasePage": {

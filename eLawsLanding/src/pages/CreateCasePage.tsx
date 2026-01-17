@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
     Alert,
-    Box,
     Button,
     Card,
     CardContent,
@@ -28,6 +27,7 @@ import { auth, db } from "../../firebase";
 import { useTranslation } from "react-i18next";
 import UpgradePromptDialog from "../components/UpgradePromptDialog";
 import { canCreateCase, type Tier } from "../utils/monetization";
+import PageHero from "../components/PageHero";
 
 type ClientProfile = {
     uid: string;
@@ -198,22 +198,19 @@ const CreateCasePage = () => {
     }
 
     return (
-        <Container maxWidth="md" sx={{ py: 5 }}>
-            <Stack spacing={3}>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "center" }}>
-                    <Box>
-                        <Typography variant="overline" color="text.secondary">
-                            {t("createCasePage.breadcrumbs")}
-                        </Typography>
-                        <Typography variant="h4" fontWeight={800}>
-                            {t("createCasePage.title")}
-                        </Typography>
-                    </Box>
+        <>
+            <PageHero
+                title={t("createCasePage.title")}
+                overline={t("createCasePage.breadcrumbs")}
+                actions={
                     <Button variant="text" onClick={() => navigate("/dashboard/cases")}>
                         {t("createCasePage.actions.back")}
                     </Button>
-                </Stack>
-
+                }
+                variant="soft"
+                maxWidth="md"
+            />
+            <Container maxWidth="md" sx={{ py: 5 }}>
                 <Card sx={{ borderRadius: 3 }}>
                     <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                         <Stack component="form" spacing={3} onSubmit={handleSubmit}>
@@ -312,18 +309,18 @@ const CreateCasePage = () => {
                         </Stack>
                     </CardContent>
                 </Card>
-            </Stack>
 
-            {upgradePromptOpen && (
-                <UpgradePromptDialog
-                    open
-                    onClose={() => setUpgradePromptOpen(false)}
-                    title={t("createCasePage.plan.dialogTitle")}
-                    description={t("createCasePage.plan.dialogDescription")}
-                    requiredTier="premium"
-                />
-            )}
-        </Container>
+                {upgradePromptOpen && (
+                    <UpgradePromptDialog
+                        open
+                        onClose={() => setUpgradePromptOpen(false)}
+                        title={t("createCasePage.plan.dialogTitle")}
+                        description={t("createCasePage.plan.dialogDescription")}
+                        requiredTier="premium"
+                    />
+                )}
+            </Container>
+        </>
     );
 };
 

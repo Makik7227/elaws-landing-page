@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Alert,
     Autocomplete,
@@ -30,6 +30,7 @@ import {COUNTRIES, type CountryOption} from "../utils/CountryOption.ts";
 import SubscriptionButton from "../components/SubscriptionButton.tsx";
 import {useTranslation} from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton.tsx";
+import PageHero from "../components/PageHero";
 
 type Role = "client" | "lawyer";
 
@@ -69,12 +70,6 @@ const ManageAccount: React.FC = () => {
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<string>("");
     const [snack, setSnack] = useState<{ open: boolean; msg: string }>({open: false, msg: ""});
-
-    const gradient = useMemo(
-        () =>
-            `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`,
-        [theme]
-    );
 
     // load user + profile
     useEffect(() => {
@@ -191,39 +186,18 @@ const ManageAccount: React.FC = () => {
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
+            <PageHero
+                title={t("manageAccount.hero.title")}
+                subtitle={t("manageAccount.hero.meta", {email, tier: subscriptionTier.toUpperCase()})}
+                icon={
+                    <Avatar sx={{bgcolor: theme.palette.secondary.main, width: 36, height: 36}}>
+                        {firstName?.[0]?.toUpperCase() ?? "U"}
+                    </Avatar>
+                }
+                actions={<SubscriptionButton subscriptionTier={subscriptionTier}/>}
+                variant="soft"
+                maxWidth="md"
             />
-            {/* HERO */}
-            <Box
-                sx={{
-                    mt: { xs: -8, md: -10 },
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: {xs: 6, md: 8},
-                }}
-            >
-                <Container maxWidth="md">
-                    <Stack direction="row" spacing={2} alignItems="center">
-                        <Avatar sx={{bgcolor: theme.palette.secondary.main, width: 56, height: 56}}>
-                            {firstName?.[0]?.toUpperCase() ?? "U"}
-                        </Avatar>
-                        <Box>
-                            <Typography variant="h4" fontWeight={900} lineHeight={1.2}>
-                                {t("manageAccount.hero.title")}
-                            </Typography>
-                            <Typography sx={{opacity: 0.9}}>
-                                {t("manageAccount.hero.meta", {email, tier: subscriptionTier.toUpperCase()})}
-                            </Typography>
-                        </Box>
-                        <Box sx={{flex: 1}}/>
-                       <SubscriptionButton subscriptionTier={subscriptionTier}/>
-                    </Stack>
-                </Container>
-            </Box>
 
             <Container maxWidth="md" sx={{py: {xs: 6, md: 8}}}>
                 <Box sx={{mb: 2}}>

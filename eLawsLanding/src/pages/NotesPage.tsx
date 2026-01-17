@@ -60,6 +60,7 @@ import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
 import UpgradePromptDialog from "../components/UpgradePromptDialog";
 import { getNoteLimit, shouldLockNotes, type Tier } from "../utils/monetization";
+import PageHero from "../components/PageHero";
 
 type Note = {
     id: string;
@@ -339,41 +340,25 @@ const NotesPage: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-            <Box sx={{ mb: 2 }}>
-                <DashboardBackButton />
-            </Box>
-            <Card
-                sx={{
-                    mb: 4,
-                    borderRadius: 4,
-                    background: alpha(theme.palette.primary.main, 0.08),
-                }}
+        <>
+            <PageHero
+                title={t("notesPage.hero.title")}
+                subtitle={t("notesPage.hero.subtitle")}
+                icon={<NoteOutlinedIcon />}
+                actions={<DashboardBackButton />}
+                variant="soft"
+                maxWidth="lg"
             >
-                <CardContent>
-                    <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" spacing={2}>
-                        <Stack direction="row" alignItems="center" spacing={1.5}>
-                            <NoteOutlinedIcon fontSize="large" sx={{ color: theme.palette.primary.main }} />
-                            <Box>
-                                <Typography variant="h5" fontWeight={900}>
-                                    {t("notesPage.hero.title")}
-                                </Typography>
-                                <Typography color="text.secondary">
-                                    {t("notesPage.hero.subtitle")}
-                                </Typography>
-                            </Box>
-                        </Stack>
-                        <Stack direction="row" spacing={1}>
-                            <Chip label={t("notesPage.hero.count", { count: visibleNotes.length })} color="primary" variant="outlined" />
-                            <Chip
-                                label={noteLimitLabel}
-                                color={notesLocked ? "warning" : "default"}
-                                variant={notesLocked ? "filled" : "outlined"}
-                            />
-                        </Stack>
-                    </Stack>
-                </CardContent>
-            </Card>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                    <Chip label={t("notesPage.hero.count", { count: visibleNotes.length })} color="primary" variant="outlined" />
+                    <Chip
+                        label={noteLimitLabel}
+                        color={notesLocked ? "warning" : "default"}
+                        variant={notesLocked ? "filled" : "outlined"}
+                    />
+                </Stack>
+            </PageHero>
+            <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
 
             {notesLocked && (
                 <Alert
@@ -715,6 +700,7 @@ const NotesPage: React.FC = () => {
                 </Alert>
             </Snackbar>
         </Container>
+        </>
     );
 };
 

@@ -67,6 +67,7 @@ import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
 import UpgradePromptDialog from "../components/UpgradePromptDialog";
 import type { Tier } from "../utils/monetization";
+import PageHero from "../components/PageHero";
 
 const popularProperties = caseProperties as { key: string; label: string }[];
 
@@ -556,90 +557,98 @@ const CasesPage: React.FC = () => {
         }
     };
 
+    const hero = (
+        <PageHero
+            title={t("casesPage.title")}
+            subtitle={t("casesPage.subtitle", { defaultValue: "Track active matters, notes, and case properties." })}
+            actions={<DashboardBackButton />}
+            variant="soft"
+            maxWidth="lg"
+        />
+    );
+
     if (planLocked) {
         return (
-            <Container maxWidth="md" sx={{ py: 6 }}>
-                <Box sx={{ mb: 2 }}>
-                    <DashboardBackButton />
-                </Box>
-                <Card sx={{ borderRadius: 4, textAlign: "center", p: { xs: 3, md: 4 } }}>
-                    <CardContent>
-                        <Stack spacing={2} alignItems="center">
-                            <LockOutlinedIcon color="warning" fontSize="large" />
-                            <Typography variant="h5" fontWeight={800}>
-                                {t("casesPage.plan.lockedTitle")}
-                            </Typography>
-                            <Typography color="text.secondary">
-                                {t("casesPage.plan.lockedDescription")}
-                            </Typography>
-                            <Button variant="contained" onClick={() => setUpgradePromptOpen(true)}>
-                                {t("casesPage.plan.cta")}
-                            </Button>
-                        </Stack>
-                    </CardContent>
-                </Card>
-                {upgradePromptOpen && (
-                    <UpgradePromptDialog
-                        open
-                        onClose={() => setUpgradePromptOpen(false)}
-                        title={t("casesPage.plan.dialogTitle")}
-                        description={t("casesPage.plan.dialogDescription")}
-                        requiredTier="premium"
-                    />
-                )}
-            </Container>
+            <>
+                {hero}
+                <Container maxWidth="md" sx={{ py: 6 }}>
+                    <Card sx={{ borderRadius: 4, textAlign: "center", p: { xs: 3, md: 4 } }}>
+                        <CardContent>
+                            <Stack spacing={2} alignItems="center">
+                                <LockOutlinedIcon color="warning" fontSize="large" />
+                                <Typography variant="h5" fontWeight={800}>
+                                    {t("casesPage.plan.lockedTitle")}
+                                </Typography>
+                                <Typography color="text.secondary">
+                                    {t("casesPage.plan.lockedDescription")}
+                                </Typography>
+                                <Button variant="contained" onClick={() => setUpgradePromptOpen(true)}>
+                                    {t("casesPage.plan.cta")}
+                                </Button>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                    {upgradePromptOpen && (
+                        <UpgradePromptDialog
+                            open
+                            onClose={() => setUpgradePromptOpen(false)}
+                            title={t("casesPage.plan.dialogTitle")}
+                            description={t("casesPage.plan.dialogDescription")}
+                            requiredTier="premium"
+                        />
+                    )}
+                </Container>
+            </>
         );
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 5, display: "flex", flexDirection: "column", minHeight: "50dvh" }}>
-            <Box sx={{ mb: 2 }}>
-                <DashboardBackButton />
-            </Box>
-            <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={{ xs: 1.5, sm: 2 }}
-                alignItems={{ xs: "flex-start", sm: "center" }}
-                justifyContent="space-between"
-                mb={3}
-            >
-                <Typography variant="h4" fontWeight={800}>{t("casesPage.title")}</Typography>
-                {isLawyer && (
-                    <Button
-                        variant="contained"
-                        startIcon={<Add />}
-                        onClick={() => navigate("/cases/create")}
-                        sx={{ width: { xs: "100%", sm: "auto" } }}
-                    >
-                        {t("casesPage.actions.newCase")}
-                    </Button>
-                )}
-            </Stack>
-
-            <Stack direction={{ xs: "column", md: "row" }} spacing={2} mb={1.5}>
-                <TextField
-                    size="small"
-                    placeholder={t("casesPage.filters.search")}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Search fontSize="small" />
-                            </InputAdornment>
-                        ),
-                    }}
-                    sx={{ width: { xs: "100%", md: 320 } }}
-                />
-                <Button
-                    startIcon={<TuneRoundedIcon />}
-                    variant="outlined"
-                    onClick={openCaseFilterMenu}
-                    sx={{ alignSelf: { xs: "stretch", md: "flex-start" } }}
+        <>
+            {hero}
+            <Container maxWidth="lg" sx={{ py: 5, display: "flex", flexDirection: "column", minHeight: "50dvh" }}>
+                <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 1.5, sm: 2 }}
+                    alignItems={{ xs: "flex-start", sm: "center" }}
+                    justifyContent="space-between"
+                    mb={3}
                 >
-                    {t("casesPage.filtersMenu.button")}
-                </Button>
-            </Stack>
+                    {isLawyer && (
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => navigate("/cases/create")}
+                            sx={{ width: { xs: "100%", sm: "auto" } }}
+                        >
+                            {t("casesPage.actions.newCase")}
+                        </Button>
+                    )}
+                </Stack>
+
+                <Stack direction={{ xs: "column", md: "row" }} spacing={2} mb={1.5}>
+                    <TextField
+                        size="small"
+                        placeholder={t("casesPage.filters.search")}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Search fontSize="small" />
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{ width: { xs: "100%", md: 320 } }}
+                    />
+                    <Button
+                        startIcon={<TuneRoundedIcon />}
+                        variant="outlined"
+                        onClick={openCaseFilterMenu}
+                        sx={{ alignSelf: { xs: "stretch", md: "flex-start" } }}
+                    >
+                        {t("casesPage.filtersMenu.button")}
+                    </Button>
+                </Stack>
 
             {caseFilterChips.length > 0 && (
                 <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap mb={3}>
@@ -1161,6 +1170,7 @@ const CasesPage: React.FC = () => {
                 <Alert severity="success" onClose={() => setSuccessMsg(null)} variant="filled">{successMsg}</Alert>
             </Snackbar>
         </Container>
+        </>
     );
 };
 

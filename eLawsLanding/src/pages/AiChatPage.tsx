@@ -33,6 +33,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
 import { shouldWarnAboutTokens, type Tier } from "../utils/monetization";
+import PageHero from "../components/PageHero";
 
 interface Message {
     id: string;
@@ -673,16 +674,21 @@ Instructions:
         </>
     );
 
-    const backButton = (
-        <Container maxWidth="lg" sx={{ pt: { xs: 3, md: 4 }, pb: 0 }}>
-            <DashboardBackButton />
-        </Container>
+    const hero = (
+        <PageHero
+            title={t("nav.aiChat")}
+            subtitle={t("aiChat.context.description")}
+            icon={<BoltRoundedIcon />}
+            actions={<DashboardBackButton />}
+            variant="soft"
+            maxWidth="lg"
+        />
     );
 
     if (!authChecked || profileLoading || !persistHydrated) {
         return (
             <>
-                {backButton}
+                {hero}
                 <Container maxWidth="sm" sx={{ py: 8, textAlign: "center" }}>
                     <CircularProgress />
                     <Typography mt={3} color="text.secondary">
@@ -696,7 +702,7 @@ Instructions:
     if (!selectedTopic) {
         return (
             <>
-                {backButton}
+                {hero}
                 <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
                     {renderUsageBanner()}
                     <Grid container spacing={{ xs: 4, md: 6 }} alignItems="stretch">
@@ -769,7 +775,7 @@ Instructions:
 
     return (
         <>
-            {backButton}
+            {hero}
             {layout}
             {overlayElements}
         </>

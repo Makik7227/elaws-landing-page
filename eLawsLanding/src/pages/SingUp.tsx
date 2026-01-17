@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
     Alert,
     Autocomplete,
@@ -27,6 +27,7 @@ import { auth, db } from "../../firebase";
 import { COUNTRIES, type CountryOption } from "../utils/CountryOption.ts";
 import { useTranslation } from "react-i18next";
 import LegalDocumentsDialog, { type LegalDocumentType } from "../components/LegalDocumentsDialog";
+import PageHero from "../components/PageHero";
 
 const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -74,12 +75,6 @@ const SignUp = () =>  {
     const emailRef    = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
     const passRef     = useRef<HTMLInputElement>(null);
-
-    const gradient = useMemo(
-        () =>
-            `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`,
-        [theme]
-    );
 
     const onChangeUsername = (val: string) => setUsername(sanitizeUsername(val));
 
@@ -190,55 +185,27 @@ const SignUp = () =>  {
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
-            />
-            <Box
-                sx={{
-                    mt: { xs: -8, md: -10 },
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: { xs: 7, md: 10 },
-                    textAlign: "center",
-                }}
+            <PageHero
+                title={t("signupPage.hero.title")}
+                subtitle={t("signupPage.hero.subtitle")}
+                badge={t("signupPage.hero.badge")}
+                align="center"
             >
-                <Container maxWidth="md">
-                    <Stack spacing={2} alignItems="center">
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="center">
+                    {SIGNUP_BENEFITS.map((key) => (
                         <Chip
-                            label={t("signupPage.hero.badge")}
+                            key={key}
+                            label={t(`signupPage.hero.benefits.${key}`)}
                             variant="outlined"
                             sx={{
                                 color: "inherit",
-                                borderColor: alpha(theme.palette.common.white, 0.4),
-                                bgcolor: alpha(theme.palette.common.white, 0.08),
+                                borderColor: alpha(theme.palette.common.white, 0.35),
+                                bgcolor: alpha(theme.palette.common.white, 0.05),
                             }}
                         />
-                        <Typography variant="h3" fontWeight={900}>
-                            {t("signupPage.hero.title")}
-                        </Typography>
-                        <Typography sx={{ opacity: 0.9, maxWidth: 600 }}>
-                            {t("signupPage.hero.subtitle")}
-                        </Typography>
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                            {SIGNUP_BENEFITS.map((key) => (
-                                <Chip
-                                    key={key}
-                                    label={t(`signupPage.hero.benefits.${key}`)}
-                                    variant="outlined"
-                                    sx={{
-                                        color: "inherit",
-                                        borderColor: alpha(theme.palette.common.white, 0.35),
-                                        bgcolor: alpha(theme.palette.common.white, 0.05),
-                                    }}
-                                />
-                            ))}
-                        </Stack>
-                    </Stack>
-                </Container>
-            </Box>
+                    ))}
+                </Stack>
+            </PageHero>
 
             <Container maxWidth="lg" sx={{ py: { xs: 6, md: 9 } }}>
                 <Grid container spacing={{ xs: 4, md: 6 }} alignItems="stretch">

@@ -415,6 +415,7 @@ const GenerateDocumentPage: React.FC = () => {
                 subtitle={t("generateDoc.hero.subtitle")}
                 overline={t("generateDoc.hero.overline", { defaultValue: "Document automation" })}
                 icon={<LibraryBooksIcon />}
+                variant="soft"
                 actions={
                     <>
                         <Button

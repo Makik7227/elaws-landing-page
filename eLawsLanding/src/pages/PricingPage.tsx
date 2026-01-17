@@ -9,7 +9,6 @@ import {
     Divider,
     Stack,
     Typography,
-    useTheme,
 } from "@mui/material";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
@@ -23,6 +22,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase.ts";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 type PlanId = "free" | "plus" | "premium";
 
@@ -172,16 +172,9 @@ const PlanCard = ({
 };
 
 const PricingPage: React.FC = () => {
-    const theme = useTheme();
     const { t } = useTranslation();
     const [currentTier, setCurrentTier] = useState<PlanId | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-
-    const gradient = useMemo(
-        () =>
-            `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`,
-        [theme]
-    );
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (user) => {
@@ -218,43 +211,28 @@ const PricingPage: React.FC = () => {
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
+            <PageHero
+                title={t("pricingPage.hero.title")}
+                subtitle={t("pricingPage.hero.subtitle")}
+                badge={t("pricingPage.hero.badge")}
+                icon={<BoltRoundedIcon />}
+                align="center"
+                actions={
+                    <>
+                        <Button
+                            component={RouterLink}
+                            to="/signup"
+                            variant="contained"
+                            sx={{ borderRadius: 3, fontWeight: 800 }}
+                        >
+                            {t("pricingPage.hero.primaryCta")}
+                        </Button>
+                        <Button component={RouterLink} to="/features" variant="outlined" sx={{ borderRadius: 3 }}>
+                            {t("pricingPage.hero.secondaryCta")}
+                        </Button>
+                    </>
+                }
             />
-            {/* HERO */}
-            <Box
-                sx={{
-                    mt: { xs: -8, md: -10 },
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: { xs: 8, md: 10 },
-                    textAlign: "center",
-                }}
-            >
-                <Container maxWidth="md">
-                    <Chip
-                        label={t("pricingPage.hero.badge")}
-                        variant="outlined"
-                        sx={{
-                            color: "inherit",
-                            borderColor: "currentColor",
-                            bgcolor: "transparent",
-                            fontWeight: 700,
-                            mb: 2,
-                        }}
-                    />
-                    <Typography variant="h3" fontWeight={900} sx={{ letterSpacing: -0.5 }}>
-                        {t("pricingPage.hero.title")}
-                    </Typography>
-                    <Typography sx={{ opacity: 0.95, mt: 1.25 }}>
-                        {t("pricingPage.hero.subtitle")}
-                    </Typography>
-
-                </Container>
-            </Box>
 
             {/* PLANS */}
             <Box sx={{ py: { xs: 6, md: 8 } }}>
@@ -290,7 +268,7 @@ const PricingPage: React.FC = () => {
             </Box>
 
             {/* WHAT'S INCLUDED */}
-            <Box sx={{ py: { xs: 6, md: 8 }, bgcolor: theme.palette.background.default }}>
+            <Box sx={{ py: { xs: 6, md: 8 }, bgcolor: (theme) => theme.palette.background.default }}>
                 <Container>
                     <Stack spacing={1} mb={3} textAlign="center">
                         <Typography variant="overline" color="text.secondary">

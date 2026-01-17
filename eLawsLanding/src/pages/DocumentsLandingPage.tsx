@@ -52,6 +52,7 @@ const DocumentsLandingPage: React.FC = () => {
                 badge={t("documentsLanding.hero.badge", { defaultValue: "Workspace" })}
                 overline={t("documentsLanding.hero.overline", { defaultValue: "Documents" })}
                 icon={<DescriptionOutlinedIcon />}
+                variant="soft"
                 actions={
                     <>
                         <Button

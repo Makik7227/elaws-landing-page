@@ -673,6 +673,9 @@
         "confirm": {
             "deleteChat": "Usunąć rozmowę na stałe?",
             "clearChat": "Wyczyścić wszystkie wiadomości w tej rozmowie?"
+        },
+        "actions": {
+            "newChat": "Nowy czat"
         }
     },
     "createCasePage": {

@@ -3,59 +3,29 @@ import {
     Box,
     Card,
     CardContent,
-    Chip,
     Container,
     Stack,
     Typography,
-    useTheme,
 } from "@mui/material";
+import MarkunreadMailboxRoundedIcon from "@mui/icons-material/MarkunreadMailboxRounded";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 const CONTACT_EMAIL = "maks.dylag@mentorsoftware.pl";
 const CONTACT_NAME = "Maksymilian Dyląg";
 
 const ContactPage: React.FC = () => {
-    const theme = useTheme();
     const { t } = useTranslation();
-    const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
+            <PageHero
+                title={t("contactPage.hero.title")}
+                subtitle={t("contactPage.hero.subtitle")}
+                badge={t("contactPage.hero.badge")}
+                icon={<MarkunreadMailboxRoundedIcon />}
+                align="center"
             />
-            <Box
-                sx={{
-                    mt: { xs: -8, md: -10 },
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: { xs: 8, md: 10 },
-                    textAlign: "center",
-                }}
-            >
-                <Container maxWidth="md">
-                    <Chip
-                        label={t("contactPage.hero.badge")}
-                        variant="outlined"
-                        sx={{
-                            color: "inherit",
-                            borderColor: "currentColor",
-                            bgcolor: "transparent",
-                            fontWeight: 700,
-                            mb: 2,
-                        }}
-                    />
-                    <Typography variant="h3" fontWeight={900} sx={{ letterSpacing: -0.5 }}>
-                        {t("contactPage.hero.title")}
-                    </Typography>
-                    <Typography sx={{ opacity: 0.95, mt: 1.25 }}>
-                        {t("contactPage.hero.subtitle")}
-                    </Typography>
-                </Container>
-            </Box>
 
             <Box sx={{ py: { xs: 6, md: 8 } }}>
                 <Container maxWidth="sm">

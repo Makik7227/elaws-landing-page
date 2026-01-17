@@ -287,7 +287,6 @@ const Dashboard: React.FC = () => {
           });
     const initials = ((firstName?.[0] || "") + (lastName?.[0] || "") || "U").toUpperCase();
     const tokenPct = clamp(tokenLimit ? monthlyTokensUsed / tokenLimit : 0);
-    const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
     const unreadText = loading
         ? t("dashboard.info.chats.loading")
         : t("dashboard.info.chats.unread", { count: unreadCount });
@@ -417,7 +416,6 @@ const Dashboard: React.FC = () => {
     return (
         <>
             <DashboardHero
-                gradient={gradient}
                 initials={initials}
                 heroName={heroWelcome}
                 heroMeta={heroMeta}

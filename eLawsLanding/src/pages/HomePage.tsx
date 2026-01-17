@@ -7,7 +7,6 @@ import {
     CardContent,
     Chip,
     Container,
-    Divider,
     LinearProgress,
     Stack,
     Typography,
@@ -24,7 +23,6 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../../firebase.ts";
@@ -92,7 +90,7 @@ const StepCard: React.FC<{
                 border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
                 boxShadow:
                     theme.palette.mode === "light"
-                        ? "0 18px 40px rgba(18,10,40,0.08)"
+                        ? "0 18px 40px rgba(15,16,20,0.08)"
                         : "0 18px 45px rgba(0,0,0,0.55)",
             }}
         >
@@ -217,27 +215,6 @@ const TIMELINE_STEPS = [
     { titleKey: "home.timeline.steps.share.title", descKey: "home.timeline.steps.share.desc" },
 ];
 
-const TESTIMONIALS = [
-    {
-        quoteKey: "home.testimonials.items.loop.quote",
-        authorKey: "home.testimonials.items.loop.author",
-        roleKey: "home.testimonials.items.loop.role",
-        initials: "SM",
-    },
-    {
-        quoteKey: "home.testimonials.items.atlas.quote",
-        authorKey: "home.testimonials.items.atlas.author",
-        roleKey: "home.testimonials.items.atlas.role",
-        initials: "AL",
-    },
-    {
-        quoteKey: "home.testimonials.items.pioneer.quote",
-        authorKey: "home.testimonials.items.pioneer.author",
-        roleKey: "home.testimonials.items.pioneer.role",
-        initials: "JP",
-    },
-];
-
 const HomePage: React.FC = () => {
     const theme = useTheme();
     const [user, setUser] = useState<User | null>(null);
@@ -254,18 +231,15 @@ const HomePage: React.FC = () => {
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
-            />
             {/* HERO */}
             <Box
                 component="section"
                 sx={{
-                    mt: { xs: -8, md: -10 },
-                    pt: { xs: 10, md: 14 },
+                    mt: { xs: "calc(-1 * var(--topbar-height-mobile))", md: "calc(-1 * var(--topbar-height-desktop))" },
+                    pt: {
+                        xs: "calc(var(--topbar-height-mobile) + 48px)",
+                        md: "calc(var(--topbar-height-desktop) + 72px)",
+                    },
                     pb: { xs: 8, md: 12 },
                     background: gradient,
                     position: "relative",
@@ -399,7 +373,7 @@ const HomePage: React.FC = () => {
                                         p: { xs: 3, md: 4 },
                                         bgcolor: alpha(theme.palette.background.paper, 0.1),
                                         border: `1px solid ${alpha(theme.palette.common.white, 0.15)}`,
-                                        boxShadow: "0 25px 65px rgba(15,10,35,0.35)",
+                                        boxShadow: "0 25px 65px rgba(11,16,18,0.32)",
                                         backdropFilter: "blur(6px)",
                                     }}
                                 >
@@ -447,7 +421,7 @@ const HomePage: React.FC = () => {
                                                     bgcolor: alpha(theme.palette.common.white, 0.2),
                                                     "& .MuiLinearProgress-bar": {
                                                         borderRadius: 999,
-                                                        background: "linear-gradient(90deg, #FCE7B0, #FFD37A, #FFB347)",
+                                                            background: "linear-gradient(90deg, #FCE7B0, #FFD37A, #FFB347)",
                                                     },
                                                 }}
                                             />
@@ -536,11 +510,11 @@ const HomePage: React.FC = () => {
                                         p: 3,
                                         border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
                                         background: theme.palette.mode === "light"
-                                            ? "linear-gradient(180deg, rgba(255,255,255,0.9), rgba(248,248,255,1))"
+                                            ? "linear-gradient(180deg, rgba(255,255,255,0.92), rgba(246,242,236,0.98))"
                                             : alpha(theme.palette.background.paper, 0.8),
                                         boxShadow:
                                             theme.palette.mode === "light"
-                                                ? "0 25px 60px rgba(18,10,40,0.08)"
+                                                ? "0 25px 60px rgba(15,16,20,0.08)"
                                                 : "0 25px 60px rgba(0,0,0,0.55)",
                                     }}
                                 >
@@ -656,7 +630,7 @@ const HomePage: React.FC = () => {
                                     overflow: "hidden",
                                     border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
                                     boxShadow: theme.palette.mode === "light"
-                                        ? "0 30px 80px rgba(18,10,40,0.12)"
+                                        ? "0 30px 80px rgba(15,16,20,0.12)"
                                         : "0 30px 90px rgba(0,0,0,0.65)",
                                 }}
                             >
@@ -764,7 +738,7 @@ const HomePage: React.FC = () => {
                                             borderRadius: 4,
                                             border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
                                             background: theme.palette.mode === "light"
-                                                ? "linear-gradient(120deg, rgba(255,255,255,0.95), rgba(249,249,255,0.86))"
+                                                ? "linear-gradient(120deg, rgba(255,255,255,0.95), rgba(245,240,232,0.88))"
                                                 : alpha(theme.palette.background.paper, 0.8),
                                         }}
                                     >
@@ -819,67 +793,6 @@ const HomePage: React.FC = () => {
                     </Grid>
                 </Container>
             </Box>
-
-            {/* TESTIMONIALS */}
-            <Box component="section" sx={{ py: { xs: 8, md: 10 } }}>
-                <Container>
-                    <Stack spacing={1} mb={5} textAlign="center">
-                        <Typography variant="overline" color="text.secondary">
-                            {t("home.testimonials.overline")}
-                        </Typography>
-                        <Typography variant="h4" fontWeight={800}>
-                            {t("home.testimonials.title")}
-                        </Typography>
-                        <Typography color="text.secondary" maxWidth={640} mx="auto">
-                            {t("home.testimonials.subtitle")}
-                        </Typography>
-                    </Stack>
-                    <Grid container spacing={3}>
-                        {TESTIMONIALS.map((testimonial) => (
-                            <Grid size={{ xs: 12, md: 4 }} key={testimonial.quoteKey}>
-                                <Card
-                                    sx={{
-                                        height: "100%",
-                                        borderRadius: 4,
-                                        p: 3,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: 2,
-                                        border: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
-                                        boxShadow: theme.palette.mode === "light"
-                                            ? "0 20px 50px rgba(18,10,40,0.06)"
-                                            : "0 20px 50px rgba(0,0,0,0.55)",
-                                    }}
-                                >
-                                    <Box sx={{ flex: 1 }}>
-                                        <Typography variant="body1" sx={{ fontStyle: "italic" }}>
-                                            "{t(testimonial.quoteKey)}"
-                                        </Typography>
-                                    </Box>
-                                    <Divider flexItem />
-                                    <Stack direction="row" spacing={2} alignItems="center">
-                                        <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.18), color: theme.palette.primary.main }}>
-                                            {testimonial.initials}
-                                        </Avatar>
-                                        <Box>
-                                            <Typography fontWeight={700}>{t(testimonial.authorKey)}</Typography>
-                                            <Typography variant="caption" color="text.secondary">
-                                                {t(testimonial.roleKey)}
-                                            </Typography>
-                                        </Box>
-                                    </Stack>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
-                    <Stack mt={4} alignItems="center">
-                        <Button component={RouterLink} to="/about" variant="text" endIcon={<ArrowForwardIcon />}>
-                            {t("home.testimonials.cta")}
-                        </Button>
-                    </Stack>
-                </Container>
-            </Box>
-
             {/* CTA BAND */}
             {!user &&
                 <Box component="section" sx={{py: {xs: 6, md: 8}}}>

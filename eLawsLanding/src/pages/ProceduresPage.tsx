@@ -42,6 +42,7 @@ export default function ProceduresView() {
                 })}
                 icon={<LocalPoliceRoundedIcon />}
                 maxWidth="sm"
+                variant="soft"
                 actions={
                     <>
                         <Button

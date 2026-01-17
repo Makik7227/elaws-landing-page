@@ -21,6 +21,7 @@ import { SubscriptionPaymentDialog } from "../components/SubscriptionPaymentDial
 import type { PaymentDialogState } from "../components/SubscriptionPaymentDialog.tsx";
 import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton.tsx";
+import PageHero from "../components/PageHero";
 
 type PlanId = "free" | "plus" | "premium";
 
@@ -276,20 +277,16 @@ const SubscribePage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ minHeight: "100vh", bgcolor: theme.palette.background.default }}>
+        <>
+            <PageHero
+                title={t("subscribePage.hero.title")}
+                subtitle={t("subscribePage.hero.subtitle")}
+                actions={<DashboardBackButton />}
+                align="center"
+                variant="soft"
+                maxWidth="md"
+            />
             <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
-                <Box sx={{ mb: 3 }}>
-                    <DashboardBackButton />
-                </Box>
-                {/* Header */}
-                <Stack spacing={1} alignItems="center" textAlign="center" mb={4}>
-                    <Typography variant="h4" fontWeight={900}>
-                        {t("subscribePage.hero.title")}
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ opacity: 0.85 }}>
-                        {t("subscribePage.hero.subtitle")}
-                    </Typography>
-                </Stack>
 
                 {/* Banner */}
                 {downgradeBanner && (
@@ -449,7 +446,7 @@ const SubscribePage: React.FC = () => {
                     }}
                 />
             )}
-        </Box>
+        </>
     );
 };
 

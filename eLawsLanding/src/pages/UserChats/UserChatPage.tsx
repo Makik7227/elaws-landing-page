@@ -4,7 +4,6 @@ import {
     Button,
     CircularProgress,
     Container,
-    IconButton,
     List,
     ListItem,
     ListItemAvatar,
@@ -22,6 +21,7 @@ import { encryptMessage, decryptMessage } from "../../utils/encryption";
 import { auth, db } from "../../../firebase.ts";
 import type { DocumentData, Timestamp } from "firebase/firestore";
 import { useTranslation } from "react-i18next";
+import PageHero from "../../components/PageHero";
 
 type Message = {
     id: string;
@@ -100,15 +100,23 @@ export default function UserChatWeb() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ py: 4 }}>
-            <Stack direction="row" alignItems="center" spacing={1} mb={2}>
-                <IconButton onClick={() => navigate("/userChats")}>
-                    <ArrowBackRoundedIcon />
-                </IconButton>
-                <Typography variant="h6" fontWeight={800}>
-                    {t("userChats.messages.title")}
-                </Typography>
-            </Stack>
+        <>
+            <PageHero
+                title={t("userChats.messages.title")}
+                subtitle={t("userChats.messages.subtitle", { defaultValue: "Secure, end-to-end encrypted conversation." })}
+                actions={
+                    <Button
+                        variant="text"
+                        startIcon={<ArrowBackRoundedIcon />}
+                        onClick={() => navigate("/userChats")}
+                    >
+                        {t("userChats.messages.back", { defaultValue: "All chats" })}
+                    </Button>
+                }
+                variant="soft"
+                maxWidth="md"
+            />
+            <Container maxWidth="md" sx={{ py: 4 }}>
 
             <List
                 ref={listRef}
@@ -182,6 +190,7 @@ export default function UserChatWeb() {
                     {sending ? <CircularProgress size={20} /> : t("userChats.messages.send")}
                 </Button>
             </Stack>
-        </Container>
+            </Container>
+        </>
     );
 }

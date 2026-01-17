@@ -46,6 +46,8 @@ import { decryptMessage, generateSecureKey } from "../../utils/encryption";
 import { getChatKey } from "../../utils/getChatKey";
 import { db } from "../../../firebase";
 import { useTranslation } from "react-i18next";
+import PageHero from "../../components/PageHero";
+import DashboardBackButton from "../../components/DashboardBackButton";
 
 type Chat = {
     id: string;
@@ -182,106 +184,107 @@ export default function UserChatsWeb() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ py: 5 }}>
-            <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={{ xs: 1.5, sm: 0 }}
-                alignItems={{ xs: "flex-start", sm: "center" }}
-                justifyContent="space-between"
-                mb={3}
-            >
-                <Typography variant="h5" fontWeight={900}>
-                    {t("userChats.list.title")}
-                </Typography>
-                <Button
-                    startIcon={<AddRoundedIcon />}
-                    variant="contained"
-                    onClick={() => setOpenModal(true)}
-                    sx={{ width: { xs: "100%", sm: "auto" } }}
-                >
-                    {t("userChats.list.startNew")}
-                </Button>
-            </Stack>
-
-            {loading ? (
-                <Box textAlign="center"><CircularProgress /></Box>
-            ) : chats.length === 0 ? (
-                <Typography color="text.secondary" align="center">{t("userChats.list.empty")}</Typography>
-            ) : (
-                <List>
-                    {chats.map((c) => {
-                        const friendId = c.users.find((x) => x !== user?.uid);
-                        const friend = friends.find((f) => f.uid === friendId);
-                        const isUnread = c.lastMessageSenderId !== user?.uid && !c.lastMessageWasRead;
-                        return (
-                            <Card key={c.id} sx={{ mb: 2, borderRadius: 3 }}>
-                                <CardActionArea onClick={() => navigate(`/userChats/${c.id}`)}>
-                                    <CardContent
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: { xs: "flex-start", sm: "center" },
-                                            gap: { xs: 1.25, sm: 2 },
-                                            flexWrap: { xs: "wrap", sm: "nowrap" },
-                                        }}
-                                    >
-                                        <ListItemAvatar sx={{ minWidth: "auto" }}>
-                                            <Avatar>{friend ? getInitials(friend.firstName, friend.lastName) : "?"}</Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={
-                                                <Typography fontWeight={700}>
-                                                    {friend ? `${friend.firstName} ${friend.lastName}` : t("userChats.list.unknownUser")}
-                                                </Typography>
-                                            }
-                                            secondary={decrypted[c.id]?.slice(0, 60) ?? t("userChats.messages.empty")}
-                                            sx={{ flex: 1, minWidth: 0 }}
-                                        />
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            {isUnread && <Badge color="primary" variant="dot" />}
-                                            <ChevronRightRoundedIcon color="action" />
-                                        </Stack>
-                                    </CardContent>
-                                </CardActionArea>
-                                <Box display="flex" justifyContent="flex-end" px={1} pb={1}>
-                                    <IconButton onClick={() => handleClearChat(c.id)}><ClearAllRoundedIcon /></IconButton>
-                                    <IconButton onClick={() => handleDeleteChat(c.id)}><DeleteRoundedIcon /></IconButton>
-                                </Box>
-                            </Card>
-                        );
-                    })}
-                </List>
-            )}
-
-            <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
-                <DialogTitle>{t("userChats.list.dialogTitle")}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        value={search}
-                        onChange={(e) => filterFriends(e.target.value)}
-                        fullWidth
-                        placeholder={t("userChats.list.searchPlaceholder")}
-                        margin="normal"
-                        slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> }}}
-                    />
+        <>
+            <PageHero
+                title={t("userChats.list.title")}
+                subtitle={t("userChats.list.subtitle", { defaultValue: "Manage secure conversations and message history." })}
+                actions={
+                    <>
+                        <Button
+                            startIcon={<AddRoundedIcon />}
+                            variant="contained"
+                            onClick={() => setOpenModal(true)}
+                            sx={{ width: { xs: "100%", sm: "auto" } }}
+                        >
+                            {t("userChats.actions.newChat")}
+                        </Button>
+                        <DashboardBackButton />
+                    </>
+                }
+                variant="soft"
+                maxWidth="md"
+            />
+            <Container maxWidth="md" sx={{ py: 5 }}>
+                {loading ? (
+                    <Box textAlign="center"><CircularProgress /></Box>
+                ) : chats.length === 0 ? (
+                    <Typography color="text.secondary" align="center">{t("userChats.list.empty")}</Typography>
+                ) : (
                     <List>
-                        {filtered.map((f) => (
-                            <ListItem key={f.uid} disablePadding>
-                                <ListItemButton onClick={() => startNewChat(f.uid)}>
-                                    <ListItemAvatar>
-                                        <Avatar>{getInitials(f.firstName, f.lastName)}</Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary={`${f.firstName} ${f.lastName}`} secondary={f.username} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                        {filtered.length === 0 && (
-                            <Typography color="text.secondary" align="center">
-                                {t("userChats.list.noFriends")}
-                            </Typography>
-                        )}
+                        {chats.map((c) => {
+                            const friendId = c.users.find((x) => x !== user?.uid);
+                            const friend = friends.find((f) => f.uid === friendId);
+                            const isUnread = c.lastMessageSenderId !== user?.uid && !c.lastMessageWasRead;
+                            return (
+                                <Card key={c.id} sx={{ mb: 2, borderRadius: 3 }}>
+                                    <CardActionArea onClick={() => navigate(`/userChats/${c.id}`)}>
+                                        <CardContent
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: { xs: "flex-start", sm: "center" },
+                                                gap: { xs: 1.25, sm: 2 },
+                                                flexWrap: { xs: "wrap", sm: "nowrap" },
+                                            }}
+                                        >
+                                            <ListItemAvatar sx={{ minWidth: "auto" }}>
+                                                <Avatar>{friend ? getInitials(friend.firstName, friend.lastName) : "?"}</Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary={
+                                                    <Typography fontWeight={700}>
+                                                        {friend ? `${friend.firstName} ${friend.lastName}` : t("userChats.list.unknownUser")}
+                                                    </Typography>
+                                                }
+                                                secondary={decrypted[c.id]?.slice(0, 60) ?? t("userChats.messages.empty")}
+                                                sx={{ flex: 1, minWidth: 0 }}
+                                            />
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                {isUnread && <Badge color="primary" variant="dot" />}
+                                                <ChevronRightRoundedIcon color="action" />
+                                            </Stack>
+                                        </CardContent>
+                                    </CardActionArea>
+                                    <Box display="flex" justifyContent="flex-end" px={1} pb={1}>
+                                        <IconButton onClick={() => handleClearChat(c.id)}><ClearAllRoundedIcon /></IconButton>
+                                        <IconButton onClick={() => handleDeleteChat(c.id)}><DeleteRoundedIcon /></IconButton>
+                                    </Box>
+                                </Card>
+                            );
+                        })}
                     </List>
-                </DialogContent>
-            </Dialog>
-        </Container>
+                )}
+
+                <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
+                    <DialogTitle>{t("userChats.list.dialogTitle")}</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            value={search}
+                            onChange={(e) => filterFriends(e.target.value)}
+                            fullWidth
+                            placeholder={t("userChats.list.searchPlaceholder")}
+                            margin="normal"
+                            slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> }}}
+                        />
+                        <List>
+                            {filtered.map((f) => (
+                                <ListItem key={f.uid} disablePadding>
+                                    <ListItemButton onClick={() => startNewChat(f.uid)}>
+                                        <ListItemAvatar>
+                                            <Avatar>{getInitials(f.firstName, f.lastName)}</Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText primary={`${f.firstName} ${f.lastName}`} secondary={f.username} />
+                                    </ListItemButton>
+                                </ListItem>
+                            ))}
+                            {filtered.length === 0 && (
+                                <Typography color="text.secondary" align="center">
+                                    {t("userChats.list.noFriends")}
+                                </Typography>
+                            )}
+                        </List>
+                    </DialogContent>
+                </Dialog>
+            </Container>
+        </>
     );
 }
