@@ -480,9 +480,7 @@ const Dashboard: React.FC = () => {
                             title={t("dashboard.upgrade.title")}
                             description={t("dashboard.upgrade.description")}
                             pricingLabel={t("dashboard.upgrade.seePricing")}
-                            ctaLabel={t("dashboard.upgrade.cta")}
-                            pricingLink="/pricing"
-                            ctaLink="/subscribe"
+                            pricingLink="/dashboard/subscribe"
                         />
                     )}
                 </Stack>
