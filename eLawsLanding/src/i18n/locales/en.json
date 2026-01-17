@@ -593,11 +593,11 @@
     },
     "cookieConsent": {
         "title": "Cookie preferences",
-        "message": "We use essential cookies to make E-Lawyer work and, with your consent, analytics cookies to improve the experience.",
+        "message": "We use essential cookies to make eLaws work and, with your consent, analytics cookies to improve the experience.",
         "acceptAll": "Accept all",
         "rejectNonEssential": "Reject non-essential",
         "dialogTitle": "Cookie preferences",
-        "dialogDescription": "We use essential cookies to keep E-Lawyer secure and functional. Analytics cookies help us understand usage and improve the experience, and they are disabled unless you consent.",
+        "dialogDescription": "We use essential cookies to keep eLaws secure and functional. Analytics cookies help us understand usage and improve the experience, and they are disabled unless you consent.",
         "analyticsStatus": "Analytics enabled: {{status}}",
         "analyticsOn": "Yes",
         "analyticsOff": "No"
@@ -1209,7 +1209,7 @@
     },
     "subscribePage": {
         "hero": {
-            "title": "Manage your E-Lawyer Subscription",
+            "title": "Manage your eLaws Subscription",
             "subtitle": "Upgrade, downgrade, or undo changes anytime."
         },
         "banner": {

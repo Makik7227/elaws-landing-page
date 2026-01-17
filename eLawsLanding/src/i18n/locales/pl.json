@@ -587,11 +587,11 @@
     },
     "cookieConsent": {
         "title": "Ustawienia plików cookie",
-        "message": "Używamy niezbędnych plików cookie, aby E-Lawyer działał, oraz - za Twoją zgodą - analitycznych w celu poprawy doświadczenia.",
+        "message": "Używamy niezbędnych plików cookie, aby eLaws działał, oraz - za Twoją zgodą - analitycznych w celu poprawy doświadczenia.",
         "acceptAll": "Zaakceptuj wszystkie",
         "rejectNonEssential": "Odrzuć nieistotne",
         "dialogTitle": "Ustawienia plików cookie",
-        "dialogDescription": "Używamy niezbędnych plików cookie, aby E-Lawyer był bezpieczny i działał poprawnie. Analityczne pomagają nam zrozumieć użycie i poprawiać doświadczenie, i są wyłączone bez Twojej zgody.",
+        "dialogDescription": "Używamy niezbędnych plików cookie, aby eLaws był bezpieczny i działał poprawnie. Analityczne pomagają nam zrozumieć użycie i poprawiać doświadczenie, i są wyłączone bez Twojej zgody.",
         "analyticsStatus": "Analityka włączona: {{status}}",
         "analyticsOn": "Tak",
         "analyticsOff": "Nie"
@@ -1138,7 +1138,7 @@
     },
     "subscribePage": {
         "hero": {
-            "title": "Zarządzaj subskrypcją E-Lawyer",
+            "title": "Zarządzaj subskrypcją eLaws",
             "subtitle": "Ulepszaj, obniżaj lub cofaj zmiany w dowolnym momencie."
         },
         "banner": {

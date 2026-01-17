@@ -29,7 +29,7 @@ const Footer = ({ onOpenCookieSettings, onOpenPrivacy, onOpenTerms }: FooterProp
                     spacing={2}
                 >
                     <Typography variant="body2" color="text.secondary">
-                        © {new Date().getFullYear()} E-Laws
+                        © {new Date().getFullYear()} eLaws
                     </Typography>
                     <Stack direction="row" spacing={3}>
                         <Typography
