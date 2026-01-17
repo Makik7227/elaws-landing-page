@@ -38,8 +38,8 @@ interface Plan {
 }
 
 const priceIds: Record<Exclude<PlanId, "free">, string> = {
-    plus: "price_1RuXEoDKm7GEuUIUu8fpazXN",
-    premium: "price_1RuXXWDKm7GEuUIUHVmfrGUX",
+    plus: "price_1SqYQyDKm7GEuUIUq2hPdly1",
+    premium: "price_1SqYRZDKm7GEuUIU1EDwvSOf",
 };
 
 const FUNCTIONS_BASE_URL = "https://europe-central2-e-lawyer-a3055.cloudfunctions.net";
