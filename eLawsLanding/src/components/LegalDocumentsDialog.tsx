@@ -1,4 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export type LegalDocumentType = "terms" | "privacy" | "ai" | null;
 
@@ -8,85 +9,77 @@ interface LegalDocumentsDialogProps {
 }
 
 const LegalDocumentsDialog = ({ openDoc, onClose }: LegalDocumentsDialogProps) => {
+    const { t } = useTranslation();
+
     return (
         <Dialog open={Boolean(openDoc)} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>
                 {openDoc === "terms"
-                    ? "Terms & Conditions"
+                    ? t("components.legalDocuments.titles.terms")
                     : openDoc === "privacy"
-                        ? "Privacy Policy"
-                        : "AI Disclaimer"}
+                        ? t("components.legalDocuments.titles.privacy")
+                        : t("components.legalDocuments.titles.ai")}
             </DialogTitle>
             <DialogContent dividers>
                 {openDoc === "terms" && (
                     <Stack spacing={2}>
                         <Typography variant="body2">
-                            These Terms & Conditions govern your access to and use of E-Lawyer. By creating an
-                            account, you agree to comply with these terms and all applicable laws.
+                            {t("components.legalDocuments.terms.intro")}
                         </Typography>
                         <Box component="ul" sx={{ pl: 3, mb: 0 }}>
                             <li>
                                 <Typography variant="body2">
-                                    You are responsible for maintaining the confidentiality of your account
-                                    credentials.
+                                    {t("components.legalDocuments.terms.bullet1")}
                                 </Typography>
                             </li>
                             <li>
                                 <Typography variant="body2">
-                                    You must not misuse the service, attempt unauthorized access, or upload unlawful
-                                    content.
+                                    {t("components.legalDocuments.terms.bullet2")}
                                 </Typography>
                             </li>
                             <li>
                                 <Typography variant="body2">
-                                    We may update the service to improve performance, security, or legal compliance.
+                                    {t("components.legalDocuments.terms.bullet3")}
                                 </Typography>
                             </li>
                         </Box>
                         <Typography variant="body2">
-                            E-Lawyer may suspend or terminate access for violations of these terms or applicable law.
+                            {t("components.legalDocuments.terms.outro")}
                         </Typography>
                     </Stack>
                 )}
                 {openDoc === "privacy" && (
                     <Stack spacing={2}>
                         <Typography variant="body2">
-                            We collect only the data needed to create and secure your workspace, process requests,
-                            and provide support. This includes account details, usage metadata, and device/browser
-                            information.
+                            {t("components.legalDocuments.privacy.paragraph1")}
                         </Typography>
                         <Typography variant="body2">
-                            We use data for authentication, service delivery, security monitoring, and to improve
-                            product quality. We do not sell your personal data.
+                            {t("components.legalDocuments.privacy.paragraph2")}
                         </Typography>
                         <Typography variant="body2">
-                            You can request access, correction, or deletion of your personal data, subject to legal
-                            obligations and retention requirements.
+                            {t("components.legalDocuments.privacy.paragraph3")}
                         </Typography>
                         <Typography variant="body2">
-                            Essential cookies are required for core functionality. Analytics cookies are optional
-                            and controlled through your cookie preferences.
+                            {t("components.legalDocuments.privacy.paragraph4")}
                         </Typography>
                     </Stack>
                 )}
                 {openDoc === "ai" && (
                     <Stack spacing={2}>
                         <Typography variant="body2">
-                            The E-Lawyer AI assistant is not a lawyer and does not provide legal advice.
+                            {t("components.legalDocuments.ai.paragraph1")}
                         </Typography>
                         <Typography variant="body2">
-                            Any information provided is general and informational only and may not apply to your
-                            specific circumstances or jurisdiction.
+                            {t("components.legalDocuments.ai.paragraph2")}
                         </Typography>
                         <Typography variant="body2">
-                            You should consult a licensed attorney before making legal decisions or acting on any
-                            AI-generated information.
+                            {t("components.legalDocuments.ai.paragraph3")}
                         </Typography>
                     </Stack>
                 )}
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Close</Button>
+                <Button onClick={onClose}>{t("components.legalDocuments.close")}</Button>
             </DialogActions>
         </Dialog>
     );

@@ -597,6 +597,32 @@
         "analyticsOff": "Nie"
     },
     "components": {
+        "legalDocuments": {
+            "titles": {
+                "terms": "Regulamin",
+                "privacy": "Polityka prywatności",
+                "ai": "Zastrzeżenie dotyczące AI"
+            },
+            "terms": {
+                "intro": "Niniejszy Regulamin określa zasady dostępu do eLaws i korzystania z niego. Tworząc konto, zgadzasz się przestrzegać tych warunków i obowiązującego prawa.",
+                "bullet1": "Odpowiadasz za zachowanie poufności danych logowania do konta.",
+                "bullet2": "Nie wolno nadużywać usługi, podejmować prób nieautoryzowanego dostępu ani przesyłać nielegalnych treści.",
+                "bullet3": "Możemy aktualizować usługę, aby poprawić wydajność, bezpieczeństwo lub zgodność prawną.",
+                "outro": "eLaws może zawiesić lub zakończyć dostęp w przypadku naruszenia tych warunków lub prawa."
+            },
+            "privacy": {
+                "paragraph1": "Zbieramy tylko dane potrzebne do utworzenia i zabezpieczenia Twojego środowiska, obsługi żądań i wsparcia. Obejmuje to dane konta, metadane użycia oraz informacje o urządzeniu/przeglądarce.",
+                "paragraph2": "Używamy danych do uwierzytelniania, świadczenia usług, monitorowania bezpieczeństwa i poprawy jakości produktu. Nie sprzedajemy Twoich danych osobowych.",
+                "paragraph3": "Możesz żądać dostępu, poprawy lub usunięcia danych osobowych, z zastrzeżeniem obowiązków prawnych i wymogów retencji.",
+                "paragraph4": "Niezbędne pliki cookie są wymagane do działania podstawowych funkcji. Analityczne pliki cookie są opcjonalne i kontrolowane przez Twoje ustawienia."
+            },
+            "ai": {
+                "paragraph1": "Asystent AI eLaws nie jest prawnikiem i nie udziela porad prawnych.",
+                "paragraph2": "Wszelkie informacje mają charakter ogólny i informacyjny i mogą nie dotyczyć Twojej sytuacji lub jurysdykcji.",
+                "paragraph3": "Przed podjęciem decyzji prawnych lub działaniem na podstawie informacji wygenerowanych przez AI skonsultuj się z licencjonowanym prawnikiem."
+            },
+            "close": "Zamknij"
+        },
         "countryPicker": {
             "trigger": "Wybierz kraj",
             "dialogTitle": "Wybierz kraj",
