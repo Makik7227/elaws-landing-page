@@ -153,6 +153,7 @@ const AiChatPage: React.FC = () => {
     });
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const skipPersistRef = useRef(false);
     const localizedCountryName = countryCode
         ? t(`countries.${countryCode}`, { defaultValue: country || countryCode })
         : country;
@@ -215,6 +216,10 @@ const AiChatPage: React.FC = () => {
 
     useEffect(() => {
         if (!persistHydrated) return;
+        if (skipPersistRef.current) {
+            skipPersistRef.current = false;
+            return;
+        }
         const sanitized: PersistedChatState = {
             topic: selectedTopic,
             messages: messages.filter((m) => m.id !== "typing").slice(-20),
@@ -274,6 +279,13 @@ const AiChatPage: React.FC = () => {
         } finally {
             setSendingMessage(false);
         }
+    };
+
+    const handleClearConversation = () => {
+        // Legal: clear must not write chat data to storage.
+        skipPersistRef.current = true;
+        setMessages([]);
+        setInput("");
     };
 
     const openNoteDialog = useCallback(async (msg: Message) => {
@@ -488,12 +500,17 @@ Instructions:
                             {selectedTopic ? t(`aiChat.topics.${selectedTopic}`) : t("aiChat.labels.topicPlaceholder")}
                         </Typography>
                     </Box>
-                    <Box textAlign={{ xs: "left", sm: "right" }}>
-                        <Typography variant="subtitle2" color="text.secondary">
-                            {t("aiChat.labels.country")}
-                        </Typography>
-                        <Typography variant="body2">{localizedCountryName || t("aiChat.labels.anyCountry")}</Typography>
-                    </Box>
+                    <Stack spacing={1} alignItems={{ xs: "flex-start", sm: "flex-end" }}>
+                        <Box textAlign={{ xs: "left", sm: "right" }}>
+                            <Typography variant="subtitle2" color="text.secondary">
+                                {t("aiChat.labels.country")}
+                            </Typography>
+                            <Typography variant="body2">{localizedCountryName || t("aiChat.labels.anyCountry")}</Typography>
+                        </Box>
+                        <Button variant="outlined" size="small" onClick={handleClearConversation}>
+                            {t("aiChat.buttons.clearConversation")}
+                        </Button>
+                    </Stack>
                 </Stack>
 
                 <Box
@@ -561,6 +578,9 @@ Instructions:
                     <div ref={messagesEndRef} />
                 </Box>
 
+                <Alert severity="info">
+                    {t("aiChat.disclaimer")}
+                </Alert>
                 <Stack
                     direction={compact ? "column" : { xs: "column", sm: "row" }}
                     spacing={compact ? 1 : 1.5}

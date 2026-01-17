@@ -231,7 +231,8 @@
         "footer": {
             "privacy": "Privacy",
             "terms": "Terms",
-            "contact": "Contact"
+            "contact": "Contact",
+            "cookieSettings": "Cookie settings"
         }
     },
     "featuresPage": {
@@ -467,7 +468,8 @@
             "emailInUse": "That email is already registered. Try logging in.",
             "passwordTooWeak": "Password too weak. Use a longer or stronger one.",
             "invalidEmail": "Invalid email.",
-            "generic": "Something went wrong. Please try again."
+            "generic": "Something went wrong. Please try again.",
+            "mustAcceptTerms": "You must accept the Terms & Conditions, Privacy Policy, and AI Disclaimer."
         }
     },
     "about": {
@@ -550,8 +552,10 @@
         "buttons": {
             "changeTopic": "Change topic",
             "saveToNotes": "Save to Notes",
-            "send": "Send"
+            "send": "Send",
+            "clearConversation": "Clear conversation"
         },
+        "disclaimer": "AI is not a lawyer and does not provide legal advice. Information is general and informational only.",
         "inputs": {
             "questionPlaceholder": "Type your legal question…"
         },
@@ -586,6 +590,17 @@
             "topicTitle": "What do you need help with?",
             "topicDescription": "Pick a preset to tailor the AI prompt. You can always switch later."
         }
+    },
+    "cookieConsent": {
+        "title": "Cookie preferences",
+        "message": "We use essential cookies to make E-Lawyer work and, with your consent, analytics cookies to improve the experience.",
+        "acceptAll": "Accept all",
+        "rejectNonEssential": "Reject non-essential",
+        "dialogTitle": "Cookie preferences",
+        "dialogDescription": "We use essential cookies to keep E-Lawyer secure and functional. Analytics cookies help us understand usage and improve the experience, and they are disabled unless you consent.",
+        "analyticsStatus": "Analytics enabled: {{status}}",
+        "analyticsOn": "Yes",
+        "analyticsOff": "No"
     },
     "components": {
         "countryPicker": {

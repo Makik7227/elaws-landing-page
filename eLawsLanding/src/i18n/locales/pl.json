@@ -231,7 +231,8 @@
         "footer": {
             "privacy": "Prywatność",
             "terms": "Regulamin",
-            "contact": "Kontakt"
+            "contact": "Kontakt",
+            "cookieSettings": "Ustawienia plików cookie"
         }
     },
     "featuresPage": {
@@ -467,7 +468,8 @@
             "emailInUse": "Ten e-mail jest już zarejestrowany. Zaloguj się.",
             "passwordTooWeak": "Hasło jest za słabe. Użyj dłuższego lub mocniejszego.",
             "invalidEmail": "Nieprawidłowy e-mail.",
-            "generic": "Coś poszło nie tak. Spróbuj ponownie."
+            "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+            "mustAcceptTerms": "Musisz zaakceptować Regulamin, Politykę prywatności i zastrzeżenie dotyczące AI."
         }
     },
     "about": {
@@ -550,8 +552,10 @@
         "buttons": {
             "changeTopic": "Zmień temat",
             "saveToNotes": "Zapisz do notatek",
-            "send": "Wyślij"
+            "send": "Wyślij",
+            "clearConversation": "Wyczyść rozmowę"
         },
+        "disclaimer": "AI nie jest prawnikiem i nie udziela porad prawnych. Informacje są ogólne i wyłącznie informacyjne.",
         "inputs": {
             "questionPlaceholder": "Wpisz swoje pytanie prawne…"
         },
@@ -580,6 +584,17 @@
             "topicTitle": "Czego potrzebujesz?",
             "topicDescription": "Wybierz preset, aby dopasować prompt AI. Zawsze możesz zmienić później."
         }
+    },
+    "cookieConsent": {
+        "title": "Ustawienia plików cookie",
+        "message": "Używamy niezbędnych plików cookie, aby E-Lawyer działał, oraz - za Twoją zgodą - analitycznych w celu poprawy doświadczenia.",
+        "acceptAll": "Zaakceptuj wszystkie",
+        "rejectNonEssential": "Odrzuć nieistotne",
+        "dialogTitle": "Ustawienia plików cookie",
+        "dialogDescription": "Używamy niezbędnych plików cookie, aby E-Lawyer był bezpieczny i działał poprawnie. Analityczne pomagają nam zrozumieć użycie i poprawiać doświadczenie, i są wyłączone bez Twojej zgody.",
+        "analyticsStatus": "Analityka włączona: {{status}}",
+        "analyticsOn": "Tak",
+        "analyticsOff": "Nie"
     },
     "components": {
         "countryPicker": {
