@@ -18,7 +18,7 @@ import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase.ts";
@@ -33,13 +33,6 @@ type Plan = {
     per?: string;
     tokens: string;
     features: string[];
-};
-
-type ButtonMeta = {
-    label: string;
-    disabled: boolean;
-    variant: "contained" | "outlined" | "text";
-    actionHref: string; // where we navigate
 };
 
 type PlanDefinition = {
@@ -101,13 +94,11 @@ const INCLUDED_FEATURES = [
 const PlanCard = ({
     plan,
     current,
-    cta,
     recommendedLabel,
     currentLabel,
 }: {
     plan: Plan;
     current: boolean;
-    cta: ButtonMeta;
     recommendedLabel?: string;
     currentLabel: string;
 }) => {
@@ -174,15 +165,6 @@ const PlanCard = ({
                         ))}
                     </Stack>
 
-                    <Button
-                        component={RouterLink}
-                        to={cta.actionHref}
-                        variant={cta.variant}
-                        disabled={cta.disabled}
-                        sx={{ mt: 2, borderRadius: 2, fontWeight: 800 }}
-                    >
-                        {cta.label}
-                    </Button>
                 </Stack>
             </CardContent>
         </Card>
@@ -191,9 +173,7 @@ const PlanCard = ({
 
 const PricingPage: React.FC = () => {
     const theme = useTheme();
-    const navigate = useNavigate();
     const { t } = useTranslation();
-    const [uid, setUid] = useState<string | null>(null);
     const [currentTier, setCurrentTier] = useState<PlanId | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -208,12 +188,10 @@ const PricingPage: React.FC = () => {
             setLoading(true);
             try {
                 if (user) {
-                    setUid(user.uid);
                     const snap = await getDoc(doc(db, "users", user.uid));
                     const tier = (snap.exists() && (snap.data().subscriptionTier as PlanId)) || "free";
                     setCurrentTier(tier);
                 } else {
-                    setUid(null);
                     setCurrentTier(null);
                 }
             } catch {
@@ -237,94 +215,6 @@ const PricingPage: React.FC = () => {
             })),
         [t]
     );
-
-    // compute CTA per plan based on auth + current tier
-    const ctaFor = (plan: Plan): ButtonMeta => {
-        // not logged in → push to signup
-        if (!uid) {
-            return {
-                label:
-                    plan.id === "free"
-                        ? t("pricingPage.cta.startFree")
-                        : t("pricingPage.cta.upgradeTo", { plan: plan.name }),
-                disabled: false,
-                variant: "contained",
-                actionHref: `/signup?plan=${plan.id}`,
-            };
-        }
-
-        // logged in
-        if (currentTier === plan.id) {
-            return {
-                label: t("pricingPage.cta.currentPlan"),
-                disabled: true,
-                variant: "outlined",
-                actionHref: "#",
-            };
-        }
-
-        // switching logic
-        if (currentTier === "free" && (plan.id === "plus" || plan.id === "premium")) {
-            return {
-                label: t("pricingPage.cta.upgradeTo", { plan: plan.name }),
-                disabled: false,
-                variant: "contained",
-                actionHref: `/subscribe?plan=${plan.id}&action=upgrade`,
-            };
-        }
-
-        if (currentTier === "plus") {
-            if (plan.id === "premium") {
-                // (RN app has a $10.99 one-time upgrade; keep label simple here)
-                return {
-                    label: t("pricingPage.cta.upgradeTo", { plan: plan.name }),
-                    disabled: false,
-                    variant: "contained",
-                    actionHref: `/subscribe?plan=premium&action=upgrade`,
-                };
-            }
-            if (plan.id === "free") {
-                return {
-                    label: t("pricingPage.cta.downgradeTo", { plan: plan.name }),
-                    disabled: false,
-                    variant: "outlined",
-                    actionHref: `/subscribe?plan=free&action=downgrade`,
-                };
-            }
-        }
-
-        if (currentTier === "premium") {
-            if (plan.id === "plus") {
-                return {
-                    label: t("pricingPage.cta.downgradeTo", { plan: plan.name }),
-                    disabled: false,
-                    variant: "outlined",
-                    actionHref: `/subscribe?plan=plus&action=downgrade`,
-                };
-            }
-            if (plan.id === "free") {
-                return {
-                    label: t("pricingPage.cta.downgradeTo", { plan: plan.name }),
-                    disabled: false,
-                    variant: "outlined",
-                    actionHref: `/subscribe?plan=free&action=downgrade`,
-                };
-            }
-        }
-
-        // fallback
-        return {
-            label: t("pricingPage.cta.selectPlan", { plan: plan.name }),
-            disabled: false,
-            variant: "contained",
-            actionHref: `/subscribe?plan=${plan.id}`,
-        };
-    };
-
-    const handleQuickOpen = () => {
-        if (!uid) navigate("/signup");
-        else navigate("/cases");
-    };
 
     return (
         <>
@@ -363,33 +253,6 @@ const PricingPage: React.FC = () => {
                         {t("pricingPage.hero.subtitle")}
                     </Typography>
 
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={1.5}
-                        justifyContent="center"
-                        sx={{ mt: 3 }}
-                    >
-                        <Button
-                            component={RouterLink}
-                            to="/features"
-                            variant="outlined"
-                            sx={{
-                                borderRadius: 3,
-                                color: "inherit",
-                                borderColor: "currentColor",
-                                "&:hover": { borderColor: "currentColor" },
-                            }}
-                        >
-                            {t("pricingPage.hero.secondaryCta")}
-                        </Button>
-                        <Button
-                            onClick={handleQuickOpen}
-                            variant="contained"
-                            sx={{ borderRadius: 3, fontWeight: 800 }}
-                        >
-                            {uid ? t("pricingPage.hero.openApp") : t("auth.createAccount")}
-                        </Button>
-                    </Stack>
                 </Container>
             </Box>
 
@@ -409,10 +272,19 @@ const PricingPage: React.FC = () => {
                                 plan={p}
                                 current={!loading && currentTier === p.id}
                                 recommendedLabel={p.id === "premium" ? t("pricingPage.plans.recommendedTag") : undefined}
-                                cta={ctaFor(p)}
                                 currentLabel={t("pricingPage.plans.currentLabel")}
                             />
                         ))}
+                    </Stack>
+                    <Stack alignItems="center" mt={4}>
+                        <Button
+                            component={RouterLink}
+                            to="/signup"
+                            variant="contained"
+                            sx={{ borderRadius: 3, fontWeight: 800 }}
+                        >
+                            {t("auth.createAccount")}
+                        </Button>
                     </Stack>
                 </Container>
             </Box>
@@ -473,16 +345,6 @@ const PricingPage: React.FC = () => {
                         ))}
                     </Stack>
 
-                    <Stack alignItems="center" mt={6}>
-                        <Button
-                            component={RouterLink}
-                            to={uid ? "/dashboard/subscribe" : "/signup"}
-                            variant="contained"
-                            sx={{ borderRadius: 3, fontWeight: 800 }}
-                        >
-                            {uid ? t("pricingPage.included.manageButton") : t("pricingPage.included.createAccountButton")}
-                        </Button>
-                    </Stack>
                 </Container>
             </Box>
         </>

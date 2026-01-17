@@ -66,6 +66,7 @@ const TopBar = () => {
             { labelKey: "nav.features", to: "/features" },
             { labelKey: "nav.pricing", to: "/pricing" },
             { labelKey: "nav.about", to: "/about" },
+            { labelKey: "nav.contact", to: "/contact" },
         ],
         []
     );

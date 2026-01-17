@@ -19,6 +19,7 @@
         "features": "Funkcje",
         "pricing": "Cennik",
         "about": "O nas",
+        "contact": "Kontakt",
         "dashboard": "Panel",
         "aiChat": "Czat AI",
         "documents": "Dokumenty",
@@ -239,7 +240,7 @@
             "title": "Zaprojektowane do prawdziwej pracy prawniczej",
             "subtitle": "Od szybkich odpowiedzi po kompletne dokumenty i uporządkowane sprawy — wszystko w jednym miejscu.",
             "primaryCta": "Zacznij teraz",
-            "secondaryCta": "Wypróbuj demo"
+            "secondaryCta": "Sprawdź ceny"
         },
         "coreSection": {
             "overline": "Podstawa",
@@ -354,6 +355,23 @@
             "speed": "Szybkość i niezawodność",
             "manageButton": "Zarządzaj subskrypcją",
             "createAccountButton": "Utwórz konto"
+        }
+    },
+    "contactPage": {
+        "hero": {
+            "badge": "Kontakt",
+            "title": "Porozmawiajmy",
+            "subtitle": "Pytania, partnerstwa lub opinie? Napisz bezposrednio.",
+            "primaryCta": "Email do Maksymiliana"
+        },
+        "card": {
+            "title": "Bezposredni kontakt"
+        },
+        "details": {
+            "nameLabel": "Imie i nazwisko",
+            "roleLabel": "Rola",
+            "emailLabel": "Email",
+            "roleValue": "CEO i Lead Developer w E-Laws"
         }
     },
     "loginPage": {

@@ -19,6 +19,7 @@
         "features": "Features",
         "pricing": "Pricing",
         "about": "About",
+        "contact": "Contact",
         "dashboard": "Dashboard",
         "aiChat": "AI Chat",
         "documents": "Documents",
@@ -239,7 +240,7 @@
             "title": "Built for real-world legal work",
             "subtitle": "From quick answers to full documents and organized cases — all in one place.",
             "primaryCta": "Get started",
-            "secondaryCta": "Try the demo"
+            "secondaryCta": "See pricing"
         },
         "coreSection": {
             "overline": "Core",
@@ -354,6 +355,23 @@
             "speed": "Fast & reliable",
             "manageButton": "Manage subscription",
             "createAccountButton": "Create your account"
+        }
+    },
+    "contactPage": {
+        "hero": {
+            "badge": "Contact",
+            "title": "Let's talk",
+            "subtitle": "Questions, partnerships, or feedback? Reach out directly.",
+            "primaryCta": "Email Maksymilian"
+        },
+        "card": {
+            "title": "Direct contact"
+        },
+        "details": {
+            "nameLabel": "Name",
+            "roleLabel": "Role",
+            "emailLabel": "Email",
+            "roleValue": "CEO and Lead Developer at E-Laws"
         }
     },
     "loginPage": {

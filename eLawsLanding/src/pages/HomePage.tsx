@@ -20,8 +20,6 @@ import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
-import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
-import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
@@ -130,18 +128,10 @@ const HERO_METRICS = [
     { labelKey: "home.hero.metrics.response", value: "6.4s" },
 ];
 
-const TRUSTED_LOGOS = ["LexisLink", "NovaLegal", "Atlas Law", "CivicTech"];
-
 const HOW_IT_WORKS = [
     { step: 1, titleKey: "home.steps.pickCountry.title", descKey: "home.steps.pickCountry.desc" },
     { step: 2, titleKey: "home.steps.chatDraft.title", descKey: "home.steps.chatDraft.desc" },
     { step: 3, titleKey: "home.steps.saveCollaborate.title", descKey: "home.steps.saveCollaborate.desc" },
-];
-
-const HERO_HIGHLIGHTS = [
-    { icon: <LockRoundedIcon fontSize="small" />, labelKey: "home.hero.highlights.security" },
-    { icon: <LanguageRoundedIcon fontSize="small" />, labelKey: "home.hero.highlights.localization" },
-    { icon: <AssessmentRoundedIcon fontSize="small" />, labelKey: "home.hero.highlights.citations" },
 ];
 
 const HERO_STATUS = [
@@ -399,43 +389,6 @@ const HomePage: React.FC = () => {
                                         ))}
                                     </Stack>
                                 </Box>
-                                <Stack
-                                    direction={{ xs: "column", sm: "row" }}
-                                    spacing={1.5}
-                                    flexWrap="wrap"
-                                    alignItems="center"
-                                >
-                                    {HERO_HIGHLIGHTS.map((item) => (
-                                        <Chip
-                                            key={item.labelKey}
-                                            icon={item.icon}
-                                            label={t(item.labelKey)}
-                                            variant="outlined"
-                                            sx={{
-                                                color: "inherit",
-                                                borderColor: alpha(theme.palette.common.white, 0.4),
-                                                bgcolor: alpha(theme.palette.common.white, 0.06),
-                                            }}
-                                        />
-                                    ))}
-                                </Stack>
-                                <Stack
-                                    direction={{ xs: "column", sm: "row" }}
-                                    spacing={2}
-                                    alignItems="center"
-                                    justifyContent="flex-start"
-                                    sx={{ opacity: 0.8 }}
-                                >
-                                    <Typography variant="body2">{t("home.hero.trustedBy")}</Typography>
-                                    <Divider flexItem orientation={"vertical"} sx={{ display: { xs: "none", sm: "block" } }} />
-                                    <Stack direction="row" spacing={{ xs: 1.5, sm: 3 }} alignItems="center" flexWrap="wrap">
-                                        {TRUSTED_LOGOS.map((logo) => (
-                                            <Typography key={logo} variant="body2" sx={{ letterSpacing: 2 }}>
-                                                {logo}
-                                            </Typography>
-                                        ))}
-                                    </Stack>
-                                </Stack>
                             </Stack>
                         </Grid>
                         <Grid size={{ xs: 12, md: 6 }}>

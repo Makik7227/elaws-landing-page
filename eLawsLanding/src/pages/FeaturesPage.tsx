@@ -28,11 +28,9 @@ type Feature = {
     titleKey: string;
     descKey: string;
     icon: React.ReactNode;
-    to?: string;
-    ctaKey?: string;
 };
 
-const FeatureCard = ({ title, desc, icon, to, cta }: { title: string; desc: string; icon: React.ReactNode; to?: string; cta?: string }) => {
+const FeatureCard = ({ title, desc, icon }: { title: string; desc: string; icon: React.ReactNode }) => {
     return (
         <Card
             elevation={3}
@@ -70,17 +68,6 @@ const FeatureCard = ({ title, desc, icon, to, cta }: { title: string; desc: stri
                 <Typography color="text.secondary" sx={{ mb: 2 }}>
                     {desc}
                 </Typography>
-
-                {to && (
-                    <Button
-                        component={RouterLink}
-                        to={to}
-                        variant="contained"
-                        sx={{ borderRadius: 2, fontWeight: 700 }}
-                    >
-                        {cta}
-                    </Button>
-                )}
             </CardContent>
         </Card>
     );
@@ -96,29 +83,21 @@ const FeaturesPage: React.FC = () => {
             titleKey: "featuresPage.core.aiChat.title",
             descKey: "featuresPage.core.aiChat.desc",
             icon: <ChatIcon />,
-            to: "/chat",
-            ctaKey: "featuresPage.core.aiChat.cta",
         },
         {
             titleKey: "featuresPage.core.documents.title",
             descKey: "featuresPage.core.documents.desc",
             icon: <DocIcon />,
-            to: "/documents/generate",
-            ctaKey: "featuresPage.core.documents.cta",
         },
         {
             titleKey: "featuresPage.core.cases.title",
             descKey: "featuresPage.core.cases.desc",
             icon: <CasesIcon />,
-            to: "/cases",
-            ctaKey: "featuresPage.core.cases.cta",
         },
         {
             titleKey: "featuresPage.core.notes.title",
             descKey: "featuresPage.core.notes.desc",
             icon: <NotesIcon />,
-            to: "/notes",
-            ctaKey: "featuresPage.core.notes.cta",
         },
     ];
 
@@ -127,15 +106,11 @@ const FeaturesPage: React.FC = () => {
             titleKey: "featuresPage.more.procedures.title",
             descKey: "featuresPage.more.procedures.desc",
             icon: <ProceduresIcon />,
-            to: "/procedures/saved-procedures",
-            ctaKey: "featuresPage.more.procedures.cta",
         },
         {
             titleKey: "featuresPage.more.presets.title",
             descKey: "featuresPage.more.presets.desc",
             icon: <GavelIcon />,
-            to: "/chat",
-            ctaKey: "featuresPage.more.presets.cta",
         },
         {
             titleKey: "featuresPage.more.privacy.title",
@@ -205,7 +180,7 @@ const FeaturesPage: React.FC = () => {
                         </Button>
                         <Button
                             component={RouterLink}
-                            to="/chat"
+                            to="/pricing"
                             variant="outlined"
                             sx={{
                                 borderRadius: 3,
@@ -245,8 +220,6 @@ const FeaturesPage: React.FC = () => {
                                 icon={f.icon}
                                 title={t(f.titleKey)}
                                 desc={t(f.descKey)}
-                                to={f.to}
-                                cta={f.ctaKey ? t(f.ctaKey) : t("featuresPage.cards.defaultCta")}
                             />
                         ))}
                     </Stack>
@@ -283,21 +256,8 @@ const FeaturesPage: React.FC = () => {
                                 icon={f.icon}
                                 title={t(f.titleKey)}
                                 desc={t(f.descKey)}
-                                to={f.to}
-                                cta={f.ctaKey ? t(f.ctaKey) : undefined}
                             />
                         ))}
-                    </Stack>
-
-                    <Stack alignItems="center" mt={6}>
-                        <Button
-                            component={RouterLink}
-                            to="/pricing"
-                            variant="contained"
-                            sx={{ borderRadius: 3, fontWeight: 800 }}
-                        >
-                            {t("featuresPage.moreSection.cta")}
-                        </Button>
                     </Stack>
                 </Container>
             </Box>
