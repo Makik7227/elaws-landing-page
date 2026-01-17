@@ -43,7 +43,7 @@
     "home": {
         "hero": {
             "badge": "AI legal copilot",
-            "title": "E-Laws — legal help, on-demand.",
+            "title": "eLaws — legal help, on-demand.",
             "subtitle": "Ask questions, generate documents, and chat with a legal assistant tuned to your jurisdiction. Privacy-first. Built for legal teams and solo founders alike.",
             "ctaDashboard": "Go to dashboard",
             "ctaPrimary": "Create free account",
@@ -372,7 +372,7 @@
             "nameLabel": "Name",
             "roleLabel": "Role",
             "emailLabel": "Email",
-            "roleValue": "CEO and Lead Developer at E-Laws"
+            "roleValue": "CEO and Lead Developer at eLaws"
         }
     },
     "loginPage": {
@@ -476,7 +476,7 @@
         "hero": {
             "badge": "About",
             "title": "Making legal help fast, clear, and accessible",
-            "subtitle": "E-Laws is your AI legal copilot — built to answer questions, generate documents, and guide you through procedures with privacy by default.",
+            "subtitle": "eLaws is your AI legal copilot — built to answer questions, generate documents, and guide you through procedures with privacy by default.",
             "secondaryCta": "Our Features",
             "primaryCta": "Get Started"
         },
