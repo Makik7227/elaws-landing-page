@@ -43,7 +43,7 @@
     "home": {
         "hero": {
             "badge": "AI legal copilot",
-            "title": "E-Laws — legal help, on-demand.",
+            "title": "eLaws — legal help, on-demand.",
             "subtitle": "Ask questions, generate documents, and chat with a legal assistant tuned to your jurisdiction. Privacy-first. Built for legal teams and solo founders alike.",
             "ctaDashboard": "Go to dashboard",
             "ctaPrimary": "Create free account",
@@ -231,7 +231,8 @@
         "footer": {
             "privacy": "Privacy",
             "terms": "Terms",
-            "contact": "Contact"
+            "contact": "Contact",
+            "cookieSettings": "Cookie settings"
         }
     },
     "featuresPage": {
@@ -371,7 +372,7 @@
             "nameLabel": "Name",
             "roleLabel": "Role",
             "emailLabel": "Email",
-            "roleValue": "CEO and Lead Developer at E-Laws"
+            "roleValue": "CEO and Lead Developer at eLaws"
         }
     },
     "loginPage": {
@@ -467,14 +468,15 @@
             "emailInUse": "That email is already registered. Try logging in.",
             "passwordTooWeak": "Password too weak. Use a longer or stronger one.",
             "invalidEmail": "Invalid email.",
-            "generic": "Something went wrong. Please try again."
+            "generic": "Something went wrong. Please try again.",
+            "mustAcceptTerms": "You must accept the Terms & Conditions, Privacy Policy, and AI Disclaimer."
         }
     },
     "about": {
         "hero": {
             "badge": "About",
             "title": "Making legal help fast, clear, and accessible",
-            "subtitle": "E-Laws is your AI legal copilot — built to answer questions, generate documents, and guide you through procedures with privacy by default.",
+            "subtitle": "eLaws is your AI legal copilot — built to answer questions, generate documents, and guide you through procedures with privacy by default.",
             "secondaryCta": "Our Features",
             "primaryCta": "Get Started"
         },
@@ -550,8 +552,10 @@
         "buttons": {
             "changeTopic": "Change topic",
             "saveToNotes": "Save to Notes",
-            "send": "Send"
+            "send": "Send",
+            "clearConversation": "Clear conversation"
         },
+        "disclaimer": "AI is not a lawyer and does not provide legal advice. Information is general and informational only.",
         "inputs": {
             "questionPlaceholder": "Type your legal question…"
         },
@@ -587,7 +591,44 @@
             "topicDescription": "Pick a preset to tailor the AI prompt. You can always switch later."
         }
     },
+    "cookieConsent": {
+        "title": "Cookie preferences",
+        "message": "We use essential cookies to make eLaws work and, with your consent, analytics cookies to improve the experience.",
+        "acceptAll": "Accept all",
+        "rejectNonEssential": "Reject non-essential",
+        "dialogTitle": "Cookie preferences",
+        "dialogDescription": "We use essential cookies to keep eLaws secure and functional. Analytics cookies help us understand usage and improve the experience, and they are disabled unless you consent.",
+        "analyticsStatus": "Analytics enabled: {{status}}",
+        "analyticsOn": "Yes",
+        "analyticsOff": "No"
+    },
     "components": {
+        "legalDocuments": {
+            "titles": {
+                "terms": "Terms & Conditions",
+                "privacy": "Privacy Policy",
+                "ai": "AI Disclaimer"
+            },
+            "terms": {
+                "intro": "These Terms & Conditions govern your access to and use of eLaws. By creating an account, you agree to comply with these terms and all applicable laws.",
+                "bullet1": "You are responsible for maintaining the confidentiality of your account credentials.",
+                "bullet2": "You must not misuse the service, attempt unauthorized access, or upload unlawful content.",
+                "bullet3": "We may update the service to improve performance, security, or legal compliance.",
+                "outro": "eLaws may suspend or terminate access for violations of these terms or applicable law."
+            },
+            "privacy": {
+                "paragraph1": "We collect only the data needed to create and secure your workspace, process requests, and provide support. This includes account details, usage metadata, and device/browser information.",
+                "paragraph2": "We use data for authentication, service delivery, security monitoring, and to improve product quality. We do not sell your personal data.",
+                "paragraph3": "You can request access, correction, or deletion of your personal data, subject to legal obligations and retention requirements.",
+                "paragraph4": "Essential cookies are required for core functionality. Analytics cookies are optional and controlled through your cookie preferences."
+            },
+            "ai": {
+                "paragraph1": "The eLaws AI assistant is not a lawyer and does not provide legal advice.",
+                "paragraph2": "Any information provided is general and informational only and may not apply to your specific circumstances or jurisdiction.",
+                "paragraph3": "You should consult a licensed attorney before making legal decisions or acting on any AI-generated information."
+            },
+            "close": "Close"
+        },
         "countryPicker": {
             "trigger": "Select a country",
             "dialogTitle": "Select country",
@@ -1194,7 +1235,7 @@
     },
     "subscribePage": {
         "hero": {
-            "title": "Manage your E-Lawyer Subscription",
+            "title": "Manage your eLaws Subscription",
             "subtitle": "Upgrade, downgrade, or undo changes anytime."
         },
         "banner": {

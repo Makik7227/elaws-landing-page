@@ -7,9 +7,11 @@ import {
     Card,
     CardContent,
     Chip,
+    Checkbox,
     CircularProgress,
     Container,
     Divider,
+    FormControlLabel,
     Link,
     Stack,
     TextField,
@@ -24,6 +26,7 @@ import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { COUNTRIES, type CountryOption } from "../utils/CountryOption.ts";
 import { useTranslation } from "react-i18next";
+import LegalDocumentsDialog, { type LegalDocumentType } from "../components/LegalDocumentsDialog";
 
 const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -65,6 +68,8 @@ const SignUp = () =>  {
     const [country, setCountry]     = useState<CountryOption>(() => getCountryFromBrowser());
     const [error, setError]         = useState<string>("");
     const [loading, setLoading]     = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [openDoc, setOpenDoc] = useState<LegalDocumentType>(null);
 
     const emailRef    = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -80,6 +85,11 @@ const SignUp = () =>  {
 
     const handleSignUp = async () => {
         setError("");
+        // Legal: block account creation until explicit consent is given.
+        if (!acceptedTerms) {
+            setError(t("signupPage.errors.mustAcceptTerms"));
+            return;
+        }
         if (!firstName.trim() || !lastName.trim()) {
             setError(t("signupPage.errors.missingName"));
             return;
@@ -156,6 +166,8 @@ const SignUp = () =>  {
                 country: country.label,
                 countryCode: country.code,
                 createdAt: serverTimestamp(),
+                accepted_terms: true,
+                accepted_at: serverTimestamp(),
                 tokenLimit: 10000,
                 monthlyTokensUsed: 0,
                 subscriptionTier: "free",
@@ -358,11 +370,58 @@ const SignUp = () =>  {
                                         />
                                     </Stack>
 
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={acceptedTerms}
+                                                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                                required
+                                            />
+                                        }
+                                        label={
+                                            <Typography variant="body2" color="text.secondary">
+                                                I accept the{" "}
+                                                <Link
+                                                    component="button"
+                                                    type="button"
+                                                    underline="hover"
+                                                    onClick={() => setOpenDoc("terms")}
+                                                    sx={{ cursor: "pointer", font: "inherit", background: "none", border: 0, p: 0 }}
+                                                >
+                                                    Terms & Conditions
+                                                </Link>
+                                                ,{" "}
+                                                <Link
+                                                    component="button"
+                                                    type="button"
+                                                    underline="hover"
+                                                    onClick={() => setOpenDoc("privacy")}
+                                                    sx={{ cursor: "pointer", font: "inherit", background: "none", border: 0, p: 0 }}
+                                                >
+                                                    Privacy Policy
+                                                </Link>
+                                                , and{" "}
+                                                <Link
+                                                    component="button"
+                                                    type="button"
+                                                    underline="hover"
+                                                    onClick={() => setOpenDoc("ai")}
+                                                    sx={{ cursor: "pointer", font: "inherit", background: "none", border: 0, p: 0 }}
+                                                >
+                                                    AI Disclaimer
+                                                </Link>
+                                            </Typography>
+                                        }
+                                    />
+                                    <Typography variant="caption" color="text.secondary">
+                                        {t("aiChat.disclaimer")}
+                                    </Typography>
+
                                     <Button
                                         variant="contained"
                                         size="large"
                                         onClick={handleSignUp}
-                                        disabled={loading}
+                                        disabled={loading || !acceptedTerms}
                                         startIcon={loading ? <CircularProgress size={18} /> : undefined}
                                     >
                                         {loading ? t("signupPage.cta.loading") : t("signupPage.cta.submit")}
@@ -386,6 +445,8 @@ const SignUp = () =>  {
                     </Button>
                 </Box>
             </Container>
+
+            <LegalDocumentsDialog openDoc={openDoc} onClose={() => setOpenDoc(null)} />
         </>
     );
 }

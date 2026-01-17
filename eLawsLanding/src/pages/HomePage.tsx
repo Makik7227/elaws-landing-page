@@ -940,57 +940,6 @@ const HomePage: React.FC = () => {
                 </Container>
             </Box>}
 
-            {/* FOOTER */}
-            <Box
-                component="footer"
-                sx={{
-                    py: 4,
-                    borderTop: `1px solid ${theme.palette.divider}`,
-                    bgcolor: theme.palette.background.paper,
-                }}
-            >
-                <Container>
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        alignItems="center"
-                        justifyContent="space-between"
-                        spacing={2}
-                    >
-                        <Typography variant="body2" color="text.secondary">
-                            © {new Date().getFullYear()} E-Laws
-                        </Typography>
-                        <Stack direction="row" spacing={3}>
-                            <Typography
-                                component={RouterLink}
-                                to="/privacy"
-                                color="text.secondary"
-                                variant="body2"
-                                sx={{ "&:hover": { color: "text.primary" } }}
-                            >
-                                {t("home.footer.privacy")}
-                            </Typography>
-                            <Typography
-                                component={RouterLink}
-                                to="/terms"
-                                color="text.secondary"
-                                variant="body2"
-                                sx={{ "&:hover": { color: "text.primary" } }}
-                            >
-                                {t("home.footer.terms")}
-                            </Typography>
-                            <Typography
-                                component={RouterLink}
-                                to="/contact"
-                                color="text.secondary"
-                                variant="body2"
-                                sx={{ "&:hover": { color: "text.primary" } }}
-                            >
-                                {t("home.footer.contact")}
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                </Container>
-            </Box>
         </>
     );
 };
