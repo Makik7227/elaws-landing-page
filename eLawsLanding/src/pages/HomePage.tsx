@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-    Avatar,
     Box,
     Button,
     Card,
@@ -438,40 +437,6 @@ const HomePage: React.FC = () => {
                                                 </Box>
                                             ))}
                                         </Stack>
-                                    </Stack>
-                                </Card>
-                                <Card
-                                    sx={{
-                                        borderRadius: 4,
-                                        p: 2.5,
-                                        width: 280,
-                                        position: { xs: "relative", md: "absolute" },
-                                        bottom: { xs: -24, md: -32 },
-                                        right: { xs: "auto", md: -32 },
-                                        mt: { xs: 3, md: 0 },
-                                        bgcolor: theme.palette.background.paper,
-                                        boxShadow: theme.palette.mode === "light" ? "0 20px 45px rgba(10,0,30,0.25)" : "0 20px 45px rgba(0,0,0,0.65)",
-                                    }}
-                                >
-                                    <Stack spacing={1.5}>
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            <Avatar sx={{ bgcolor: theme.palette.primary.main }}>SM</Avatar>
-                                            <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>DL</Avatar>
-                                            <Avatar sx={{ bgcolor: theme.palette.grey[500] }}>AZ</Avatar>
-                                        </Stack>
-                                        <Typography variant="subtitle2" fontWeight={700}>
-                                            {t("home.hero.widget.supportTitle")}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {t("home.hero.widget.supportDesc")}
-                                        </Typography>
-                                        <Chip
-                                            label={t("home.hero.widget.supportStatus")}
-                                            size="small"
-                                            color="primary"
-                                            icon={<ScheduleRoundedIcon fontSize="small" />}
-                                            sx={{ width: "fit-content", borderRadius: 999 }}
-                                        />
                                     </Stack>
                                 </Card>
                             </Box>

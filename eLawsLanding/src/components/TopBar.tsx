@@ -303,7 +303,12 @@ const TopBar = () => {
                             aria-label={t("topBar.openMenu")}
                             onClick={() => setDrawerOpen(true)}
                             sx={{
-                                border: (t) => `1px solid ${alpha(t.palette.text.primary, 0.1)}`,
+                                color: (t) => t.palette.text.primary,
+                                border: (t) => `1px solid ${alpha(t.palette.text.primary, 0.25)}`,
+                                backgroundColor: (t) => alpha(t.palette.text.primary, 0.04),
+                                "&:hover": {
+                                    backgroundColor: (t) => alpha(t.palette.text.primary, 0.08),
+                                },
                             }}
                         >
                             <MenuRoundedIcon />
