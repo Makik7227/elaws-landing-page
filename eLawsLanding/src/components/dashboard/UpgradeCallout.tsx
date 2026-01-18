@@ -37,7 +37,16 @@ const UpgradeCallout: React.FC<UpgradeCalloutProps> = ({
                         <Typography color="text.secondary">{description}</Typography>
                     </Box>
                     <Stack direction="row" spacing={1.25} flexWrap="wrap">
-                        <Button component={RouterLink} to={pricingLink} variant="outlined" sx={{ borderRadius: 2 }}>
+                        <Button
+                            component={RouterLink}
+                            to={pricingLink}
+                            variant="contained"
+                            sx={{
+                                borderRadius: 2,
+                                fontWeight: 700,
+                                boxShadow: "0 12px 24px rgba(18, 10, 40, 0.18)",
+                            }}
+                        >
                             {pricingLabel}
                         </Button>
                     </Stack>

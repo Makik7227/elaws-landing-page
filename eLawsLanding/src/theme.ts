@@ -99,6 +99,14 @@ const components: ThemeOptions["components"] = {
             contained: {
                 boxShadow: "0 14px 28px rgba(18, 10, 40, 0.18)",
             },
+            outlined: {
+                borderWidth: 2,
+                borderColor: "currentColor",
+                "&:hover": {
+                    borderWidth: 2,
+                    borderColor: "currentColor",
+                },
+            },
         },
     },
     MuiCard: {

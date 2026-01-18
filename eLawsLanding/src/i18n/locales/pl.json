@@ -304,7 +304,8 @@
             "title": "Prosto, sprawiedliwie i elastycznie",
             "subtitle": "Wybierz plan pasujący do Twojej pracy. Możesz zrezygnować w dowolnym momencie.",
             "secondaryCta": "Zobacz funkcje",
-            "openApp": "Otwórz aplikację"
+            "openApp": "Otwórz aplikację",
+            "primaryCta": "Create account"
         },
         "plans": {
             "perMonth": "/ miesiąc",
@@ -402,6 +403,24 @@
         },
         "errors": {
             "invalidCredentials": "Nieprawidłowy e-mail lub hasło"
+        }
+    },
+    "forgotPasswordPage": {
+        "hero": {
+            "badge": "Reset hasła",
+            "title": "Zresetuj hasło",
+            "subtitle": "Wpisz e-mail konta, a wyślemy bezpieczny link do resetu."
+        },
+        "form": {
+            "title": "Wyślij link resetu",
+            "emailLabel": "E-mail",
+            "submit": "Wyślij e-mail resetu",
+            "backToLogin": "← Wróć do logowania"
+        },
+        "success": "Jeśli konto istnieje, wysłaliśmy link do resetu.",
+        "errors": {
+            "missingEmail": "Wpisz adres e-mail.",
+            "failed": "Nie udało się wysłać e-maila resetu. Spróbuj ponownie."
         }
     },
     "signupPage": {

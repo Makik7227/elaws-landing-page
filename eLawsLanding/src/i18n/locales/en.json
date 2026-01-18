@@ -304,7 +304,8 @@
             "title": "Protect your legal workflow",
             "subtitle": "Free is a trial. Upgrade when you need reliable guidance, documents, and case control.",
             "secondaryCta": "See features",
-            "openApp": "Open App"
+            "openApp": "Open App",
+            "primaryCta": "Create account"
         },
         "plans": {
             "perMonth": "/ month",
@@ -402,6 +403,24 @@
         },
         "errors": {
             "invalidCredentials": "Invalid email or password"
+        }
+    },
+    "forgotPasswordPage": {
+        "hero": {
+            "badge": "Password reset",
+            "title": "Reset your password",
+            "subtitle": "Enter your account email and we will send a secure reset link."
+        },
+        "form": {
+            "title": "Get reset link",
+            "emailLabel": "Email",
+            "submit": "Send reset email",
+            "backToLogin": "← Back to login"
+        },
+        "success": "If an account exists for this email, we just sent a reset link.",
+        "errors": {
+            "missingEmail": "Enter your email to continue.",
+            "failed": "We could not send the reset email. Try again in a moment."
         }
     },
     "signupPage": {

@@ -23,6 +23,7 @@ import GenerateDocumentPage from "./pages/GenerateDocumentPage.tsx";
 import CreateCasePage from "./pages/CreateCasePage.tsx";
 import ConnectionsPage from "./pages/ConnectionsPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx";
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/home" element={<HomePage/>}/>
                 <Route path="/login" element={<LoginPage/>}/>
+                <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
                 <Route path="/signup" element={<SingUp/>}/>
                 <Route path="/features" element={<FeaturesPage/>}/>
                 <Route path="/pricing" element={<PricingPage/>}/>

@@ -41,6 +41,34 @@ const PageHero: React.FC<PageHeroProps> = ({
     const topOffsetDesktop = "var(--topbar-height-desktop)";
     const paddedTopMobile = `calc(${topOffsetMobile} + ${theme.spacing(4)})`;
     const paddedTopDesktop = `calc(${topOffsetDesktop} + ${theme.spacing(6)})`;
+    const actionStyles = isGradient
+        ? {
+              "& .MuiButton-contained": {
+                  backgroundColor: theme.palette.common.white,
+                  color: theme.palette.primary.dark,
+                  boxShadow: "0 14px 30px rgba(0,0,0,0.25)",
+                  "&:hover": {
+                      backgroundColor: alpha(theme.palette.common.white, 0.9),
+                  },
+              },
+              "& .MuiButton-outlined": {
+                  color: "inherit",
+                  borderColor: alpha(theme.palette.common.white, 0.7),
+                  backgroundColor: alpha(theme.palette.common.white, 0.08),
+                  "&:hover": {
+                      borderColor: theme.palette.common.white,
+                      backgroundColor: alpha(theme.palette.common.white, 0.16),
+                  },
+              },
+              "& .MuiButton-text": {
+                  color: "inherit",
+                  backgroundColor: alpha(theme.palette.common.white, 0.08),
+                  "&:hover": {
+                      backgroundColor: alpha(theme.palette.common.white, 0.16),
+                  },
+              },
+          }
+        : undefined;
 
     return (
         <Box
@@ -172,6 +200,7 @@ const PageHero: React.FC<PageHeroProps> = ({
                                 sx={{
                                     width: { xs: "100%", md: "auto" },
                                     alignSelf: align === "center" ? "center" : { xs: "stretch", md: "flex-end" },
+                                    ...(actionStyles ?? {}),
                                 }}
                             >
                                 {actions}

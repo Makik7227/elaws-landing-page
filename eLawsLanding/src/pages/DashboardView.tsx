@@ -300,7 +300,7 @@ const Dashboard: React.FC = () => {
                   status: lastCaseStatusLabel,
               })
             : t("dashboard.info.lastCase.empty");
-    const lastCaseLink = lastCase ? `/cases/${lastCase.id}` : "/cases";
+    const lastCaseLink = lastCase ? `/cases/${lastCase.id}` : "/dashboard/cases";
     const hasLastCase = Boolean(lastCase);
     const quickActionsConfig: QuickActionItem[] = [
         {

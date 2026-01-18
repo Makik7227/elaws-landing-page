@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { Button, alpha, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +10,7 @@ type SubscriptionButtonProps = {
 const SubscriptionButton: React.FC<SubscriptionButtonProps> = ({ subscriptionTier }) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const theme = useTheme();
 
     const handleClick = () => {
         navigate("/dashboard/subscribe");
@@ -23,6 +24,8 @@ const SubscriptionButton: React.FC<SubscriptionButtonProps> = ({ subscriptionTie
     const variant =
         subscriptionTier === "free" ? "contained" : "outlined";
 
+    const isFree = subscriptionTier === "free";
+
     return (
         <Button
             onClick={handleClick}
@@ -33,12 +36,15 @@ const SubscriptionButton: React.FC<SubscriptionButtonProps> = ({ subscriptionTie
                 px: 3,
                 py: 1.25,
                 textTransform: "none",
-                bgcolor: "rgba(255,255,255,0.15)",
-                color: "#fff",
-                backdropFilter: "blur(4px)",
-                border: "1px solid rgba(255,255,255,0.3)",
+                bgcolor: isFree ? theme.palette.primary.main : alpha(theme.palette.primary.main, 0.08),
+                color: isFree ? theme.palette.primary.contrastText : theme.palette.primary.main,
+                border: isFree ? "none" : `1px solid ${alpha(theme.palette.primary.main, 0.45)}`,
+                boxShadow: isFree ? "0 10px 22px rgba(43, 24, 84, 0.22)" : "none",
                 "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.25)",
+                    bgcolor: isFree
+                        ? theme.palette.primary.dark
+                        : alpha(theme.palette.primary.main, 0.16),
+                    borderColor: isFree ? "transparent" : alpha(theme.palette.primary.main, 0.65),
                 },
             }}
         >

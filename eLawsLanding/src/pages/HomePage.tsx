@@ -13,7 +13,7 @@ import {
     useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
@@ -218,6 +218,7 @@ const HomePage: React.FC = () => {
     const theme = useTheme();
     const [user, setUser] = useState<User | null>(null);
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => setUser(u));
@@ -227,6 +228,10 @@ const HomePage: React.FC = () => {
     const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${
         theme.palette.secondary.main
     } 60%, ${theme.palette.primary.main} 100%)`;
+
+    const handleBrowseProcedures = () => {
+        navigate(user ? "/procedures" : "/login");
+    };
 
     return (
         <>
@@ -318,7 +323,7 @@ const HomePage: React.FC = () => {
                                     {!user && (
                                         <Button
                                             component={RouterLink}
-                                            to="/chat"
+                                            to="/ai/chat"
                                             variant="outlined"
                                             size="large"
                                             sx={{
@@ -326,10 +331,14 @@ const HomePage: React.FC = () => {
                                                 py: 1.2,
                                                 fontWeight: 700,
                                                 color: "inherit",
-                                                borderColor: alpha(theme.palette.common.white, 0.4),
-                                                bgcolor: alpha(theme.palette.common.white, 0.06),
+                                                borderWidth: 2,
+                                                borderColor: alpha(theme.palette.common.white, 0.7),
+                                                bgcolor: alpha(theme.palette.common.white, 0.12),
                                                 borderRadius: 3,
-                                                "&:hover": { borderColor: "inherit" },
+                                                "&:hover": {
+                                                    borderColor: theme.palette.common.white,
+                                                    bgcolor: alpha(theme.palette.common.white, 0.2),
+                                                },
                                             }}
                                         >
                                             {t("home.hero.ctaSecondary")}
@@ -684,7 +693,7 @@ const HomePage: React.FC = () => {
                                     />
                                 </Stack>
                                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
-                                    <Button component={RouterLink} to="/procedures" variant="contained">
+                                    <Button onClick={handleBrowseProcedures} variant="contained">
                                         {t("home.timeline.primaryCta")}
                                     </Button>
                                     <Button component={RouterLink} to="/dashboard" variant="text">
@@ -805,8 +814,13 @@ const HomePage: React.FC = () => {
                                         sx={{
                                             borderRadius: 3,
                                             color: "inherit",
+                                            borderWidth: 2,
                                             borderColor: "currentColor",
-                                            "&:hover": {borderColor: "currentColor"},
+                                            bgcolor: alpha(theme.palette.common.white, 0.12),
+                                            "&:hover": {
+                                                borderColor: "currentColor",
+                                                bgcolor: alpha(theme.palette.common.white, 0.2),
+                                            },
                                         }}
                                     >
                                         {t("home.ctaBand.secondary")}
