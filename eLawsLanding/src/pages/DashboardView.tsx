@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Stack, Typography, useTheme } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
@@ -79,7 +79,6 @@ type UpgradePromptState = {
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
 const Dashboard: React.FC = () => {
-    const theme = useTheme();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
 
