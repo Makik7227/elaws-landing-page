@@ -454,6 +454,77 @@ const HomePage: React.FC = () => {
                 </Container>
             </Box>
 
+            {/* ONE-TIME PROCEDURES */}
+            {!user && (
+                <Box component="section" sx={{ py: { xs: 6, md: 8 }, bgcolor: theme.palette.background.default }}>
+                    <Container>
+                        <Card
+                            sx={{
+                                borderRadius: 4,
+                                p: { xs: 3, md: 4 },
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                                background: theme.palette.mode === "light"
+                                    ? "linear-gradient(120deg, rgba(255,255,255,0.98), rgba(244,238,229,0.92))"
+                                    : alpha(theme.palette.background.paper, 0.9),
+                                boxShadow:
+                                    theme.palette.mode === "light"
+                                        ? "0 24px 70px rgba(16,18,20,0.08)"
+                                        : "0 24px 70px rgba(0,0,0,0.55)",
+                            }}
+                        >
+                            <Grid container spacing={3} alignItems="center">
+                                <Grid size={{ xs: 12, md: 7 }}>
+                                    <Stack spacing={1.5}>
+                                        <Chip
+                                            label={t("home.proceduresPurchase.badge")}
+                                            color="primary"
+                                            variant="outlined"
+                                            sx={{ width: "fit-content", fontWeight: 700 }}
+                                        />
+                                        <Typography variant="h4" fontWeight={800}>
+                                            {t("home.proceduresPurchase.title")}
+                                        </Typography>
+                                        <Typography color="text.secondary">
+                                            {t("home.proceduresPurchase.subtitle")}
+                                        </Typography>
+                                        <Stack spacing={0.5}>
+                                            <Typography variant="body2" fontWeight={600}>
+                                                {t("home.proceduresPurchase.pointOne")}
+                                            </Typography>
+                                            <Typography variant="body2" fontWeight={600}>
+                                                {t("home.proceduresPurchase.pointTwo")}
+                                            </Typography>
+                                            <Typography variant="body2" fontWeight={600}>
+                                                {t("home.proceduresPurchase.pointThree")}
+                                            </Typography>
+                                        </Stack>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {t("home.proceduresPurchase.message")}
+                                        </Typography>
+                                    </Stack>
+                                </Grid>
+                                <Grid size={{ xs: 12, md: 5 }}>
+                                    <Stack spacing={1.5} alignItems={{ xs: "stretch", md: "flex-end" }}>
+                                        <Button
+                                            component={RouterLink}
+                                            to="/procedures-purchase"
+                                            variant="contained"
+                                            size="large"
+                                            sx={{ px: 4, py: 1.2, fontWeight: 800, borderRadius: 3 }}
+                                        >
+                                            {t("home.proceduresPurchase.cta")}
+                                        </Button>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {t("home.proceduresPurchase.helper")}
+                                        </Typography>
+                                    </Stack>
+                                </Grid>
+                            </Grid>
+                        </Card>
+                    </Container>
+                </Box>
+            )}
+
             {/* VALUE PROPS */}
             <Box
                 component="section"

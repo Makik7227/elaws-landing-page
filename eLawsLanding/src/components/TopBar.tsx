@@ -131,7 +131,8 @@ const TopBar = () => {
                     >
                         <Box
                             component="img"
-                            src="/Logo.png"
+                            src="/logo-40.png"
+                            srcSet="/logo-40.png 1x, /logo-80.png 2x"
                             alt="E-Laws"
                             sx={{
                                 height: 40,
@@ -286,7 +287,8 @@ const TopBar = () => {
                     >
                         <Box
                             component="img"
-                            src="/Logo.png"
+                            src="/logo-40.png"
+                            srcSet="/logo-40.png 1x, /logo-80.png 2x"
                             alt="E-Laws"
                             sx={{
                                 height: 32,

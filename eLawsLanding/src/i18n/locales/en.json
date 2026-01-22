@@ -74,6 +74,51 @@
                 "supportStatus": "Live within 5 min"
             }
         },
+        "proceduresPurchase": {
+            "badge": "One-time purchase",
+            "title": "Emergency procedures delivered to your inbox.",
+            "subtitle": "No login required. Choose your country, pay once, and we send the stop procedure straight to your email.",
+            "pointOne": "Country-aware procedure in minutes.",
+            "pointTwo": "One-time payment, no subscription.",
+            "pointThree": "Delivered directly to your email.",
+            "message": "Create an account and take a look at our plans.",
+            "cta": "Get procedures now",
+            "helper": "Pay once. Receive instantly.",
+            "dialog": {
+                "title": "Get emergency procedures",
+                "description": "Enter the email where we should send your procedures and select the country.",
+                "emailLabel": "Email address",
+                "submit": "Proceed to payment",
+                "processing": "Redirecting...",
+                "cancel": "Cancel",
+                "errors": {
+                    "emailRequired": "Email is required.",
+                    "emailInvalid": "Enter a valid email address.",
+                    "countryRequired": "Please choose a country.",
+                    "generic": "Unable to start checkout. Please try again."
+                }
+            }
+        },
+        "proceduresPurchaseResult": {
+            "success": {
+                "badge": "Payment successful",
+                "title": "You’re all set.",
+                "subtitle": "We’re preparing your emergency procedures and sending them to your email.",
+                "primaryCta": "Back to home",
+                "secondaryCta": "See plans",
+                "cardTitle": "What happens next?",
+                "cardBody": "Check your inbox for a message from eLaws. If it doesn’t arrive within a few minutes, check your spam folder or contact support."
+            },
+            "cancel": {
+                "badge": "Payment canceled",
+                "title": "Checkout was canceled.",
+                "subtitle": "No charge was made. You can restart the purchase whenever you’re ready.",
+                "primaryCta": "Back to home",
+                "secondaryCta": "Contact support",
+                "cardTitle": "Need help?",
+                "cardBody": "If something went wrong at checkout, reach out and we’ll get you sorted quickly."
+            }
+        },
         "benefits": {
             "overline": "Why teams switch",
             "title": "Modern UI meets legal precision.",

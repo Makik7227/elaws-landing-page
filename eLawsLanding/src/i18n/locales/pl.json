@@ -74,6 +74,51 @@
                 "supportStatus": "Gotowe w 5 min"
             }
         },
+        "proceduresPurchase": {
+            "badge": "Jednorazowy zakup",
+            "title": "Procedury awaryjne prosto na e-mail.",
+            "subtitle": "Bez logowania. Wybierz kraj, zapłać raz, a procedury wyślemy na e-mail.",
+            "pointOne": "Procedura dopasowana do kraju w kilka minut.",
+            "pointTwo": "Jednorazowa płatność, bez subskrypcji.",
+            "pointThree": "Wysyłka bezpośrednio na e-mail.",
+            "message": "Załóż konto i poznaj nasze plany.",
+            "cta": "Pobierz procedury",
+            "helper": "Płatność jednorazowa. Dostawa od razu.",
+            "dialog": {
+                "title": "Pobierz procedury awaryjne",
+                "description": "Podaj adres e-mail do wysyłki i wybierz kraj.",
+                "emailLabel": "Adres e-mail",
+                "submit": "Przejdź do płatności",
+                "processing": "Przekierowanie...",
+                "cancel": "Anuluj",
+                "errors": {
+                    "emailRequired": "Email jest wymagany.",
+                    "emailInvalid": "Podaj poprawny adres e-mail.",
+                    "countryRequired": "Wybierz kraj.",
+                    "generic": "Nie udało się uruchomić płatności. Spróbuj ponownie."
+                }
+            }
+        },
+        "proceduresPurchaseResult": {
+            "success": {
+                "badge": "Płatność zakończona",
+                "title": "Wszystko gotowe.",
+                "subtitle": "Przygotowujemy procedury i wysyłamy je na Twój e-mail.",
+                "primaryCta": "Wróć na stronę główną",
+                "secondaryCta": "Zobacz plany",
+                "cardTitle": "Co dalej?",
+                "cardBody": "Sprawdź skrzynkę odbiorczą. Jeśli wiadomość nie dotrze w kilka minut, zajrzyj do spamu lub skontaktuj się z pomocą."
+            },
+            "cancel": {
+                "badge": "Płatność anulowana",
+                "title": "Płatność została anulowana.",
+                "subtitle": "Nie pobrano opłaty. Możesz rozpocząć zakup w dowolnym momencie.",
+                "primaryCta": "Wróć na stronę główną",
+                "secondaryCta": "Skontaktuj się z pomocą",
+                "cardTitle": "Potrzebujesz pomocy?",
+                "cardBody": "Jeśli coś poszło nie tak podczas płatności, napisz do nas, a szybko pomożemy."
+            }
+        },
         "benefits": {
             "overline": "Dlaczego zespoły przechodzą",
             "title": "Nowoczesny interfejs z prawniczną precyzją.",
