@@ -954,6 +954,10 @@
             "acceptFailed": "Nie udało się zaakceptować zaproszenia.",
             "rejectFailed": "Nie udało się odrzucić zaproszenia.",
             "removeFailed": "Nie udało się usunąć kontaktu."
+        },
+        "carousel": {
+            "prev": "Poprzednia sekcja",
+            "next": "Następna sekcja"
         }
     },
     "myDocuments": {

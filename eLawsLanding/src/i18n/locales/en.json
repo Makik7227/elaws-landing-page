@@ -1013,6 +1013,10 @@
             "acceptFailed": "Could not accept request.",
             "rejectFailed": "Could not reject request.",
             "removeFailed": "Could not remove connection."
+        },
+        "carousel": {
+            "prev": "Previous section",
+            "next": "Next section"
         }
     },
     "myDocuments": {

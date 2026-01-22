@@ -78,7 +78,6 @@ const TopBar = () => {
             { labelKey: "nav.documents", to: "/documents" },
             { labelKey: "nav.procedures", to: "/procedures" },
             { labelKey: "nav.notes", to: "/dashboard/notes" },
-            { labelKey: "nav.connections", to: "/connections" },
         ],
         []
     );
@@ -207,17 +206,6 @@ const TopBar = () => {
                                     sx={{ borderRadius: 2, px: 2.25, fontWeight: 700, textTransform: "none" }}
                                 >
                                     {t("auth.account")}
-                                </MotionButton>
-                                <MotionButton
-                                    component={RouterLink}
-                                    to="/connections"
-                                    variant={isActive("/connections") ? "contained" : "outlined"}
-                                    color="primary"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    sx={{ borderRadius: 2, px: 2.25, fontWeight: 700, textTransform: "none" }}
-                                >
-                                    {t("nav.connections")}
                                 </MotionButton>
                                 <MotionButton
                                     onClick={handleLogout}

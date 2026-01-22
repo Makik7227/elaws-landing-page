@@ -30,6 +30,7 @@ import DowngradeNotice from "../components/dashboard/DowngradeNotice.tsx";
 import UsageAndPanicCard from "../components/dashboard/UsageAndPanicCard.tsx";
 import QuickActionsSection, { type QuickActionItem } from "../components/dashboard/QuickActionsSection.tsx";
 import UpgradeCallout from "../components/dashboard/UpgradeCallout.tsx";
+import ConnectionsDrawer from "../components/connections/ConnectionsDrawer.tsx";
 import {
     shouldWarnAboutTokens,
     isTierAtLeast,
@@ -89,6 +90,7 @@ const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [upgradePrompt, setUpgradePrompt] = useState<UpgradePromptState | null>(null);
     const [tokenPromptShown, setTokenPromptShown] = useState(false);
+    const [connectionsOpen, setConnectionsOpen] = useState(false);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -381,6 +383,8 @@ const Dashboard: React.FC = () => {
         });
     };
     const closeUpgradePrompt = () => setUpgradePrompt(null);
+    const openConnections = () => setConnectionsOpen(true);
+    const closeConnections = () => setConnectionsOpen(false);
 
     useEffect(() => {
         if (!tokenWarning || tokenPromptShown) return;
@@ -470,6 +474,7 @@ const Dashboard: React.FC = () => {
                             cases: t("dashboard.menu.cases"),
                         }}
                         onQuickActionLocked={handleQuickActionLocked}
+                        onConnectionsClick={openConnections}
                     />
 
                     {subscriptionTier === "free" && (
@@ -493,6 +498,7 @@ const Dashboard: React.FC = () => {
                     highlight={upgradePrompt.highlight}
                 />
             )}
+            <ConnectionsDrawer open={connectionsOpen} onClose={closeConnections} />
         </>
     );
 };

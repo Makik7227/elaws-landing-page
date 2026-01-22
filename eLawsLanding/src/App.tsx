@@ -23,7 +23,6 @@ const DocumentsLandingPage = lazy(() => import("./pages/DocumentsLandingPage.tsx
 const MyDocumentsPage = lazy(() => import("./pages/MyDocumentsPage.tsx"));
 const GenerateDocumentPage = lazy(() => import("./pages/GenerateDocumentPage.tsx"));
 const CreateCasePage = lazy(() => import("./pages/CreateCasePage.tsx"));
-const ConnectionsPage = lazy(() => import("./pages/ConnectionsPage.tsx"));
 const ContactPage = lazy(() => import("./pages/ContactPage.tsx"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage.tsx"));
 const ProceduresPurchaseSuccessPage = lazy(() => import("./pages/ProceduresPurchaseSuccessPage.tsx"));
@@ -58,7 +57,6 @@ function App() {
                     <Route path="/documents" element={<DocumentsLandingPage />} />
                     <Route path="/documents/my" element={<MyDocumentsPage />} />
                     <Route path="/documents/generate" element={<GenerateDocumentPage />} />
-                    <Route path="/connections" element={<ConnectionsPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/procedures-purchase/success" element={<ProceduresPurchaseSuccessPage />} />
                     <Route path="/procedures-purchase/cancel" element={<ProceduresPurchaseCancelPage />} />
