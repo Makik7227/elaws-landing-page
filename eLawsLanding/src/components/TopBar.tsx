@@ -354,7 +354,7 @@ const TopBar = () => {
                                 }}
                             >
                                 <ListItemText
-                                    primary={t(labelKey)}
+                                    primary={`• ${t(labelKey)}`}
                                     primaryTypographyProps={{ fontWeight: 600 }}
                                 />
                             </ListItemButton>
@@ -421,21 +421,6 @@ const TopBar = () => {
                                 </MotionButton>
                             </>
                         )}
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing={1.5}
-                            mt={0.5}
-                            flexWrap="wrap"
-                        >
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <ThemeToggleButton />
-                                <Typography variant="body2" color="text.secondary">
-                                    {t("topBar.themeToggle")}
-                                </Typography>
-                            </Stack>
-                            <LanguageToggleButton />
-                        </Stack>
                     </Stack>
                 </Box>
             </Drawer>

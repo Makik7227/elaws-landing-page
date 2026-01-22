@@ -1,24 +1,13 @@
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import {
-    Avatar,
     Box,
-    Button,
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    IconButton,
+    Avatar,
+    Autocomplete,
     InputAdornment,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
     TextField,
     Typography,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
 import { countries } from "../utils/contries.ts";
 import { useTranslation } from "react-i18next";
 
@@ -38,142 +27,116 @@ const CustomCountryPickerWeb: React.FC<Props> = ({
                                                      onSelect,
                                                      enableXReset,
                                                  }) => {
-    const [search, setSearch] = useState("");
-    const [open, setOpen] = useState(false);
     const { t } = useTranslation();
 
     const getLocalizedName = (code: string, fallback: string) =>
         t(`countries.${code}`, { defaultValue: fallback || code });
 
-    const normalizedSearch = search.trim().toLowerCase();
-    const filtered = countries.filter((c) => {
-        const localized = getLocalizedName(c.code, c.name).toLowerCase();
-        return (
-            localized.includes(normalizedSearch) ||
-            c.name.toLowerCase().includes(normalizedSearch) ||
-            c.code.toLowerCase().includes(normalizedSearch)
-        );
-    });
-
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-        if (e.target.value.length > 0) {
-            onSelect(null); // reset if typing
+    const selectedOption = useMemo(() => {
+        if (countryCode) {
+            return countries.find((item) => item.code === countryCode) ?? null;
         }
-    };
+        if (country) {
+            return countries.find((item) => item.name === country) ?? null;
+        }
+        return null;
+    }, [country, countryCode]);
 
     return (
-        <>
-            {/* Picker trigger */}
-            <Button
-                onClick={() => setOpen(true)}
-                variant="outlined"
-                fullWidth
-                sx={{
-                    borderRadius: 3,
-                    textTransform: "none",
-                    px: 2,
-                    py: 1,
-                }}
-                endIcon={<ExpandMoreIcon />}
-            >
-                {country && countryCode ? (
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <Avatar
-                            src={getFlagUrl(countryCode)}
-                            sx={{ width: 28, height: 20, borderRadius: "4px" }}
-                            variant="square"
-                        />
-                        <Typography fontWeight={600}>
-                            {getLocalizedName(countryCode, country)} ({countryCode})
-                        </Typography>
-                        {enableXReset && (
-                            <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onSelect(null);
-                                }}
-                            >
-                                <ClearIcon fontSize="small" />
-                            </IconButton>
-                        )}
-                    </Box>
-                ) : (
-                    t("components.countryPicker.trigger")
-                )}
-            </Button>
-
-            {/* Dialog */}
-            <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
-                <DialogTitle
+        <Autocomplete
+            fullWidth
+            autoHighlight
+            openOnFocus
+            clearOnEscape={Boolean(enableXReset)}
+            options={countries}
+            value={selectedOption}
+            disableClearable={!enableXReset}
+            getOptionLabel={(option) => getLocalizedName(option.code, option.name)}
+            isOptionEqualToValue={(option, value) => option.code === value.code}
+            filterOptions={(options, { inputValue }) => {
+                const normalizedSearch = inputValue.trim().toLowerCase();
+                if (!normalizedSearch) {
+                    return options;
+                }
+                return options.filter((item) => {
+                    const localized = getLocalizedName(item.code, item.name).toLowerCase();
+                    return (
+                        localized.includes(normalizedSearch) ||
+                        item.name.toLowerCase().includes(normalizedSearch) ||
+                        item.code.toLowerCase().includes(normalizedSearch)
+                    );
+                });
+            }}
+            onChange={(_, value) => {
+                onSelect(value ?? null);
+            }}
+            noOptionsText={t("components.countryPicker.empty")}
+            renderOption={(props, option) => (
+                <Box
+                    component="li"
+                    {...props}
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        gap: 1.5,
+                        py: 1,
                     }}
                 >
-                    {t("components.countryPicker.dialogTitle")}
-                    <IconButton onClick={() => setOpen(false)} size="small">
-                        <CloseIcon />
-                    </IconButton>
-                </DialogTitle>
-
-                <DialogContent>
-                    <TextField
-                        fullWidth
-                        value={search}
-                        onChange={handleSearch}
-                        placeholder={t("components.countryPicker.searchPlaceholder")}
-                        size="small"
-                        margin="normal"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon fontSize="small" />
-                                </InputAdornment>
-                            ),
-                        }}
+                    <Avatar
+                        src={getFlagUrl(option.code)}
+                        variant="square"
+                        sx={(theme) => ({
+                            width: 32,
+                            height: 22,
+                            borderRadius: "4px",
+                            border: `1px solid ${theme.palette.divider}`,
+                        })}
                     />
-
-                    <List sx={{ maxHeight: 300, overflow: "auto" }}>
-                        {filtered.map((item) => (
-                            <ListItem
-                                component="button"
-                                key={item.code}
-                                onClick={() => {
-                                    onSelect(item);
-                                    setSearch("");
-                                    setOpen(false);
-                                }}
-                            >
-                                <ListItemAvatar>
+                    <Box>
+                        <Typography fontWeight={600}>
+                            {getLocalizedName(option.code, option.name)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            {option.code}
+                        </Typography>
+                    </Box>
+                </Box>
+            )}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label={t("components.countryPicker.trigger")}
+                    placeholder={t("components.countryPicker.searchPlaceholder")}
+                    InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                {selectedOption ? (
                                     <Avatar
-                                        src={getFlagUrl(item.code)}
+                                        src={getFlagUrl(selectedOption.code)}
                                         variant="square"
-                                        sx={{ width: 32, height: 22, borderRadius: "4px" }}
+                                        sx={(theme) => ({
+                                            width: 26,
+                                            height: 18,
+                                            borderRadius: "4px",
+                                            border: `1px solid ${theme.palette.divider}`,
+                                        })}
                                     />
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={getLocalizedName(item.code, item.name)}
-                                    secondary={item.code}
-                                    primaryTypographyProps={{ fontWeight: 500 }}
-                                />
-                            </ListItem>
-                        ))}
-                        {filtered.length === 0 && (
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ p: 2, textAlign: "center" }}
-                            >
-                                {t("components.countryPicker.empty")}
-                            </Typography>
-                        )}
-                    </List>
-                </DialogContent>
-            </Dialog>
-        </>
+                                ) : (
+                                    <SearchIcon fontSize="small" />
+                                )}
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            )}
+            ListboxProps={{
+                sx: {
+                    maxHeight: 320,
+                    py: 0.5,
+                },
+            }}
+        />
     );
 };
 
