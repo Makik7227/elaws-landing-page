@@ -51,6 +51,7 @@ type QuickActionsSectionProps = {
         cases: string;
     };
     onQuickActionLocked: (action: QuickActionItem) => void;
+    onConnectionsClick?: () => void;
 };
 
 const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
@@ -67,6 +68,7 @@ const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
     subscriptionTier,
     menuTitles,
     onQuickActionLocked,
+    onConnectionsClick,
 }) => {
     const filteredActions = quickActions.filter((action) => action.key !== "cases" || role === "lawyer");
 
@@ -79,6 +81,7 @@ const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
                             key={action.key}
                             action={action}
                             onLocked={() => onQuickActionLocked(action)}
+                            onAction={action.key === "connections" ? onConnectionsClick : undefined}
                         />
                     ))}
                 </Stack>
@@ -114,7 +117,12 @@ const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
                     justifyContent="space-between"
                 >
                     <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title={menuTitles.account} />
-                    <MenuTile to="/connections" icon={<PeopleAltRoundedIcon />} title={menuTitles.connections} />
+                    <MenuTile
+                        to="/connections"
+                        icon={<PeopleAltRoundedIcon />}
+                        title={menuTitles.connections}
+                        onClick={onConnectionsClick}
+                    />
                     {subscriptionTier !== "free" && (
                         <>
                             <MenuTile to="/documents" icon={<DescriptionRoundedIcon />} title={menuTitles.documents} />
@@ -132,13 +140,19 @@ export default QuickActionsSection;
 const QuickAction: React.FC<{
     action: QuickActionItem;
     onLocked: () => void;
-}> = ({ action, onLocked }) => {
+    onAction?: () => void;
+}> = ({ action, onLocked, onAction }) => {
     const { to, icon, title, locked, helper } = action;
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
         if (locked) {
             event.preventDefault();
             onLocked();
+            return;
+        }
+        if (onAction) {
+            event.preventDefault();
+            onAction();
         }
     };
 
@@ -219,7 +233,8 @@ const MenuTile: React.FC<{
     to: string;
     icon: React.ReactNode;
     title: string;
-}> = ({ to, icon, title }) => (
+    onClick?: () => void;
+}> = ({ to, icon, title, onClick }) => (
     <Card
         elevation={2}
         sx={{
@@ -231,24 +246,46 @@ const MenuTile: React.FC<{
         }}
         component="div"
     >
-        <CardActionArea component={RouterLink} to={to} sx={{ borderRadius: 3 }}>
-            <CardContent sx={{ display: "grid", placeItems: "center", py: 3 }}>
-                <Box
-                    sx={{
-                        width: 44,
-                        height: 44,
-                        display: "grid",
-                        placeItems: "center",
-                        borderRadius: 2,
-                        backgroundColor: (t) =>
-                            t.palette.mode === "light" ? t.palette.primary.main + "20" : t.palette.primary.main + "30",
-                        mb: 1,
-                    }}
-                >
-                    {icon}
-                </Box>
-                <Typography fontWeight={800}>{title}</Typography>
-            </CardContent>
-        </CardActionArea>
+        {onClick ? (
+            <CardActionArea onClick={onClick} sx={{ borderRadius: 3 }}>
+                <CardContent sx={{ display: "grid", placeItems: "center", py: 3 }}>
+                    <Box
+                        sx={{
+                            width: 44,
+                            height: 44,
+                            display: "grid",
+                            placeItems: "center",
+                            borderRadius: 2,
+                            backgroundColor: (t) =>
+                                t.palette.mode === "light" ? t.palette.primary.main + "20" : t.palette.primary.main + "30",
+                            mb: 1,
+                        }}
+                    >
+                        {icon}
+                    </Box>
+                    <Typography fontWeight={800}>{title}</Typography>
+                </CardContent>
+            </CardActionArea>
+        ) : (
+            <CardActionArea component={RouterLink} to={to} sx={{ borderRadius: 3 }}>
+                <CardContent sx={{ display: "grid", placeItems: "center", py: 3 }}>
+                    <Box
+                        sx={{
+                            width: 44,
+                            height: 44,
+                            display: "grid",
+                            placeItems: "center",
+                            borderRadius: 2,
+                            backgroundColor: (t) =>
+                                t.palette.mode === "light" ? t.palette.primary.main + "20" : t.palette.primary.main + "30",
+                            mb: 1,
+                        }}
+                    >
+                        {icon}
+                    </Box>
+                    <Typography fontWeight={800}>{title}</Typography>
+                </CardContent>
+            </CardActionArea>
+        )}
     </Card>
 );

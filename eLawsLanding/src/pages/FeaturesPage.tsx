@@ -4,12 +4,10 @@ import {
     Button,
     Card,
     CardContent,
-    Chip,
     Container,
     Divider,
     Stack,
     Typography,
-    useTheme,
 } from "@mui/material";
 import {
     ChatRounded as ChatIcon,
@@ -23,6 +21,7 @@ import {
 } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 type Feature = {
     titleKey: string;
@@ -74,9 +73,7 @@ const FeatureCard = ({ title, desc, icon }: { title: string; desc: string; icon:
 };
 
 const FeaturesPage: React.FC = () => {
-    const theme = useTheme();
     const { t } = useTranslation();
-    const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
 
     const core: Feature[] = [
         {
@@ -126,50 +123,14 @@ const FeaturesPage: React.FC = () => {
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
-            />
-            {/* HERO */}
-            <Box
-                sx={{
-                    mt: { xs: -8, md: -10 },
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: { xs: 8, md: 10 },
-                    textAlign: "center",
-                }}
-            >
-                <Container maxWidth="md">
-                    <Chip
-                        label={t("featuresPage.hero.badge")}
-                        variant="outlined"
-                        sx={{
-                            color: "inherit",
-                            borderColor: "currentColor",
-                            bgcolor: "transparent",
-                            fontWeight: 700,
-                            mb: 2,
-                        }}
-                    />
-                    <Typography
-                        variant="h3"
-                        fontWeight={900}
-                        sx={{ letterSpacing: -0.5, mb: 1 }}
-                    >
-                        {t("featuresPage.hero.title")}
-                    </Typography>
-                    <Typography sx={{ opacity: 0.95 }}>
-                        {t("featuresPage.hero.subtitle")}
-                    </Typography>
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={1.5}
-                        justifyContent="center"
-                        sx={{ mt: 3 }}
-                    >
+            <PageHero
+                title={t("featuresPage.hero.title")}
+                subtitle={t("featuresPage.hero.subtitle")}
+                badge={t("featuresPage.hero.badge")}
+                icon={<ChatIcon />}
+                align="center"
+                actions={
+                    <>
                         <Button
                             component={RouterLink}
                             to="/signup"
@@ -182,18 +143,13 @@ const FeaturesPage: React.FC = () => {
                             component={RouterLink}
                             to="/pricing"
                             variant="outlined"
-                            sx={{
-                                borderRadius: 3,
-                                color: "inherit",
-                                borderColor: "currentColor",
-                                "&:hover": { borderColor: "currentColor" },
-                            }}
+                            sx={{ borderRadius: 3 }}
                         >
                             {t("featuresPage.hero.secondaryCta")}
                         </Button>
-                    </Stack>
-                </Container>
-            </Box>
+                    </>
+                }
+            />
 
             {/* CORE FEATURES */}
             <Box sx={{ py: { xs: 6, md: 8 } }}>

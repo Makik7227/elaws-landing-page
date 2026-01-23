@@ -37,6 +37,38 @@ const PageHero: React.FC<PageHeroProps> = ({
             ? alpha(theme.palette.primary.main, theme.palette.mode === "light" ? 0.08 : 0.18)
             : gradient;
     const color = isGradient ? theme.palette.getContrastText(theme.palette.primary.main) : theme.palette.text.primary;
+    const topOffsetMobile = "var(--topbar-height-mobile)";
+    const topOffsetDesktop = "var(--topbar-height-desktop)";
+    const paddedTopMobile = `calc(${topOffsetMobile} + ${theme.spacing(4)})`;
+    const paddedTopDesktop = `calc(${topOffsetDesktop} + ${theme.spacing(6)})`;
+    const actionStyles = isGradient
+        ? {
+              "& .MuiButton-contained": {
+                  backgroundColor: theme.palette.common.white,
+                  color: theme.palette.primary.dark,
+                  boxShadow: "0 14px 30px rgba(0,0,0,0.25)",
+                  "&:hover": {
+                      backgroundColor: alpha(theme.palette.common.white, 0.9),
+                  },
+              },
+              "& .MuiButton-outlined": {
+                  color: "inherit",
+                  borderColor: alpha(theme.palette.common.white, 0.7),
+                  backgroundColor: alpha(theme.palette.common.white, 0.08),
+                  "&:hover": {
+                      borderColor: theme.palette.common.white,
+                      backgroundColor: alpha(theme.palette.common.white, 0.16),
+                  },
+              },
+              "& .MuiButton-text": {
+                  color: "inherit",
+                  backgroundColor: alpha(theme.palette.common.white, 0.08),
+                  "&:hover": {
+                      backgroundColor: alpha(theme.palette.common.white, 0.16),
+                  },
+              },
+          }
+        : undefined;
 
     return (
         <Box
@@ -46,8 +78,9 @@ const PageHero: React.FC<PageHeroProps> = ({
                 overflow: "hidden",
                 background: bg,
                 color,
-                py: { xs: 5, md: 7 },
-                mt: { xs: -2, md: -4 },
+                mt: { xs: `calc(-1 * ${topOffsetMobile})`, md: `calc(-1 * ${topOffsetDesktop})` },
+                pt: { xs: paddedTopMobile, md: paddedTopDesktop },
+                pb: { xs: 6, md: 8 },
             }}
         >
             {isGradient && (
@@ -121,6 +154,7 @@ const PageHero: React.FC<PageHeroProps> = ({
                                                     bgcolor: isGradient ? alpha(theme.palette.common.white, 0.2) : "transparent",
                                                     color: "inherit",
                                                     borderColor: isGradient ? alpha(theme.palette.common.white, 0.5) : alpha(theme.palette.text.primary, 0.2),
+                                                    fontWeight: 600,
                                                 }}
                                             />
                                         )}
@@ -138,8 +172,8 @@ const PageHero: React.FC<PageHeroProps> = ({
                                     component="h1"
                                     sx={{
                                         fontWeight: 900,
-                                        letterSpacing: -0.5,
-                                        mb: 1,
+                                        letterSpacing: -0.3,
+                                        mb: 1.25,
                                         fontSize: { xs: 32, sm: 40 },
                                     }}
                                 >
@@ -151,6 +185,7 @@ const PageHero: React.FC<PageHeroProps> = ({
                                             opacity: isGradient ? 0.9 : 0.8,
                                             maxWidth: 720,
                                             mx: align === "center" ? "auto" : undefined,
+                                            fontSize: { xs: "1rem", sm: "1.05rem" },
                                         }}
                                     >
                                         {subtitle}
@@ -165,6 +200,7 @@ const PageHero: React.FC<PageHeroProps> = ({
                                 sx={{
                                     width: { xs: "100%", md: "auto" },
                                     alignSelf: align === "center" ? "center" : { xs: "stretch", md: "flex-end" },
+                                    ...(actionStyles ?? {}),
                                 }}
                             >
                                 {actions}

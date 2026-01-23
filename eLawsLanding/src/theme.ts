@@ -4,27 +4,31 @@ import { lightColors, darkColors } from "./colors";
 
 const typography: NonNullable<ThemeOptions["typography"]> = {
     fontFamily:
-        "'InterVariable', 'Inter', 'Space Grotesk', 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "'Space Grotesk', 'IBM Plex Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
     h1: {
-        fontSize: "3.5rem",
+        fontFamily: "'Playfair Display', 'Space Grotesk', serif",
+        fontSize: "3.4rem",
         fontWeight: 800,
-        letterSpacing: -1.2,
-        lineHeight: 1.05,
+        letterSpacing: -1,
+        lineHeight: 1.04,
     },
     h2: {
-        fontSize: "2.75rem",
+        fontFamily: "'Playfair Display', 'Space Grotesk', serif",
+        fontSize: "2.7rem",
         fontWeight: 800,
-        letterSpacing: -0.8,
+        letterSpacing: -0.7,
         lineHeight: 1.08,
     },
     h3: {
-        fontSize: "2.15rem",
+        fontFamily: "'Playfair Display', 'Space Grotesk', serif",
+        fontSize: "2.2rem",
         fontWeight: 800,
-        letterSpacing: -0.5,
-        lineHeight: 1.15,
+        letterSpacing: -0.45,
+        lineHeight: 1.14,
     },
     h4: {
-        fontSize: "1.75rem",
+        fontFamily: "'Playfair Display', 'Space Grotesk', serif",
+        fontSize: "1.85rem",
         fontWeight: 700,
         letterSpacing: -0.2,
         lineHeight: 1.2,
@@ -85,32 +89,40 @@ const components: ThemeOptions["components"] = {
             root: ({ theme }) => {
                 const baseRadius = toNumeric(theme.shape.borderRadius);
                 return {
-                    borderRadius: baseRadius * 1.5,
-                    paddingInline: 24,
-                    paddingBlock: 12,
+                    borderRadius: baseRadius * 1.6,
+                    paddingInline: 22,
+                    paddingBlock: 11,
                     fontWeight: 700,
-                    letterSpacing: 0.2,
+                    letterSpacing: 0.15,
                 };
             },
             contained: {
-                boxShadow: "0 15px 35px rgba(0,0,0,0.15)",
+                boxShadow: "0 14px 28px rgba(18, 10, 40, 0.18)",
+            },
+            outlined: {
+                borderWidth: 2,
+                borderColor: "currentColor",
+                "&:hover": {
+                    borderWidth: 2,
+                    borderColor: "currentColor",
+                },
             },
         },
     },
     MuiCard: {
         styleOverrides: {
             root: ({ theme }) => ({
-                borderRadius: 14,
+                borderRadius: 18,
                 border: `1px solid ${theme.palette.divider}`,
                 backgroundImage:
                     theme.palette.mode === "light"
-                        ? "linear-gradient(145deg, rgba(255,255,255,0.95), rgba(245,243,255,0.85))"
-                        : "linear-gradient(145deg, rgba(27,24,39,0.95), rgba(18,17,30,0.9))",
+                        ? "linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,243,255,0.9))"
+                        : "linear-gradient(180deg, rgba(27,24,39,0.96), rgba(18,17,30,0.92))",
                 boxShadow:
                     theme.palette.mode === "light"
-                        ? "0 25px 45px rgba(18,10,40,0.08)"
-                        : "0 25px 45px rgba(0,0,0,0.45)",
-                backdropFilter: "blur(14px)",
+                        ? "0 22px 45px rgba(18,10,40,0.1)"
+                        : "0 22px 45px rgba(0,0,0,0.55)",
+                backdropFilter: "blur(10px)",
             }),
         },
     },
@@ -125,7 +137,7 @@ const components: ThemeOptions["components"] = {
     MuiPaper: {
         styleOverrides: {
             root: ({ theme }) => ({
-                borderRadius: 12,
+                borderRadius: 14,
                 border: `1px solid ${theme.palette.divider}`,
             }),
         },
@@ -143,7 +155,7 @@ const components: ThemeOptions["components"] = {
     MuiOutlinedInput: {
         styleOverrides: {
             root: ({ theme }) => ({
-                borderRadius: 9,
+                borderRadius: 12,
                 backgroundColor:
                     theme.palette.mode === "light"
                         ? "rgba(255,255,255,0.9)"
@@ -183,7 +195,7 @@ const components: ThemeOptions["components"] = {
                 paddingBlock: 8,
                 boxShadow:
                     theme.palette.mode === "light"
-                        ? "0 30px 60px rgba(12,6,32,0.18)"
+                        ? "0 30px 60px rgba(10,15,14,0.2)"
                         : "0 30px 80px rgba(0,0,0,0.65)",
             }),
         },
@@ -202,7 +214,7 @@ const components: ThemeOptions["components"] = {
             root: ({ theme }) => ({
                 borderColor:
                     theme.palette.mode === "light"
-                        ? "rgba(126,87,194,0.15)"
+                        ? "rgba(15,61,62,0.12)"
                         : "rgba(255,255,255,0.08)",
             }),
         },
@@ -210,7 +222,7 @@ const components: ThemeOptions["components"] = {
 };
 
 const shape: ThemeOptions["shape"] = {
-    borderRadius: 12,
+    borderRadius: 14,
 };
 
 const buildPalette = (mode: PaletteMode) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Stack, Typography, useTheme } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
@@ -30,6 +30,7 @@ import DowngradeNotice from "../components/dashboard/DowngradeNotice.tsx";
 import UsageAndPanicCard from "../components/dashboard/UsageAndPanicCard.tsx";
 import QuickActionsSection, { type QuickActionItem } from "../components/dashboard/QuickActionsSection.tsx";
 import UpgradeCallout from "../components/dashboard/UpgradeCallout.tsx";
+import ConnectionsDrawer from "../components/connections/ConnectionsDrawer.tsx";
 import {
     shouldWarnAboutTokens,
     isTierAtLeast,
@@ -79,7 +80,6 @@ type UpgradePromptState = {
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
 const Dashboard: React.FC = () => {
-    const theme = useTheme();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
 
@@ -90,6 +90,7 @@ const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [upgradePrompt, setUpgradePrompt] = useState<UpgradePromptState | null>(null);
     const [tokenPromptShown, setTokenPromptShown] = useState(false);
+    const [connectionsOpen, setConnectionsOpen] = useState(false);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -287,7 +288,6 @@ const Dashboard: React.FC = () => {
           });
     const initials = ((firstName?.[0] || "") + (lastName?.[0] || "") || "U").toUpperCase();
     const tokenPct = clamp(tokenLimit ? monthlyTokensUsed / tokenLimit : 0);
-    const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
     const unreadText = loading
         ? t("dashboard.info.chats.loading")
         : t("dashboard.info.chats.unread", { count: unreadCount });
@@ -302,7 +302,7 @@ const Dashboard: React.FC = () => {
                   status: lastCaseStatusLabel,
               })
             : t("dashboard.info.lastCase.empty");
-    const lastCaseLink = lastCase ? `/cases/${lastCase.id}` : "/cases";
+    const lastCaseLink = lastCase ? `/cases/${lastCase.id}` : "/dashboard/cases";
     const hasLastCase = Boolean(lastCase);
     const quickActionsConfig: QuickActionItem[] = [
         {
@@ -383,6 +383,8 @@ const Dashboard: React.FC = () => {
         });
     };
     const closeUpgradePrompt = () => setUpgradePrompt(null);
+    const openConnections = () => setConnectionsOpen(true);
+    const closeConnections = () => setConnectionsOpen(false);
 
     useEffect(() => {
         if (!tokenWarning || tokenPromptShown) return;
@@ -417,7 +419,6 @@ const Dashboard: React.FC = () => {
     return (
         <>
             <DashboardHero
-                gradient={gradient}
                 initials={initials}
                 heroName={heroWelcome}
                 heroMeta={heroMeta}
@@ -473,6 +474,7 @@ const Dashboard: React.FC = () => {
                             cases: t("dashboard.menu.cases"),
                         }}
                         onQuickActionLocked={handleQuickActionLocked}
+                        onConnectionsClick={openConnections}
                     />
 
                     {subscriptionTier === "free" && (
@@ -496,6 +498,7 @@ const Dashboard: React.FC = () => {
                     highlight={upgradePrompt.highlight}
                 />
             )}
+            <ConnectionsDrawer open={connectionsOpen} onClose={closeConnections} />
         </>
     );
 };

@@ -16,7 +16,7 @@ const Footer = ({ onOpenCookieSettings, onOpenPrivacy, onOpenTerms }: FooterProp
         <Box
             component="footer"
             sx={{
-                py: 4,
+                py: { xs: 4, md: 5 },
                 borderTop: `1px solid ${theme.palette.divider}`,
                 bgcolor: theme.palette.background.paper,
             }}

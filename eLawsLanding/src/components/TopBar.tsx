@@ -78,7 +78,6 @@ const TopBar = () => {
             { labelKey: "nav.documents", to: "/documents" },
             { labelKey: "nav.procedures", to: "/procedures" },
             { labelKey: "nav.notes", to: "/dashboard/notes" },
-            { labelKey: "nav.connections", to: "/connections" },
         ],
         []
     );
@@ -99,6 +98,7 @@ const TopBar = () => {
                     trigger
                         ? alpha(theme.palette.background.paper, 0.9)
                         : alpha(theme.palette.background.paper, 0.6),
+                borderBottom: (theme) => `1px solid ${alpha(theme.palette.divider, 0.6)}`,
                 transition: "all 0.3s ease",
                 borderRadius: 0,
                 top: 0,
@@ -130,7 +130,8 @@ const TopBar = () => {
                     >
                         <Box
                             component="img"
-                            src="/Logo.png"
+                            src="/logo-40.png"
+                            srcSet="/logo-40.png 1x, /logo-80.png 2x"
                             alt="E-Laws"
                             sx={{
                                 height: 40,
@@ -207,17 +208,6 @@ const TopBar = () => {
                                     {t("auth.account")}
                                 </MotionButton>
                                 <MotionButton
-                                    component={RouterLink}
-                                    to="/connections"
-                                    variant={isActive("/connections") ? "contained" : "outlined"}
-                                    color="primary"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    sx={{ borderRadius: 2, px: 2.25, fontWeight: 700, textTransform: "none" }}
-                                >
-                                    {t("nav.connections")}
-                                </MotionButton>
-                                <MotionButton
                                     onClick={handleLogout}
                                     variant="text"
                                     color="primary"
@@ -285,7 +275,8 @@ const TopBar = () => {
                     >
                         <Box
                             component="img"
-                            src="/Logo.png"
+                            src="/logo-40.png"
+                            srcSet="/logo-40.png 1x, /logo-80.png 2x"
                             alt="E-Laws"
                             sx={{
                                 height: 32,
@@ -302,7 +293,12 @@ const TopBar = () => {
                             aria-label={t("topBar.openMenu")}
                             onClick={() => setDrawerOpen(true)}
                             sx={{
-                                border: (t) => `1px solid ${alpha(t.palette.text.primary, 0.1)}`,
+                                color: (t) => t.palette.text.primary,
+                                border: (t) => `1px solid ${alpha(t.palette.text.primary, 0.25)}`,
+                                backgroundColor: (t) => alpha(t.palette.text.primary, 0.04),
+                                "&:hover": {
+                                    backgroundColor: (t) => alpha(t.palette.text.primary, 0.08),
+                                },
                             }}
                         >
                             <MenuRoundedIcon />
@@ -346,7 +342,7 @@ const TopBar = () => {
                                 }}
                             >
                                 <ListItemText
-                                    primary={t(labelKey)}
+                                    primary={`• ${t(labelKey)}`}
                                     primaryTypographyProps={{ fontWeight: 600 }}
                                 />
                             </ListItemButton>
@@ -413,21 +409,6 @@ const TopBar = () => {
                                 </MotionButton>
                             </>
                         )}
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing={1.5}
-                            mt={0.5}
-                            flexWrap="wrap"
-                        >
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <ThemeToggleButton />
-                                <Typography variant="body2" color="text.secondary">
-                                    {t("topBar.themeToggle")}
-                                </Typography>
-                            </Stack>
-                            <LanguageToggleButton />
-                        </Stack>
                     </Stack>
                 </Box>
             </Drawer>

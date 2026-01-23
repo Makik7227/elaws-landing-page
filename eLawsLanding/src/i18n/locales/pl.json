@@ -74,6 +74,51 @@
                 "supportStatus": "Gotowe w 5 min"
             }
         },
+        "proceduresPurchase": {
+            "badge": "Jednorazowy zakup",
+            "title": "Procedury awaryjne prosto na e-mail.",
+            "subtitle": "Bez logowania. Wybierz kraj, zapłać raz, a procedury wyślemy na e-mail.",
+            "pointOne": "Procedura dopasowana do kraju w kilka minut.",
+            "pointTwo": "Jednorazowa płatność, bez subskrypcji.",
+            "pointThree": "Wysyłka bezpośrednio na e-mail.",
+            "message": "Załóż konto i poznaj nasze plany.",
+            "cta": "Pobierz procedury",
+            "helper": "Płatność jednorazowa. Dostawa od razu.",
+            "dialog": {
+                "title": "Pobierz procedury awaryjne",
+                "description": "Podaj adres e-mail do wysyłki i wybierz kraj.",
+                "emailLabel": "Adres e-mail",
+                "submit": "Przejdź do płatności",
+                "processing": "Przekierowanie...",
+                "cancel": "Anuluj",
+                "errors": {
+                    "emailRequired": "Email jest wymagany.",
+                    "emailInvalid": "Podaj poprawny adres e-mail.",
+                    "countryRequired": "Wybierz kraj.",
+                    "generic": "Nie udało się uruchomić płatności. Spróbuj ponownie."
+                }
+            }
+        },
+        "proceduresPurchaseResult": {
+            "success": {
+                "badge": "Płatność zakończona",
+                "title": "Wszystko gotowe.",
+                "subtitle": "Przygotowujemy procedury i wysyłamy je na Twój e-mail.",
+                "primaryCta": "Wróć na stronę główną",
+                "secondaryCta": "Zobacz plany",
+                "cardTitle": "Co dalej?",
+                "cardBody": "Sprawdź skrzynkę odbiorczą. Jeśli wiadomość nie dotrze w kilka minut, zajrzyj do spamu lub skontaktuj się z pomocą."
+            },
+            "cancel": {
+                "badge": "Płatność anulowana",
+                "title": "Płatność została anulowana.",
+                "subtitle": "Nie pobrano opłaty. Możesz rozpocząć zakup w dowolnym momencie.",
+                "primaryCta": "Wróć na stronę główną",
+                "secondaryCta": "Skontaktuj się z pomocą",
+                "cardTitle": "Potrzebujesz pomocy?",
+                "cardBody": "Jeśli coś poszło nie tak podczas płatności, napisz do nas, a szybko pomożemy."
+            }
+        },
         "benefits": {
             "overline": "Dlaczego zespoły przechodzą",
             "title": "Nowoczesny interfejs z prawniczną precyzją.",
@@ -304,7 +349,8 @@
             "title": "Prosto, sprawiedliwie i elastycznie",
             "subtitle": "Wybierz plan pasujący do Twojej pracy. Możesz zrezygnować w dowolnym momencie.",
             "secondaryCta": "Zobacz funkcje",
-            "openApp": "Otwórz aplikację"
+            "openApp": "Otwórz aplikację",
+            "primaryCta": "Create account"
         },
         "plans": {
             "perMonth": "/ miesiąc",
@@ -402,6 +448,24 @@
         },
         "errors": {
             "invalidCredentials": "Nieprawidłowy e-mail lub hasło"
+        }
+    },
+    "forgotPasswordPage": {
+        "hero": {
+            "badge": "Reset hasła",
+            "title": "Zresetuj hasło",
+            "subtitle": "Wpisz e-mail konta, a wyślemy bezpieczny link do resetu."
+        },
+        "form": {
+            "title": "Wyślij link resetu",
+            "emailLabel": "E-mail",
+            "submit": "Wyślij e-mail resetu",
+            "backToLogin": "← Wróć do logowania"
+        },
+        "success": "Jeśli konto istnieje, wysłaliśmy link do resetu.",
+        "errors": {
+            "missingEmail": "Wpisz adres e-mail.",
+            "failed": "Nie udało się wysłać e-maila resetu. Spróbuj ponownie."
         }
     },
     "signupPage": {
@@ -576,7 +640,8 @@
             "saveError": "Nie udało się zapisać notatki."
         },
         "loading": {
-            "preparing": "Przygotowujemy Twoje środowisko…"
+            "preparing": "Przygotowujemy Twoje środowisko…",
+            "thinking": "Myślę…"
         },
         "empty": {
             "countryTitle": "Wybierz jurysdykcję",
@@ -673,6 +738,9 @@
         "confirm": {
             "deleteChat": "Usunąć rozmowę na stałe?",
             "clearChat": "Wyczyścić wszystkie wiadomości w tej rozmowie?"
+        },
+        "actions": {
+            "newChat": "Nowy czat"
         }
     },
     "createCasePage": {
@@ -887,6 +955,10 @@
             "acceptFailed": "Nie udało się zaakceptować zaproszenia.",
             "rejectFailed": "Nie udało się odrzucić zaproszenia.",
             "removeFailed": "Nie udało się usunąć kontaktu."
+        },
+        "carousel": {
+            "prev": "Poprzednia sekcja",
+            "next": "Następna sekcja"
         }
     },
     "myDocuments": {

@@ -91,7 +91,13 @@ const UsageAndPanicCard: React.FC<UsageAndPanicCardProps> = ({
                                     <Alert
                                         severity="warning"
                                         action={
-                                            <Button size="small" color="warning" component={RouterLink} to={warningCtaTo}>
+                                            <Button
+                                                size="small"
+                                                color="warning"
+                                                variant="contained"
+                                                component={RouterLink}
+                                                to={warningCtaTo}
+                                            >
                                                 {warningCtaLabel}
                                             </Button>
                                         }

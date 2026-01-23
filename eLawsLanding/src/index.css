@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 :root {
-  font-family: 'InterVariable', 'Inter', 'Space Grotesk', 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Space Grotesk', 'IBM Plex Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -7,6 +9,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: transparent;
+  --topbar-height-mobile: 64px;
+  --topbar-height-desktop: 72px;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -26,25 +30,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: transparent;
-  color: #2c2c2e;
   position: relative;
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
   padding-bottom: var(--safe-area-bottom);
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(255, 213, 79, 0.18), transparent 45%),
-    radial-gradient(circle at 80% 0%, rgba(126, 87, 194, 0.22), transparent 40%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.25), transparent 70%);
-  opacity: 0.85;
-  z-index: -1;
 }
 
 #root {
@@ -80,10 +70,6 @@ main {
 @media (max-width: 600px) {
   :root {
     font-size: 15px;
-  }
-
-  body::after {
-    opacity: 0.65;
   }
 }
 

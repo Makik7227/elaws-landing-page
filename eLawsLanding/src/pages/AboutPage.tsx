@@ -9,7 +9,6 @@ import {
     Divider,
     Stack,
     Typography,
-    useTheme,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import RocketLaunchRoundedIcon from "@mui/icons-material/RocketLaunchRounded";
@@ -20,6 +19,7 @@ import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
     <Stack alignItems="center" spacing={0.5} sx={{ minWidth: 120 }}>
@@ -96,62 +96,23 @@ const TIMELINE = [
 ];
 
 const AboutPage: React.FC = () => {
-    const theme = useTheme();
     const { t } = useTranslation();
-    const gradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 60%, ${theme.palette.primary.main} 100%)`;
 
     return (
         <>
-            <Box
-                sx={{
-                    height: { xs: "64px", md: "80px" },
-                    background: gradient,
-                }}
-            />
-            <Box
-                sx={{
-                    mt: { xs: -8, md: -10 },
-                    background: gradient,
-                    color: theme.palette.getContrastText(theme.palette.primary.main),
-                    py: { xs: 8, md: 10 },
-                    textAlign: "center",
-                }}
-            >
-                <Container maxWidth="md">
-                    <Chip
-                        label={t("about.hero.badge")}
-                        variant="outlined"
-                        sx={{
-                            color: "inherit",
-                            borderColor: "currentColor",
-                            bgcolor: "transparent",
-                            fontWeight: 700,
-                            mb: 2,
-                        }}
-                    />
-                    <Typography variant="h3" fontWeight={900} sx={{ letterSpacing: -0.5 }}>
-                        {t("about.hero.title")}
-                    </Typography>
-                    <Typography sx={{ opacity: 0.95, mt: 1.25 }}>
-                        {t("about.hero.subtitle")}
-                    </Typography>
-
-                    <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={1.5}
-                        justifyContent="center"
-                        sx={{ mt: 3 }}
-                    >
+            <PageHero
+                title={t("about.hero.title")}
+                subtitle={t("about.hero.subtitle")}
+                badge={t("about.hero.badge")}
+                icon={<RocketLaunchRoundedIcon />}
+                align="center"
+                actions={
+                    <>
                         <Button
                             component={RouterLink}
                             to="/features"
                             variant="outlined"
-                            sx={{
-                                borderRadius: 3,
-                                color: "inherit",
-                                borderColor: "currentColor",
-                                "&:hover": { borderColor: "currentColor" },
-                            }}
+                            sx={{ borderRadius: 3 }}
                         >
                             {t("about.hero.secondaryCta")}
                         </Button>
@@ -164,9 +125,9 @@ const AboutPage: React.FC = () => {
                         >
                             {t("about.hero.primaryCta")}
                         </Button>
-                    </Stack>
-                </Container>
-            </Box>
+                    </>
+                }
+            />
 
             {/* MISSION */}
             <Box sx={{ py: { xs: 6, md: 8 } }}>
@@ -241,7 +202,7 @@ const AboutPage: React.FC = () => {
             </Box>
 
             {/* STORY / TIMELINE */}
-            <Box sx={{ py: { xs: 6, md: 8 }, bgcolor: theme.palette.background.default }}>
+            <Box sx={{ py: { xs: 6, md: 8 }, bgcolor: (theme) => theme.palette.background.default }}>
                 <Container maxWidth="md">
                     <Stack spacing={1.25} mb={2}>
                         <Typography variant="overline" color="text.secondary">

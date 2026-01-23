@@ -58,7 +58,7 @@ const Layout = () => {
                     flexDirection: "column",
                     minWidth: 0,
                     overflowX: "hidden",
-                    pt: { xs: "64px", md: "80px" },
+                    pt: { xs: "var(--topbar-height-mobile)", md: "var(--topbar-height-desktop)" },
                 }}
             >
                 <Outlet />

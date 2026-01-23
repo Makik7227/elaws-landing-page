@@ -244,6 +244,7 @@ const MyDocumentsPage: React.FC = () => {
                 subtitle={t("myDocuments.hero.subtitle")}
                 overline={t("myDocuments.hero.overline", { defaultValue: "Documents workspace" })}
                 icon={<FolderOpenIcon />}
+                variant="soft"
                 actions={
                     <>
                         <Button
