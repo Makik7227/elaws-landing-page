@@ -28,6 +28,7 @@ const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage.tsx"));
 const ProceduresPurchaseSuccessPage = lazy(() => import("./pages/ProceduresPurchaseSuccessPage.tsx"));
 const ProceduresPurchaseCancelPage = lazy(() => import("./pages/ProceduresPurchaseCancelPage.tsx"));
 const ProceduresPurchasePage = lazy(() => import("./pages/ProceduresPurchasePage.tsx"));
+const LearnPage = lazy(() => import("./pages/LearnPage.tsx"));
 
 function App() {
     return (
@@ -61,6 +62,7 @@ function App() {
                     <Route path="/procedures-purchase/success" element={<ProceduresPurchaseSuccessPage />} />
                     <Route path="/procedures-purchase/cancel" element={<ProceduresPurchaseCancelPage />} />
                     <Route path="/procedures-purchase" element={<ProceduresPurchasePage />} />
+                    <Route path="/learn/:slug" element={<LearnPage />} />
                 </Route>
             </Routes>
         </Suspense>

@@ -282,7 +282,493 @@
             "privacy": "Privacy",
             "terms": "Terms",
             "contact": "Contact",
-            "cookieSettings": "Cookie settings"
+            "cookieSettings": "Cookie settings",
+            "seo": {
+                "title": "Legal AI platform for modern teams",
+                "description": "eLaws helps law firms, in-house legal teams, and compliance leaders draft documents, manage cases, and navigate procedures faster with AI-assisted workflows.",
+                "columns": {
+                    "product": {
+                        "title": "Product",
+                        "items": [
+                            { "label": "AI legal chat", "slug": "ai-legal-chat" },
+                            { "label": "Document generation", "slug": "document-generation" },
+                            { "label": "Case management", "slug": "case-management" },
+                            { "label": "Procedure playbooks", "slug": "procedure-playbooks" },
+                            { "label": "Saved notes", "slug": "saved-notes" },
+                            { "label": "Client collaboration", "slug": "client-collaboration" }
+                        ]
+                    },
+                    "useCases": {
+                        "title": "Use cases",
+                        "items": [
+                            { "label": "Contract drafting", "slug": "contract-drafting" },
+                            { "label": "Legal research", "slug": "legal-research" },
+                            { "label": "Compliance workflows", "slug": "compliance-workflows" },
+                            { "label": "Due diligence", "slug": "due-diligence" },
+                            { "label": "Policy review", "slug": "policy-review" },
+                            { "label": "Matter intake", "slug": "matter-intake" }
+                        ]
+                    },
+                    "topics": {
+                        "title": "Legal topics",
+                        "items": [
+                            { "label": "Business law", "slug": "business-law" },
+                            { "label": "Employment law", "slug": "employment-law" },
+                            { "label": "Privacy and data", "slug": "privacy-data" },
+                            { "label": "Intellectual property", "slug": "intellectual-property" },
+                            { "label": "Real estate", "slug": "real-estate-law" },
+                            { "label": "Tax and finance", "slug": "tax-finance" }
+                        ]
+                    }
+                },
+                "keywords": "Legal AI software, contract drafting, case management, legal research, compliance workflows, document automation, legal procedures, law firm productivity, in-house counsel tools, regulatory guidance."
+            }
+        }
+    },
+    "learn": {
+        "overline": "Learning center",
+        "contactCta": "Talk to our team",
+        "disclaimer": "This page is informational and does not constitute legal advice. Laws and procedures vary by jurisdiction; consult qualified counsel for specific guidance.",
+        "notFound": {
+            "title": "Page not found",
+            "body": "This learning page does not exist or has moved.",
+            "cta": "Back to home",
+            "metaTitle": "Learning page not found",
+            "metaDescription": "The requested learning page could not be found."
+        },
+        "pages": {
+            "ai-legal-chat": {
+                "title": "AI legal chat",
+                "metaTitle": "AI Legal Chat Overview",
+                "metaDescription": "What AI legal chat is, how it is used, how to check results, and where its limits apply.",
+                "intro": "A practical overview of legal question-answering systems and how they are commonly used.",
+                "sections": [
+                    {
+                        "title": "What it is",
+                        "body": "AI legal chat refers to systems that interpret natural-language questions and return summaries or references to legal sources. Results depend on the data provided, retrieval method, and the jurisdiction or scope selected."
+                    },
+                    {
+                        "title": "Common uses",
+                        "body": "Teams use legal chat tools to clarify terminology, surface relevant statutes or cases, and draft issue lists for follow-up. Outputs are typically starting points, not final conclusions."
+                    },
+                    {
+                        "title": "Quality checks",
+                        "body": "Verify cited authorities, confirm the jurisdiction and effective dates, and review for missing exceptions. Maintain a record of sources so that conclusions can be reproduced."
+                    },
+                    {
+                        "title": "Limits and risks",
+                        "body": "Automated responses can be incomplete or inaccurate. Sensitive data should be handled according to confidentiality rules and privacy obligations."
+                    }
+                ]
+            },
+            "document-generation": {
+                "title": "Document generation",
+                "metaTitle": "Legal Document Generation Overview",
+                "metaDescription": "How automated legal drafting works, the inputs it needs, and where human review is essential.",
+                "intro": "How automated drafting works, what inputs are needed, and where review is essential.",
+                "sections": [
+                    {
+                        "title": "What it is",
+                        "body": "Document generation combines templates, clause libraries, and structured inputs to assemble drafts such as agreements, letters, or filings. The final document still requires legal review."
+                    },
+                    {
+                        "title": "Typical inputs",
+                        "body": "Common inputs include party details, governing law, commercial terms, and preferred clauses. Clear input definitions reduce rework and inconsistency."
+                    },
+                    {
+                        "title": "Review steps",
+                        "body": "Review focuses on alignment with the transaction, consistency across clauses, and compliance with applicable laws or industry requirements."
+                    },
+                    {
+                        "title": "Jurisdictional differences",
+                        "body": "Legal requirements vary across jurisdictions. Templates should be adapted to local law and regulatory expectations."
+                    }
+                ]
+            },
+            "case-management": {
+                "title": "Case management",
+                "metaTitle": "Legal Case Management Basics",
+                "metaDescription": "Key concepts behind organizing legal matters, tracking progress, and maintaining records.",
+                "intro": "Key concepts behind organizing legal matters and tracking their progress.",
+                "sections": [
+                    {
+                        "title": "What it is",
+                        "body": "Case management covers the intake, organization, and tracking of legal matters, including tasks, deadlines, documents, and communications."
+                    },
+                    {
+                        "title": "Core data",
+                        "body": "Typical records include parties, jurisdictions, matter type, key dates, responsible team members, and related documents."
+                    },
+                    {
+                        "title": "Workflow stages",
+                        "body": "Matters usually move through intake, investigation, drafting, negotiation or filings, and closure. Structured stages improve handoffs and reporting."
+                    },
+                    {
+                        "title": "Compliance and privacy",
+                        "body": "Matter data can include personal or confidential information. Access controls, retention policies, and audit trails are standard safeguards."
+                    }
+                ]
+            },
+            "procedure-playbooks": {
+                "title": "Procedure playbooks",
+                "metaTitle": "Legal Procedure Playbooks",
+                "metaDescription": "How step-by-step legal procedures are structured, maintained, and updated across jurisdictions.",
+                "intro": "Why step-by-step legal procedures need clear ownership and ongoing updates.",
+                "sections": [
+                    {
+                        "title": "What it is",
+                        "body": "Procedure playbooks outline the required steps, forms, and timelines for specific legal processes, such as filings or registrations."
+                    },
+                    {
+                        "title": "Content components",
+                        "body": "Effective playbooks include prerequisites, deadlines, responsible roles, required forms, and submission channels."
+                    },
+                    {
+                        "title": "Maintenance",
+                        "body": "Procedures change over time. Playbooks should be reviewed when laws, forms, or agency guidance change."
+                    },
+                    {
+                        "title": "Jurisdictional variance",
+                        "body": "Procedures can differ by country, state, or agency. Always confirm local requirements and updates."
+                    }
+                ]
+            },
+            "saved-notes": {
+                "title": "Saved notes",
+                "metaTitle": "Legal Note Management",
+                "metaDescription": "How structured notes support legal work, searchability, and record retention.",
+                "intro": "How structured note capture supports legal work without replacing source documents.",
+                "sections": [
+                    {
+                        "title": "What it is",
+                        "body": "Saved notes are short, structured summaries that capture key facts, decisions, or references linked to a matter or topic."
+                    },
+                    {
+                        "title": "Organization",
+                        "body": "Notes are commonly organized by matter, topic, jurisdiction, and date to support retrieval and auditability."
+                    },
+                    {
+                        "title": "Search and metadata",
+                        "body": "Adding tags, citations, and source links improves discoverability and reduces duplication of work."
+                    },
+                    {
+                        "title": "Retention",
+                        "body": "Retention policies determine how long notes are kept and how they are archived to meet regulatory or client requirements."
+                    }
+                ]
+            },
+            "client-collaboration": {
+                "title": "Client collaboration",
+                "metaTitle": "Legal Client Collaboration",
+                "metaDescription": "How legal teams coordinate with clients while protecting confidentiality and maintaining records.",
+                "intro": "How legal teams coordinate with clients while protecting confidentiality.",
+                "sections": [
+                    {
+                        "title": "What it is",
+                        "body": "Client collaboration covers shared workspaces, document exchange, and communication channels used during a matter."
+                    },
+                    {
+                        "title": "Security controls",
+                        "body": "Common controls include role-based access, secure sharing links, and activity logs to track changes and access."
+                    },
+                    {
+                        "title": "Communication practices",
+                        "body": "Structured updates, clear decision logs, and defined escalation paths reduce misunderstandings and delays."
+                    },
+                    {
+                        "title": "Record keeping",
+                        "body": "Maintaining records of approvals, revisions, and instructions supports accountability and future reference."
+                    }
+                ]
+            },
+            "contract-drafting": {
+                "title": "Contract drafting",
+                "metaTitle": "Contract Drafting Basics",
+                "metaDescription": "How contracts are assembled, reviewed, negotiated, and executed.",
+                "intro": "A practical summary of how contracts are assembled, reviewed, and finalized.",
+                "sections": [
+                    {
+                        "title": "Purpose",
+                        "body": "Contracts define rights, obligations, and remedies between parties. Drafting translates business intent into enforceable terms."
+                    },
+                    {
+                        "title": "Key clauses",
+                        "body": "Common clauses address scope, pricing, term, termination, confidentiality, liability, and dispute resolution."
+                    },
+                    {
+                        "title": "Review checkpoints",
+                        "body": "Reviews typically verify consistency, enforceability, risk allocation, and alignment with internal policies."
+                    },
+                    {
+                        "title": "Negotiation and execution",
+                        "body": "Negotiations document changes and approvals. Execution requirements vary by jurisdiction and document type."
+                    }
+                ]
+            },
+            "legal-research": {
+                "title": "Legal research",
+                "metaTitle": "Legal Research Methods",
+                "metaDescription": "How legal research uses primary and secondary sources and confirms current validity.",
+                "intro": "An overview of how legal research is conducted across primary and secondary sources.",
+                "sections": [
+                    {
+                        "title": "Scope",
+                        "body": "Legal research identifies applicable rules, precedents, and interpretations for a specific issue or jurisdiction."
+                    },
+                    {
+                        "title": "Primary sources",
+                        "body": "Primary sources include statutes, regulations, case law, and administrative materials that carry legal authority."
+                    },
+                    {
+                        "title": "Secondary sources",
+                        "body": "Secondary sources include treatises, practice guides, and commentary that summarize or analyze the law."
+                    },
+                    {
+                        "title": "Research hygiene",
+                        "body": "Confirm the current validity of authorities, track citations, and note jurisdictional limits to avoid outdated guidance."
+                    }
+                ]
+            },
+            "compliance-workflows": {
+                "title": "Compliance workflows",
+                "metaTitle": "Compliance Workflow Basics",
+                "metaDescription": "How organizations translate legal obligations into repeatable compliance steps and records.",
+                "intro": "How organizations structure repeatable steps to meet regulatory or policy requirements.",
+                "sections": [
+                    {
+                        "title": "What it covers",
+                        "body": "Compliance workflows map obligations into tasks such as assessments, approvals, training, and reporting."
+                    },
+                    {
+                        "title": "Common steps",
+                        "body": "Typical steps include identifying applicable rules, assigning owners, documenting controls, and scheduling periodic reviews."
+                    },
+                    {
+                        "title": "Evidence and audit trails",
+                        "body": "Maintaining records of actions, approvals, and exceptions supports audits and internal accountability."
+                    },
+                    {
+                        "title": "Regulatory change management",
+                        "body": "Organizations monitor legal updates and adjust procedures to reflect new or revised requirements."
+                    }
+                ]
+            },
+            "due-diligence": {
+                "title": "Due diligence",
+                "metaTitle": "Due Diligence Overview",
+                "metaDescription": "Why due diligence is performed, what it covers, and how findings are reported.",
+                "intro": "A clear summary of the diligence process used in transactions and risk assessments.",
+                "sections": [
+                    {
+                        "title": "Objective",
+                        "body": "Due diligence evaluates legal, financial, and operational risks before a transaction or partnership."
+                    },
+                    {
+                        "title": "Typical materials",
+                        "body": "Reviews often include corporate records, contracts, IP portfolios, employment matters, and regulatory history."
+                    },
+                    {
+                        "title": "Red flags",
+                        "body": "Common issues include unresolved disputes, change-of-control clauses, data privacy gaps, and unclear ownership rights."
+                    },
+                    {
+                        "title": "Reporting",
+                        "body": "Findings are summarized in reports or issue lists with recommended mitigation steps and decision impacts."
+                    }
+                ]
+            },
+            "policy-review": {
+                "title": "Policy review",
+                "metaTitle": "Policy Review Process",
+                "metaDescription": "How internal policies are reviewed for legal alignment, clarity, and enforcement.",
+                "intro": "How organizations evaluate internal policies for legal alignment and practical clarity.",
+                "sections": [
+                    {
+                        "title": "Objective",
+                        "body": "Policy review ensures internal rules reflect current law, organizational standards, and operational reality."
+                    },
+                    {
+                        "title": "Inputs",
+                        "body": "Reviews consider applicable laws, industry guidance, internal controls, and past incident history."
+                    },
+                    {
+                        "title": "Review criteria",
+                        "body": "Key criteria include consistency, clarity, enforceability, and alignment with business processes."
+                    },
+                    {
+                        "title": "Distribution and training",
+                        "body": "Policies are most effective when communicated clearly and supported by training or acknowledgments."
+                    }
+                ]
+            },
+            "matter-intake": {
+                "title": "Matter intake",
+                "metaTitle": "Legal Matter Intake",
+                "metaDescription": "How legal teams capture, triage, and assign new matters while protecting data.",
+                "intro": "The structured process used to open and triage new legal matters.",
+                "sections": [
+                    {
+                        "title": "Purpose",
+                        "body": "Matter intake captures the facts, parties, and urgency of a request so it can be assigned and tracked."
+                    },
+                    {
+                        "title": "Information captured",
+                        "body": "Common fields include requester details, matter category, relevant dates, jurisdiction, and supporting documents."
+                    },
+                    {
+                        "title": "Triage",
+                        "body": "Requests are prioritized based on risk, deadlines, and complexity, with clear ownership assigned."
+                    },
+                    {
+                        "title": "Data governance",
+                        "body": "Intake data should follow privacy policies, access controls, and retention requirements."
+                    }
+                ]
+            },
+            "business-law": {
+                "title": "Business law",
+                "metaTitle": "Business Law Overview",
+                "metaDescription": "A high-level view of entity formation, governance, contracts, and commercial disputes.",
+                "intro": "A high-level view of legal issues that affect companies across their lifecycle.",
+                "sections": [
+                    {
+                        "title": "Scope",
+                        "body": "Business law covers entity formation, governance, contracts, financing, and commercial disputes."
+                    },
+                    {
+                        "title": "Common documents",
+                        "body": "Typical documents include articles of incorporation, bylaws, shareholder agreements, and commercial contracts."
+                    },
+                    {
+                        "title": "Entity lifecycle",
+                        "body": "Legal needs evolve from formation to growth, financing, compliance, and potential exit events."
+                    },
+                    {
+                        "title": "Cross-border considerations",
+                        "body": "Operating across borders introduces local corporate laws, tax rules, and regulatory requirements."
+                    }
+                ]
+            },
+            "employment-law": {
+                "title": "Employment law",
+                "metaTitle": "Employment Law Overview",
+                "metaDescription": "Core topics covering hiring, workplace rules, wages, and termination.",
+                "intro": "An overview of legal issues related to hiring, managing, and separating workers.",
+                "sections": [
+                    {
+                        "title": "Scope",
+                        "body": "Employment law addresses hiring practices, wages and hours, workplace conduct, and termination."
+                    },
+                    {
+                        "title": "Typical documents",
+                        "body": "Common documents include offer letters, employment agreements, policies, and separation agreements."
+                    },
+                    {
+                        "title": "Compliance areas",
+                        "body": "Key areas include non-discrimination rules, wage requirements, leave laws, and workplace safety."
+                    },
+                    {
+                        "title": "Jurisdictional differences",
+                        "body": "Employment rules vary significantly by country and by state or province."
+                    }
+                ]
+            },
+            "privacy-data": {
+                "title": "Privacy and data",
+                "metaTitle": "Privacy and Data Protection Overview",
+                "metaDescription": "Key concepts in privacy law, data protection obligations, and cross-border transfers.",
+                "intro": "A concise guide to the legal concepts behind data protection and privacy programs.",
+                "sections": [
+                    {
+                        "title": "Scope",
+                        "body": "Privacy law governs how organizations collect, use, share, and store personal data."
+                    },
+                    {
+                        "title": "Key concepts",
+                        "body": "Common concepts include lawful basis, transparency, data minimization, and individual rights."
+                    },
+                    {
+                        "title": "Common obligations",
+                        "body": "Organizations often maintain notices, data processing agreements, security measures, and response plans."
+                    },
+                    {
+                        "title": "Cross-border transfers",
+                        "body": "Transfers between countries may require specific safeguards depending on the jurisdictions involved."
+                    }
+                ]
+            },
+            "intellectual-property": {
+                "title": "Intellectual property",
+                "metaTitle": "Intellectual Property Overview",
+                "metaDescription": "The main IP categories, how rights are protected, and how they are enforced.",
+                "intro": "A summary of the main IP categories and how they are protected.",
+                "sections": [
+                    {
+                        "title": "Scope",
+                        "body": "Intellectual property includes inventions, creative works, brands, and confidential business information."
+                    },
+                    {
+                        "title": "Types of IP",
+                        "body": "Key types include patents, copyrights, trademarks, and trade secrets."
+                    },
+                    {
+                        "title": "Protection steps",
+                        "body": "Protection can involve registrations, contracts, and internal controls for access and disclosure."
+                    },
+                    {
+                        "title": "Enforcement and licensing",
+                        "body": "Rights holders may license IP or pursue enforcement through negotiated resolutions or legal proceedings."
+                    }
+                ]
+            },
+            "real-estate-law": {
+                "title": "Real estate law",
+                "metaTitle": "Real Estate Law Overview",
+                "metaDescription": "Core legal concepts in property sales, leasing, financing, and due diligence.",
+                "intro": "Core legal concepts in property transactions and leasing.",
+                "sections": [
+                    {
+                        "title": "Scope",
+                        "body": "Real estate law covers sales, leases, financing, zoning, and property disputes."
+                    },
+                    {
+                        "title": "Transaction stages",
+                        "body": "Transactions commonly include due diligence, contract negotiation, financing, and closing."
+                    },
+                    {
+                        "title": "Key documents",
+                        "body": "Typical documents include purchase agreements, leases, title documents, and disclosure forms."
+                    },
+                    {
+                        "title": "Due diligence",
+                        "body": "Due diligence reviews title, zoning, environmental issues, and encumbrances."
+                    }
+                ]
+            },
+            "tax-finance": {
+                "title": "Tax and finance",
+                "metaTitle": "Tax and Finance Law Overview",
+                "metaDescription": "How tax and finance considerations intersect with legal work and compliance.",
+                "intro": "How tax and finance considerations intersect with legal work.",
+                "sections": [
+                    {
+                        "title": "Scope",
+                        "body": "Tax and finance law includes tax compliance, financing structures, and reporting obligations."
+                    },
+                    {
+                        "title": "Typical materials",
+                        "body": "Common materials include tax filings, financing agreements, and regulatory disclosures."
+                    },
+                    {
+                        "title": "Risk areas",
+                        "body": "Frequent risk areas include inconsistent classifications, incomplete disclosures, and changing rules."
+                    },
+                    {
+                        "title": "Coordination",
+                        "body": "Legal, finance, and tax teams coordinate to align transactions with applicable rules and documentation."
+                    }
+                ]
+            }
         }
     },
     "featuresPage": {

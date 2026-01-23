@@ -282,7 +282,493 @@
             "privacy": "Prywatność",
             "terms": "Regulamin",
             "contact": "Kontakt",
-            "cookieSettings": "Ustawienia plików cookie"
+            "cookieSettings": "Ustawienia plików cookie",
+            "seo": {
+                "title": "Platforma AI dla nowoczesnych zespołów prawnych",
+                "description": "eLaws wspiera kancelarie, działy prawne i compliance w szybszym tworzeniu dokumentów, zarządzaniu sprawami oraz obsłudze procedur dzięki workflow z AI.",
+                "columns": {
+                    "product": {
+                        "title": "Produkt",
+                        "items": [
+                            { "label": "Prawny czat AI", "slug": "ai-legal-chat" },
+                            { "label": "Generowanie dokumentów", "slug": "document-generation" },
+                            { "label": "Zarządzanie sprawami", "slug": "case-management" },
+                            { "label": "Procedury krok po kroku", "slug": "procedure-playbooks" },
+                            { "label": "Zapisane notatki", "slug": "saved-notes" },
+                            { "label": "Współpraca z klientami", "slug": "client-collaboration" }
+                        ]
+                    },
+                    "useCases": {
+                        "title": "Zastosowania",
+                        "items": [
+                            { "label": "Tworzenie umów", "slug": "contract-drafting" },
+                            { "label": "Badanie prawne", "slug": "legal-research" },
+                            { "label": "Procesy zgodności", "slug": "compliance-workflows" },
+                            { "label": "Należyta staranność", "slug": "due-diligence" },
+                            { "label": "Przegląd polityk", "slug": "policy-review" },
+                            { "label": "Przyjęcie sprawy", "slug": "matter-intake" }
+                        ]
+                    },
+                    "topics": {
+                        "title": "Tematy prawne",
+                        "items": [
+                            { "label": "Prawo gospodarcze", "slug": "business-law" },
+                            { "label": "Prawo pracy", "slug": "employment-law" },
+                            { "label": "Prywatność i dane", "slug": "privacy-data" },
+                            { "label": "Własność intelektualna", "slug": "intellectual-property" },
+                            { "label": "Nieruchomości", "slug": "real-estate-law" },
+                            { "label": "Podatki i finanse", "slug": "tax-finance" }
+                        ]
+                    }
+                },
+                "keywords": "Oprogramowanie AI dla prawa, tworzenie umów, zarządzanie sprawami, badanie prawne, workflow compliance, automatyzacja dokumentów, procedury prawne, produktywność kancelarii, narzędzia dla działów prawnych, wskazówki regulacyjne."
+            }
+        }
+    },
+    "learn": {
+        "overline": "Centrum wiedzy",
+        "contactCta": "Porozmawiaj z zespołem",
+        "disclaimer": "Ta strona ma charakter informacyjny i nie stanowi porady prawnej. Prawo i procedury różnią się w zależności od jurysdykcji; w konkretnych sprawach skonsultuj się z profesjonalnym pełnomocnikiem.",
+        "notFound": {
+            "title": "Nie znaleziono strony",
+            "body": "Ta strona wiedzy nie istnieje lub została przeniesiona.",
+            "cta": "Wróć na stronę główną",
+            "metaTitle": "Nie znaleziono strony wiedzy",
+            "metaDescription": "Żądana strona wiedzy nie została znaleziona."
+        },
+        "pages": {
+            "ai-legal-chat": {
+                "title": "Prawny czat AI",
+                "metaTitle": "Prawny czat AI — przegląd",
+                "metaDescription": "Czym jest prawny czat AI, jak bywa używany, jak weryfikować wyniki i gdzie ma ograniczenia.",
+                "intro": "Praktyczny opis systemów odpowiadania na pytania prawne i ich typowych zastosowań.",
+                "sections": [
+                    {
+                        "title": "Czym jest",
+                        "body": "Prawny czat AI to systemy, które interpretują pytania w języku naturalnym i zwracają podsumowania lub odwołania do źródeł prawa. Wyniki zależą od danych, metody wyszukiwania oraz wybranej jurysdykcji."
+                    },
+                    {
+                        "title": "Typowe zastosowania",
+                        "body": "Zespoły wykorzystują takie narzędzia do wyjaśniania terminologii, wyszukiwania przepisów lub orzeczeń oraz tworzenia list zagadnień do dalszej analizy."
+                    },
+                    {
+                        "title": "Kontrola jakości",
+                        "body": "Należy weryfikować cytowane źródła, potwierdzać jurysdykcję i aktualność oraz sprawdzać, czy nie pominięto wyjątków."
+                    },
+                    {
+                        "title": "Ograniczenia i ryzyka",
+                        "body": "Odpowiedzi mogą być niepełne lub błędne. Dane wrażliwe trzeba przetwarzać zgodnie z zasadami poufności i ochrony danych."
+                    }
+                ]
+            },
+            "document-generation": {
+                "title": "Generowanie dokumentów",
+                "metaTitle": "Generowanie dokumentów prawnych — przegląd",
+                "metaDescription": "Jak działa automatyczne tworzenie dokumentów, jakie dane są potrzebne i gdzie wymagana jest kontrola.",
+                "intro": "Jak działa automatyczne tworzenie dokumentów, jakie dane są potrzebne i gdzie wymagana jest weryfikacja.",
+                "sections": [
+                    {
+                        "title": "Czym jest",
+                        "body": "Generowanie dokumentów łączy szablony, biblioteki klauzul i dane wejściowe, aby tworzyć projekty umów, pism lub wniosków. Końcowy dokument wymaga przeglądu prawnika."
+                    },
+                    {
+                        "title": "Typowe dane wejściowe",
+                        "body": "Najczęściej są to dane stron, prawo właściwe, warunki biznesowe oraz preferowane klauzule."
+                    },
+                    {
+                        "title": "Etapy przeglądu",
+                        "body": "Przegląd obejmuje spójność zapisów, zgodność z transakcją oraz wymaganiami prawa lub branży."
+                    },
+                    {
+                        "title": "Różnice jurysdykcyjne",
+                        "body": "Wymogi prawne różnią się między krajami. Szablony należy dostosowywać do lokalnych przepisów."
+                    }
+                ]
+            },
+            "case-management": {
+                "title": "Zarządzanie sprawami",
+                "metaTitle": "Zarządzanie sprawami — podstawy",
+                "metaDescription": "Podstawy organizowania spraw prawnych, śledzenia postępu i prowadzenia dokumentacji.",
+                "intro": "Podstawowe zasady organizowania spraw prawnych i śledzenia ich postępu.",
+                "sections": [
+                    {
+                        "title": "Czym jest",
+                        "body": "Zarządzanie sprawami obejmuje przyjęcie, organizację i monitorowanie spraw, w tym zadań, terminów, dokumentów i komunikacji."
+                    },
+                    {
+                        "title": "Kluczowe dane",
+                        "body": "Typowe informacje to strony, jurysdykcja, typ sprawy, ważne daty, odpowiedzialne osoby i powiązane dokumenty."
+                    },
+                    {
+                        "title": "Etapy pracy",
+                        "body": "Sprawy przechodzą zwykle przez przyjęcie, analizę, tworzenie dokumentów, negocjacje lub czynności procesowe oraz zamknięcie."
+                    },
+                    {
+                        "title": "Zgodność i prywatność",
+                        "body": "Dane sprawy mogą obejmować informacje poufne. Stosuje się kontrolę dostępu, polityki retencji i ścieżki audytu."
+                    }
+                ]
+            },
+            "procedure-playbooks": {
+                "title": "Procedury krok po kroku",
+                "metaTitle": "Procedury prawne — playbooki",
+                "metaDescription": "Jak strukturyzuje się procedury, jak je utrzymuje i aktualizuje w różnych jurysdykcjach.",
+                "intro": "Dlaczego procedury wymagają jasnego opisu i regularnych aktualizacji.",
+                "sections": [
+                    {
+                        "title": "Czym są",
+                        "body": "Procedury opisują wymagane kroki, formularze i terminy dla konkretnych procesów prawnych, takich jak rejestracje czy zgłoszenia."
+                    },
+                    {
+                        "title": "Elementy treści",
+                        "body": "Dobre procedury wskazują wymagania wstępne, terminy, role odpowiedzialne, wymagane formularze i kanały złożenia."
+                    },
+                    {
+                        "title": "Utrzymanie",
+                        "body": "Procedury zmieniają się wraz z przepisami i wytycznymi. Należy je regularnie aktualizować."
+                    },
+                    {
+                        "title": "Różnice jurysdykcyjne",
+                        "body": "Procedury różnią się w zależności od kraju, regionu i organu. Warto potwierdzać lokalne wymogi."
+                    }
+                ]
+            },
+            "saved-notes": {
+                "title": "Zapisane notatki",
+                "metaTitle": "Notatki prawne — organizacja",
+                "metaDescription": "Jak uporządkowane notatki wspierają pracę prawną, wyszukiwanie i retencję.",
+                "intro": "Jak uporządkowane notatki wspierają pracę prawną bez zastępowania źródeł.",
+                "sections": [
+                    {
+                        "title": "Czym są",
+                        "body": "Zapisane notatki to krótkie podsumowania kluczowych faktów, decyzji lub źródeł powiązanych ze sprawą lub tematem."
+                    },
+                    {
+                        "title": "Organizacja",
+                        "body": "Notatki porządkuje się według sprawy, tematu, jurysdykcji i daty, aby łatwiej je odnaleźć."
+                    },
+                    {
+                        "title": "Wyszukiwanie i metadane",
+                        "body": "Tagi, cytowania i linki do źródeł zwiększają użyteczność i ograniczają powielanie pracy."
+                    },
+                    {
+                        "title": "Retencja",
+                        "body": "Polityki retencji określają czas przechowywania notatek i zasady archiwizacji."
+                    }
+                ]
+            },
+            "client-collaboration": {
+                "title": "Współpraca z klientami",
+                "metaTitle": "Współpraca z klientami — zasady",
+                "metaDescription": "Jak zespoły prawne współpracują z klientami z zachowaniem poufności i dokumentacji.",
+                "intro": "Jak zespoły prawne współpracują z klientami, dbając o poufność.",
+                "sections": [
+                    {
+                        "title": "Czym jest",
+                        "body": "Współpraca z klientami obejmuje wspólne przestrzenie robocze, wymianę dokumentów i kanały komunikacji."
+                    },
+                    {
+                        "title": "Kontrole bezpieczeństwa",
+                        "body": "Stosuje się role dostępu, bezpieczne linki udostępniania i dzienniki aktywności."
+                    },
+                    {
+                        "title": "Praktyki komunikacji",
+                        "body": "Ustalone zasady raportowania, rejestrowanie decyzji i ścieżki eskalacji ograniczają nieporozumienia."
+                    },
+                    {
+                        "title": "Prowadzenie dokumentacji",
+                        "body": "Zapisy zatwierdzeń, wersji i instrukcji wspierają rozliczalność oraz późniejsze odniesienia."
+                    }
+                ]
+            },
+            "contract-drafting": {
+                "title": "Tworzenie umów",
+                "metaTitle": "Tworzenie umów — podstawy",
+                "metaDescription": "Jak powstają umowy, jak przebiega przegląd, negocjacje i podpisanie.",
+                "intro": "Praktyczne podsumowanie procesu przygotowania, przeglądu i finalizacji umów.",
+                "sections": [
+                    {
+                        "title": "Cel",
+                        "body": "Umowy określają prawa, obowiązki i środki ochrony między stronami, przekładając ustalenia biznesowe na zapisy prawne."
+                    },
+                    {
+                        "title": "Kluczowe klauzule",
+                        "body": "Często obejmują zakres, wynagrodzenie, czas trwania, rozwiązanie, poufność, odpowiedzialność i rozwiązywanie sporów."
+                    },
+                    {
+                        "title": "Punkty kontrolne",
+                        "body": "Przegląd sprawdza spójność, wykonalność, rozkład ryzyk oraz zgodność z politykami wewnętrznymi."
+                    },
+                    {
+                        "title": "Negocjacje i podpis",
+                        "body": "Zmiany są dokumentowane, a wymagania dotyczące podpisu zależą od jurysdykcji i rodzaju umowy."
+                    }
+                ]
+            },
+            "legal-research": {
+                "title": "Badanie prawne",
+                "metaTitle": "Badanie prawne — metody",
+                "metaDescription": "Jak bada się prawo z użyciem źródeł pierwotnych i wtórnych oraz weryfikuje aktualność.",
+                "intro": "Jak prowadzi się badanie prawne z użyciem źródeł pierwotnych i wtórnych.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Badanie prawne identyfikuje właściwe przepisy, orzecznictwo i interpretacje dla konkretnego zagadnienia."
+                    },
+                    {
+                        "title": "Źródła pierwotne",
+                        "body": "Należą do nich ustawy, rozporządzenia, orzecznictwo i materiały organów administracji."
+                    },
+                    {
+                        "title": "Źródła wtórne",
+                        "body": "To m.in. komentarze, podręczniki, praktyczne opracowania i artykuły analizujące prawo."
+                    },
+                    {
+                        "title": "Higiena badania",
+                        "body": "Weryfikuj aktualność przepisów, zapisuj cytowania i odnotowuj ograniczenia jurysdykcyjne."
+                    }
+                ]
+            },
+            "compliance-workflows": {
+                "title": "Procesy zgodności",
+                "metaTitle": "Procesy zgodności — podstawy",
+                "metaDescription": "Jak organizacje przekładają obowiązki na powtarzalne kroki i dokumentację.",
+                "intro": "Jak organizacje tworzą powtarzalne procesy spełniania wymogów.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Procesy zgodności przekładają obowiązki na zadania, takie jak oceny, akceptacje, szkolenia i raporty."
+                    },
+                    {
+                        "title": "Typowe kroki",
+                        "body": "Obejmują identyfikację wymogów, przypisanie właścicieli, dokumentowanie kontroli oraz okresowe przeglądy."
+                    },
+                    {
+                        "title": "Dowody i ścieżki audytu",
+                        "body": "Rejestrowanie działań, zatwierdzeń i wyjątków wspiera audyty i rozliczalność."
+                    },
+                    {
+                        "title": "Zarządzanie zmianami",
+                        "body": "Organizacje monitorują zmiany w prawie i aktualizują procedury oraz polityki."
+                    }
+                ]
+            },
+            "due-diligence": {
+                "title": "Należyta staranność",
+                "metaTitle": "Należyta staranność — przegląd",
+                "metaDescription": "Po co wykonuje się należytą staranność, co obejmuje i jak raportuje się wyniki.",
+                "intro": "Jasny opis procesu weryfikacji ryzyk przy transakcjach.",
+                "sections": [
+                    {
+                        "title": "Cel",
+                        "body": "Należyta staranność ocenia ryzyka prawne, finansowe i operacyjne przed transakcją lub współpracą."
+                    },
+                    {
+                        "title": "Typowe materiały",
+                        "body": "Analiza obejmuje dokumenty korporacyjne, umowy, IP, sprawy pracownicze i historię regulacyjną."
+                    },
+                    {
+                        "title": "Czerwone flagi",
+                        "body": "Częste problemy to spory, klauzule zmiany kontroli, luki w ochronie danych i niejasne prawa własności."
+                    },
+                    {
+                        "title": "Raportowanie",
+                        "body": "Wyniki podsumowuje się w raportach lub listach zagadnień z zaleceniami działań."
+                    }
+                ]
+            },
+            "policy-review": {
+                "title": "Przegląd polityk",
+                "metaTitle": "Przegląd polityk — proces",
+                "metaDescription": "Jak polityki wewnętrzne są oceniane pod kątem zgodności, jasności i stosowania.",
+                "intro": "Jak organizacje oceniają polityki wewnętrzne pod kątem zgodności i praktyczności.",
+                "sections": [
+                    {
+                        "title": "Cel",
+                        "body": "Przegląd polityk zapewnia zgodność z aktualnym prawem i standardami organizacji."
+                    },
+                    {
+                        "title": "Dane wejściowe",
+                        "body": "Uwzględnia się przepisy, wytyczne branżowe, kontrole wewnętrzne i historię incydentów."
+                    },
+                    {
+                        "title": "Kryteria oceny",
+                        "body": "Ważne są spójność, jasność, wykonalność oraz zgodność z procesami biznesowymi."
+                    },
+                    {
+                        "title": "Komunikacja i szkolenia",
+                        "body": "Polityki są skuteczne, gdy są komunikowane i wspierane szkoleniami lub potwierdzeniami."
+                    }
+                ]
+            },
+            "matter-intake": {
+                "title": "Przyjęcie sprawy",
+                "metaTitle": "Przyjęcie sprawy — zasady",
+                "metaDescription": "Jak zespoły prawne zbierają dane, priorytetyzują i przypisują nowe sprawy.",
+                "intro": "Ustrukturyzowany proces otwierania i klasyfikowania nowych spraw.",
+                "sections": [
+                    {
+                        "title": "Cel",
+                        "body": "Przyjęcie sprawy gromadzi fakty, strony i pilność, aby przypisać właściciela i harmonogram."
+                    },
+                    {
+                        "title": "Zbierane informacje",
+                        "body": "Typowe pola to dane wnioskodawcy, kategoria sprawy, daty, jurysdykcja i dokumenty."
+                    },
+                    {
+                        "title": "Triage",
+                        "body": "Sprawy priorytetyzuje się według ryzyka, terminów i złożoności."
+                    },
+                    {
+                        "title": "Zarządzanie danymi",
+                        "body": "Dane powinny być chronione zgodnie z politykami prywatności i zasadami retencji."
+                    }
+                ]
+            },
+            "business-law": {
+                "title": "Prawo gospodarcze",
+                "metaTitle": "Prawo gospodarcze — przegląd",
+                "metaDescription": "Wysokopoziomowy przegląd tworzenia podmiotów, ładu korporacyjnego i umów.",
+                "intro": "Wysokopoziomowy przegląd zagadnień prawnych dotyczących działalności firm.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Prawo gospodarcze obejmuje tworzenie spółek, ład korporacyjny, umowy, finansowanie i spory handlowe."
+                    },
+                    {
+                        "title": "Typowe dokumenty",
+                        "body": "Należą do nich umowy spółki, statuty, umowy wspólników i umowy handlowe."
+                    },
+                    {
+                        "title": "Cykl życia podmiotu",
+                        "body": "Potrzeby prawne zmieniają się od założenia, przez rozwój i finansowanie, po możliwe wyjście z inwestycji."
+                    },
+                    {
+                        "title": "Aspekty transgraniczne",
+                        "body": "Działalność międzynarodowa wprowadza lokalne wymogi korporacyjne, podatkowe i regulacyjne."
+                    }
+                ]
+            },
+            "employment-law": {
+                "title": "Prawo pracy",
+                "metaTitle": "Prawo pracy — przegląd",
+                "metaDescription": "Zagadnienia dotyczące zatrudniania, zasad w miejscu pracy i rozwiązywania stosunku pracy.",
+                "intro": "Przegląd zagadnień prawnych dotyczących zatrudniania i rozwiązywania stosunku pracy.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Prawo pracy dotyczy rekrutacji, wynagrodzeń, zasad w miejscu pracy oraz zakończenia zatrudnienia."
+                    },
+                    {
+                        "title": "Typowe dokumenty",
+                        "body": "Najczęściej są to oferty pracy, umowy, regulaminy i porozumienia o rozwiązaniu."
+                    },
+                    {
+                        "title": "Obszary zgodności",
+                        "body": "Istotne są przepisy antydyskryminacyjne, wynagrodzenia, urlopy oraz BHP."
+                    },
+                    {
+                        "title": "Różnice jurysdykcyjne",
+                        "body": "Zasady zatrudnienia różnią się między krajami i regionami."
+                    }
+                ]
+            },
+            "privacy-data": {
+                "title": "Prywatność i dane",
+                "metaTitle": "Prywatność i dane — przegląd",
+                "metaDescription": "Kluczowe pojęcia prawa prywatności, obowiązki ochrony danych i transfery transgraniczne.",
+                "intro": "Zwięzły przewodnik po pojęciach prawa ochrony danych.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Prawo prywatności reguluje sposób zbierania, wykorzystywania, udostępniania i przechowywania danych osobowych."
+                    },
+                    {
+                        "title": "Kluczowe pojęcia",
+                        "body": "Często spotykane pojęcia to podstawa prawna, przejrzystość, minimalizacja danych i prawa osób."
+                    },
+                    {
+                        "title": "Typowe obowiązki",
+                        "body": "Organizacje prowadzą polityki prywatności, umowy powierzenia, środki bezpieczeństwa i plany reagowania."
+                    },
+                    {
+                        "title": "Transfery transgraniczne",
+                        "body": "Przekazywanie danych między krajami może wymagać dodatkowych zabezpieczeń."
+                    }
+                ]
+            },
+            "intellectual-property": {
+                "title": "Własność intelektualna",
+                "metaTitle": "Własność intelektualna — przegląd",
+                "metaDescription": "Główne kategorie IP, metody ochrony oraz egzekwowanie praw.",
+                "intro": "Podsumowanie głównych kategorii IP i sposobów ochrony.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Własność intelektualna obejmuje wynalazki, utwory, marki i poufne informacje biznesowe."
+                    },
+                    {
+                        "title": "Rodzaje IP",
+                        "body": "Do kluczowych należą patenty, prawa autorskie, znaki towarowe i tajemnice przedsiębiorstwa."
+                    },
+                    {
+                        "title": "Kroki ochrony",
+                        "body": "Ochrona obejmuje rejestracje, umowy oraz wewnętrzne zasady dostępu i poufności."
+                    },
+                    {
+                        "title": "Egzekwowanie i licencjonowanie",
+                        "body": "Prawa można licencjonować lub egzekwować w drodze negocjacji lub postępowań."
+                    }
+                ]
+            },
+            "real-estate-law": {
+                "title": "Prawo nieruchomości",
+                "metaTitle": "Prawo nieruchomości — przegląd",
+                "metaDescription": "Podstawy transakcji, najmu, finansowania i należytej staranności nieruchomości.",
+                "intro": "Podstawowe pojęcia prawne dotyczące transakcji i najmu nieruchomości.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Prawo nieruchomości obejmuje sprzedaż, najem, finansowanie, planowanie przestrzenne i spory."
+                    },
+                    {
+                        "title": "Etapy transakcji",
+                        "body": "Transakcje obejmują zwykle należytą staranność, negocjacje umowy, finansowanie i zamknięcie."
+                    },
+                    {
+                        "title": "Kluczowe dokumenty",
+                        "body": "Typowe dokumenty to umowy sprzedaży, najmu, dokumenty tytułu i oświadczenia."
+                    },
+                    {
+                        "title": "Należyta staranność",
+                        "body": "Weryfikuje się tytuł, plan miejscowy, kwestie środowiskowe i obciążenia."
+                    }
+                ]
+            },
+            "tax-finance": {
+                "title": "Podatki i finanse",
+                "metaTitle": "Podatki i finanse — przegląd",
+                "metaDescription": "Jak kwestie podatkowe i finansowe wpływają na pracę prawną i zgodność.",
+                "intro": "Jak kwestie podatkowe i finansowe łączą się z pracą prawną.",
+                "sections": [
+                    {
+                        "title": "Zakres",
+                        "body": "Obejmuje zgodność podatkową, struktury finansowania i obowiązki raportowe."
+                    },
+                    {
+                        "title": "Typowe materiały",
+                        "body": "Najczęściej są to deklaracje podatkowe, umowy finansowania i ujawnienia regulacyjne."
+                    },
+                    {
+                        "title": "Obszary ryzyka",
+                        "body": "Ryzyka obejmują błędne klasyfikacje, niepełne ujawnienia oraz zmiany przepisów."
+                    },
+                    {
+                        "title": "Koordynacja",
+                        "body": "Zespoły prawne, finansowe i podatkowe współpracują, by zapewnić zgodność transakcji."
+                    }
+                ]
+            }
         }
     },
     "featuresPage": {
