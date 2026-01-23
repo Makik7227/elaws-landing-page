@@ -14,6 +14,10 @@ import {
     DialogContent,
     DialogTitle,
     Divider,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
     Snackbar,
     Stack,
     TextField,
@@ -741,13 +745,84 @@ Instructions:
                 fullWidth
                 maxWidth="sm"
             >
-                <DialogTitle>{t("aiChat.context.title")}</DialogTitle>
+                <DialogTitle sx={{ fontWeight: 800 }}>{t("aiChat.context.title")}</DialogTitle>
                 <DialogContent>
-                    {renderContextPanel(true)}
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gap: 3,
+                            py: 0.5,
+                        }}
+                    >
+                        <Typography variant="body2" color="text.secondary">
+                            {t("aiChat.context.description")}
+                        </Typography>
+                        <Box
+                            sx={{
+                                border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+                                borderRadius: 3,
+                                p: 2.5,
+                                backgroundColor: alpha(theme.palette.background.paper, 0.6),
+                            }}
+                        >
+                            <Stack spacing={1.5}>
+                                <Typography variant="subtitle2" fontWeight={700}>
+                                    {t("aiChat.labels.country")}
+                                </Typography>
+                                <CustomCountryPickerWeb
+                                    country={country}
+                                    countryCode={countryCode}
+                                    onSelect={(c) => {
+                                        if (c) {
+                                            setCountry(c.name);
+                                            setCountryCode(c.code);
+                                        }
+                                    }}
+                                />
+                            </Stack>
+                        </Box>
+                        <Box
+                            sx={{
+                                border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+                                borderRadius: 3,
+                                p: 2.5,
+                                backgroundColor: alpha(theme.palette.background.paper, 0.6),
+                            }}
+                        >
+                            <Stack spacing={1.5}>
+                                <Typography variant="subtitle2" fontWeight={700}>
+                                    {t("aiChat.labels.topic")}
+                                </Typography>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel id="ai-chat-topic-label">{t("aiChat.labels.topic")}</InputLabel>
+                                    <Select
+                                        labelId="ai-chat-topic-label"
+                                        value={selectedTopic ?? ""}
+                                        label={t("aiChat.labels.topic")}
+                                        onChange={(event) =>
+                                            setSelectedTopic((event.target.value as TopicKey) || null)
+                                        }
+                                    >
+                                        <MenuItem value="">
+                                            <em>{t("aiChat.labels.topicPlaceholder")}</em>
+                                        </MenuItem>
+                                        {TOPIC_KEYS.map((topicKey) => (
+                                            <MenuItem key={topicKey} value={topicKey}>
+                                                {t(`aiChat.topics.${topicKey}`)}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Stack>
+                        </Box>
+                    </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" onClick={() => setContextOpen(false)}>
+                    <Button variant="text" onClick={() => setContextOpen(false)}>
                         {t("aiChat.dialog.cancel")}
+                    </Button>
+                    <Button variant="contained" onClick={() => setContextOpen(false)}>
+                        {t("aiChat.buttons.send")}
                     </Button>
                 </DialogActions>
             </Dialog>
