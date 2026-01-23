@@ -13,7 +13,6 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Divider,
     FormControl,
     InputLabel,
     MenuItem,
@@ -390,77 +389,10 @@ Instructions:
         }
     };
 
-    const renderContextPanel = (compact: boolean) => (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: compact ? 2 : 2.5,
-                p: compact ? 2.5 : { xs: 3, md: 4 },
-            }}
-        >
-                <Typography variant={compact ? "subtitle1" : "h6"} fontWeight={800}>
-                    {t("aiChat.context.title")}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {t("aiChat.context.description")}
-                </Typography>
-                <Box display="flex" justifyContent={compact ? "flex-start" : "center"}>
-                    <CustomCountryPickerWeb
-                        country={country}
-                        countryCode={countryCode}
-                        onSelect={(c) => {
-                            if (c) {
-                                setCountry(c.name);
-                                setCountryCode(c.code);
-                            }
-                        }}
-                    />
-                </Box>
-                <Divider sx={{ my: compact ? 1 : 2 }} />
-                <Typography variant="subtitle2" gutterBottom>
-                    {t("aiChat.labels.topic")}
-                </Typography>
-                {compact ? (
-                    <Stack direction="row" spacing={1.2} flexWrap="wrap">
-                        {TOPIC_KEYS.map((topicKey) => {
-                            const active = topicKey === selectedTopic;
-                            return (
-                                <Chip
-                                    key={topicKey}
-                                    label={t(`aiChat.topics.${topicKey}`)}
-                                    size="small"
-                                    color={active ? "primary" : "default"}
-                                    variant={active ? "filled" : "outlined"}
-                                    onClick={() => setSelectedTopic(topicKey)}
-                                />
-                            );
-                        })}
-                    </Stack>
-                ) : (
-                    <Stack direction="row" spacing={1.5} flexWrap="wrap">
-                        <Chip
-                            label={
-                                selectedTopic ? t(`aiChat.topics.${selectedTopic}`) : t("aiChat.labels.topicPlaceholder")
-                            }
-                            color="primary"
-                            sx={{ fontWeight: 700 }}
-                        />
-                        <Chip
-                            label={t("aiChat.buttons.changeTopic")}
-                            variant="outlined"
-                            onClick={() => setSelectedTopic(null)}
-                        />
-                    </Stack>
-                )}
-        </Box>
-    );
-
     const renderChatPanel = (compact: boolean) => {
         const panelHeight = compact
             ? "calc(100vh - var(--topbar-height-mobile))"
             : "calc(100vh - var(--topbar-height-desktop) - 96px)";
-        const surfacePadding = compact ? { px: 2, py: 2 } : { px: { xs: 3, md: 4 }, py: { xs: 2.5, md: 3 } };
         return (
             <Box
                 sx={{
