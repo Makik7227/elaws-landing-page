@@ -640,7 +640,8 @@
             "saveError": "Failed to save note."
         },
         "loading": {
-            "preparing": "Preparing your workspace…"
+            "preparing": "Preparing your workspace…",
+            "thinking": "Thinking…"
         },
         "tokens": {
             "usage": "{{used}} / {{limit}} legal bandwidth",

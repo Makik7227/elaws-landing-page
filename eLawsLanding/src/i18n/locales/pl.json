@@ -640,7 +640,8 @@
             "saveError": "Nie udało się zapisać notatki."
         },
         "loading": {
-            "preparing": "Przygotowujemy Twoje środowisko…"
+            "preparing": "Przygotowujemy Twoje środowisko…",
+            "thinking": "Myślę…"
         },
         "empty": {
             "countryTitle": "Wybierz jurysdykcję",

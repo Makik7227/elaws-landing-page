@@ -19,6 +19,7 @@ import {
     TextField,
     Typography,
     alpha,
+    useMediaQuery,
     useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -80,6 +81,7 @@ const AiChatPage: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const isCompact = useMediaQuery(theme.breakpoints.down("md"));
     const [selectedTopic, setSelectedTopic] = useState<TopicKey | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
@@ -96,6 +98,7 @@ const AiChatPage: React.FC = () => {
     const [tokenLimit, setTokenLimit] = useState(0);
     const [monthlyTokensUsed, setMonthlyTokensUsed] = useState(0);
     const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const [contextOpen, setContextOpen] = useState(false);
     const tokenWarning = shouldWarnAboutTokens(monthlyTokensUsed, tokenLimit);
     const tokenUsageLabel =
         tokenLimit > 0
@@ -384,26 +387,14 @@ Instructions:
     };
 
     const renderContextPanel = (compact: boolean) => (
-        <Card
+        <Box
             sx={{
-                height: compact ? "auto" : "100%",
-                borderRadius: compact ? 3 : 4,
-                border: compact ? `1px solid ${alpha(theme.palette.divider, 0.6)}` : undefined,
-                boxShadow: compact ? "none" : undefined,
-                bgcolor: compact
-                    ? alpha(theme.palette.background.paper, theme.palette.mode === "light" ? 0.95 : 0.35)
-                    : undefined,
-                backdropFilter: compact ? "blur(12px)" : undefined,
+                display: "flex",
+                flexDirection: "column",
+                gap: compact ? 2 : 2.5,
+                p: compact ? 2.5 : { xs: 3, md: 4 },
             }}
         >
-            <CardContent
-                sx={{
-                    p: compact ? 2.5 : { xs: 3, md: 4 },
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: compact ? 2 : 2.5,
-                }}
-            >
                 <Typography variant={compact ? "subtitle1" : "h6"} fontWeight={800}>
                     {t("aiChat.context.title")}
                 </Typography>
@@ -458,158 +449,239 @@ Instructions:
                         />
                     </Stack>
                 )}
-            </CardContent>
-        </Card>
+        </Box>
     );
 
-    const renderChatPanel = (compact: boolean) => (
-        <Card
-            sx={{
-                borderRadius: compact ? 3 : 4,
-                height: compact ? "100%" : { md: "80vh" },
-                display: "flex",
-                flexDirection: "column",
-                boxShadow: compact ? "none" : undefined,
-                border: compact ? `1px solid ${alpha(theme.palette.divider, 0.5)}` : undefined,
-                bgcolor: compact
-                    ? alpha(theme.palette.background.paper, theme.palette.mode === "light" ? 0.98 : 0.25)
-                    : undefined,
-                flex: compact ? 1 : undefined,
-            }}
-        >
-            <CardContent
+    const renderChatPanel = (compact: boolean) => {
+        const panelHeight = compact
+            ? "calc(100vh - var(--topbar-height-mobile))"
+            : "calc(100vh - var(--topbar-height-desktop) - 96px)";
+        const surfacePadding = compact ? { px: 2, py: 2 } : { px: { xs: 3, md: 4 }, py: { xs: 2.5, md: 3 } };
+        return (
+            <Box
                 sx={{
-                    p: compact ? 2.5 : { xs: 3, md: 4 },
-                    height: "100%",
+                    borderRadius: 0,
+                    height: { xs: panelHeight, md: panelHeight },
                     display: "flex",
                     flexDirection: "column",
-                    gap: compact ? 2.5 : 3.5,
-                    minHeight: 0,
+                    flex: 1,
+                    overflow: "hidden",
+                    backgroundColor: "transparent",
                 }}
             >
-                <Stack
-                    direction={{ xs: "column", sm: compact ? "column" : "row" }}
-                    justifyContent="space-between"
-                    spacing={compact ? 1.5 : 2}
-                    sx={{ pb: 1, borderBottom: compact ? `1px solid ${alpha(theme.palette.divider, 0.5)}` : "none" }}
-                >
-                    <Box>
-                        <Typography variant="subtitle2" color="text.secondary">
-                            {t("aiChat.labels.topic")}
-                        </Typography>
-                        <Typography variant={compact ? "body1" : "h6"} fontWeight={800}>
-                            {selectedTopic ? t(`aiChat.topics.${selectedTopic}`) : t("aiChat.labels.topicPlaceholder")}
-                        </Typography>
-                    </Box>
-                    <Stack spacing={1} alignItems={{ xs: "flex-start", sm: "flex-end" }}>
-                        <Box textAlign={{ xs: "left", sm: "right" }}>
-                            <Typography variant="subtitle2" color="text.secondary">
-                                {t("aiChat.labels.country")}
-                            </Typography>
-                            <Typography variant="body2">{localizedCountryName || t("aiChat.labels.anyCountry")}</Typography>
-                        </Box>
-                        <Button variant="outlined" size="small" onClick={handleClearConversation}>
-                            {t("aiChat.buttons.clearConversation")}
-                        </Button>
-                    </Stack>
-                </Stack>
-
-                <Box
-                    flex={1}
-                    minHeight={0}
-                    overflow="auto"
-                    pr={compact ? 0 : 1}
-                    sx={{ py: compact ? 1 : 2, px: compact ? 0.5 : 0 }}
-                >
-                    <AnimatePresence>
-                        {messages.map((m) => (
-                            <motion.div
-                                key={m.id}
-                                initial={{ opacity: 0, y: 15 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -15 }}
-                            >
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: m.role === "user" ? "flex-end" : "flex-start",
-                                        mb: compact ? 2.5 : 2,
-                                    }}
+                    <Stack
+                        direction="column"
+                        spacing={1}
+                        sx={{
+                            px: compact ? 2 : 3,
+                            py: compact ? 0.35 : 0.5,
+                            position: "sticky",
+                            top: 0,
+                            zIndex: 2,
+                            backgroundColor: alpha(theme.palette.background.paper, 0.92),
+                            backdropFilter: "blur(10px)",
+                        }}
+                    >
+                        <Stack
+                            direction={{ xs: "column", sm: "row" }}
+                            justifyContent="space-between"
+                            spacing={0.75}
+                        >
+                            <Box>
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    sx={{ textTransform: "uppercase", letterSpacing: 0.6, lineHeight: 1.1 }}
                                 >
+                                    {t("aiChat.labels.topic")}
+                                </Typography>
+                                <Typography variant="body2" fontWeight={700} sx={{ lineHeight: 1.2 }}>
+                                    {selectedTopic
+                                        ? t(`aiChat.topics.${selectedTopic}`)
+                                        : t("aiChat.labels.topicPlaceholder")}
+                                </Typography>
+                            </Box>
+                            <Stack spacing={0.75} alignItems={{ xs: "flex-start", sm: "flex-end" }}>
+                                <Box textAlign={{ xs: "left", sm: "right" }}>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ textTransform: "uppercase", letterSpacing: 0.6, lineHeight: 1.1 }}
+                                    >
+                                        {t("aiChat.labels.country")}
+                                    </Typography>
+                                    <Typography variant="body2" fontWeight={600} sx={{ lineHeight: 1.2 }}>
+                                        {localizedCountryName || t("aiChat.labels.anyCountry")}
+                                    </Typography>
+                                </Box>
+                                <Stack direction="row" spacing={1} sx={{ mt: 0.2 }}>
+                                    <Button
+                                        variant="text"
+                                        size="small"
+                                        onClick={() => setContextOpen(true)}
+                                        sx={{ px: 0, minHeight: 24, fontSize: "0.75rem" }}
+                                    >
+                                        {t("aiChat.context.title")}
+                                    </Button>
+                                    <Button
+                                        variant="text"
+                                        size="small"
+                                        onClick={handleClearConversation}
+                                        sx={{ px: 0, minHeight: 24, fontSize: "0.75rem" }}
+                                    >
+                                        {t("aiChat.buttons.clearConversation")}
+                                    </Button>
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                        <Box sx={{ height: 1, bgcolor: alpha(theme.palette.divider, 0.4) }} />
+                    </Stack>
+
+                    <Box
+                        flex={1}
+                        minHeight={0}
+                        overflow="auto"
+                        sx={{
+                            px: compact ? 2 : 4,
+                            py: compact ? 2 : 3,
+                            background: "transparent",
+                        }}
+                    >
+                        <AnimatePresence>
+                            {messages.map((m) => {
+                                const isTyping = m.id === "typing";
+                                return (
+                                    <motion.div
+                                        key={m.id}
+                                        initial={{ opacity: 0, y: 12 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -12 }}
+                                    >
                                         <Box
                                             sx={{
-                                                maxWidth: compact ? "92%" : "80%",
-                                                borderRadius: 3,
-                                                p: 2,
-                                                bgcolor:
-                                                    m.role === "user"
-                                                        ? theme.palette.primary.main
-                                                        : alpha(
-                                                          theme.palette.mode === "light"
-                                                              ? theme.palette.primary.main
-                                                              : theme.palette.common.white,
-                                                          theme.palette.mode === "light" ? 0.08 : 0.15
-                                                      ),
-                                                color:
-                                                    m.role === "user"
-                                                        ? theme.palette.primary.contrastText
-                                                        : theme.palette.text.primary,
-                                                boxShadow: m.role === "user"
-                                                    ? "0 18px 40px rgba(126,87,194,0.35)"
-                                                    : "0 12px 32px rgba(15,10,40,0.12)",
-                                                px: compact ? 2 : 3,
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                py: compact ? 1.75 : 2,
+                                                borderBottom: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
                                             }}
                                         >
-                                        <Typography sx={{ whiteSpace: "pre-wrap" }}>{m.content}</Typography>
-                                        {m.role === "bot" && m.id !== "0" && (
-                                            <Button
-                                                startIcon={<SaveIcon />}
-                                                onClick={() => openNoteDialog(m)}
-                                                size="small"
-                                                sx={{ mt: 1 }}
-                                            >
-                                                {t("aiChat.buttons.saveToNotes")}
-                                            </Button>
-                                        )}
-                                    </Box>
-                                </Box>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-                    <div ref={messagesEndRef} />
-                </Box>
+                                            <Box sx={{ maxWidth: "100%" }}>
+                                                {isTyping ? (
+                                                    <Stack direction="row" spacing={0.75} alignItems="center">
+                                                        <Box
+                                                            sx={{
+                                                                width: 6,
+                                                                height: 6,
+                                                                borderRadius: "50%",
+                                                                backgroundColor: theme.palette.text.secondary,
+                                                                animation: "pulseDot 1s ease-in-out infinite",
+                                                                "@keyframes pulseDot": {
+                                                                    "0%, 100%": { opacity: 0.3, transform: "translateY(0)" },
+                                                                    "50%": { opacity: 1, transform: "translateY(-2px)" },
+                                                                },
+                                                            }}
+                                                        />
+                                                        <Box
+                                                            sx={{
+                                                                width: 6,
+                                                                height: 6,
+                                                                borderRadius: "50%",
+                                                                backgroundColor: theme.palette.text.secondary,
+                                                                animation: "pulseDot 1s ease-in-out 0.2s infinite",
+                                                            }}
+                                                        />
+                                                        <Box
+                                                            sx={{
+                                                                width: 6,
+                                                                height: 6,
+                                                                borderRadius: "50%",
+                                                                backgroundColor: theme.palette.text.secondary,
+                                                                animation: "pulseDot 1s ease-in-out 0.4s infinite",
+                                                            }}
+                                                        />
+                                                        <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                                                            {t("aiChat.loading.thinking")}
+                                                        </Typography>
+                                                    </Stack>
+                                                ) : (
+                                                    <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>
+                                                        {m.content}
+                                                    </Typography>
+                                                )}
+                                                {m.role === "bot" && m.id !== "0" && !isTyping && (
+                                                    <Button
+                                                        startIcon={<SaveIcon />}
+                                                        onClick={() => openNoteDialog(m)}
+                                                        size="small"
+                                                        sx={{ mt: 1, px: 0 }}
+                                                    >
+                                                        {t("aiChat.buttons.saveToNotes")}
+                                                    </Button>
+                                                )}
+                                            </Box>
+                                        </Box>
+                                    </motion.div>
+                                );
+                            })}
+                        </AnimatePresence>
+                        <div ref={messagesEndRef} />
+                    </Box>
 
-                <Alert severity="info">
-                    {t("aiChat.disclaimer")}
-                </Alert>
-                <Stack
-                    direction={compact ? "column" : { xs: "column", sm: "row" }}
-                    spacing={compact ? 1 : 1.5}
-                    sx={{ flexShrink: 0 }}
-                >
-                    <TextField
-                        fullWidth
-                        size={compact ? "small" : "medium"}
-                        placeholder={t("aiChat.inputs.questionPlaceholder")}
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        multiline
-                        maxRows={compact ? 3 : 4}
-                    />
-                    <Button
-                        variant="contained"
-                        endIcon={<SendIcon />}
-                        onClick={sendMessage}
-                        disabled={sendingMessage || !input.trim()}
-                        sx={{ minWidth: compact ? undefined : { sm: 140 } }}
-                        fullWidth={compact}
+                    <Stack
+                        direction="column"
+                        spacing={1}
+                        sx={{
+                            px: compact ? 2 : 3,
+                            py: compact ? 1 : 1.5,
+                            position: "sticky",
+                            bottom: 0,
+                            zIndex: 2,
+                            backgroundColor: alpha(theme.palette.background.paper, 0.98),
+                        }}
                     >
-                        {t("aiChat.buttons.send")}
-                    </Button>
-                </Stack>
-            </CardContent>
-        </Card>
-    );
+                        <Stack
+                            direction={compact ? "column" : { xs: "column", sm: "row" }}
+                            spacing={compact ? 1 : 1.5}
+                            alignItems={compact ? "stretch" : "center"}
+                        >
+                            <TextField
+                                fullWidth
+                                size={compact ? "small" : "medium"}
+                                placeholder={t("aiChat.inputs.questionPlaceholder")}
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                multiline
+                                maxRows={compact ? 3 : 4}
+                                variant="standard"
+                                InputProps={{
+                                    disableUnderline: true,
+                                }}
+                                sx={{ flex: 1 }}
+                            />
+                            <Button
+                                variant="contained"
+                                endIcon={
+                                    sendingMessage ? <CircularProgress size={16} color="inherit" /> : <SendIcon />
+                                }
+                                onClick={sendMessage}
+                                disabled={sendingMessage || !input.trim()}
+                                sx={{
+                                    minWidth: compact ? undefined : { sm: 140 },
+                                    borderRadius: 999,
+                                    px: 2.5,
+                                }}
+                                fullWidth={compact}
+                            >
+                                {t("aiChat.buttons.send")}
+                            </Button>
+                        </Stack>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
+                            {t("aiChat.disclaimer")}
+                        </Typography>
+                    </Stack>
+            </Box>
+        );
+    };
 
     const overlayElements = (
         <>
@@ -659,6 +731,23 @@ Instructions:
                         disabled={noteDialog.loading || !noteDialog.title.trim()}
                     >
                         {t("aiChat.dialog.save")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={contextOpen}
+                onClose={() => setContextOpen(false)}
+                fullScreen={isCompact}
+                fullWidth
+                maxWidth="sm"
+            >
+                <DialogTitle>{t("aiChat.context.title")}</DialogTitle>
+                <DialogContent>
+                    {renderContextPanel(true)}
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" onClick={() => setContextOpen(false)}>
+                        {t("aiChat.dialog.cancel")}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -764,18 +853,28 @@ Instructions:
     }
 
     const layout = (
-        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-            {renderUsageBanner()}
-            <Grid container spacing={{ xs: 4, md: 5 }} alignItems="stretch">
-                <Grid size={{ xs: 12, md: 4 }}>{renderContextPanel(false)}</Grid>
-                <Grid size={{ xs: 12, md: 8 }}>{renderChatPanel(false)}</Grid>
-            </Grid>
-        </Container>
+        <Box
+            sx={{
+                minHeight: {
+                    xs: "calc(100vh - var(--topbar-height-mobile))",
+                    md: "calc(100vh - var(--topbar-height-desktop))",
+                },
+                display: "flex",
+                flexDirection: "column",
+            }}
+        >
+            <Container maxWidth="lg" sx={{ flex: 1, py: { xs: 0, md: 3 } }}>
+                {renderUsageBanner()}
+                <Box sx={{ maxWidth: 720, mx: "auto", width: "100%" }}>
+                    {renderChatPanel(isCompact)}
+                </Box>
+            </Container>
+        </Box>
     );
 
     return (
         <>
-            {hero}
+            {!selectedTopic && hero}
             {layout}
             {overlayElements}
         </>
