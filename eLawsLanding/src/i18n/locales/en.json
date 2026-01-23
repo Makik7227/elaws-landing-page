@@ -88,6 +88,11 @@
                 "title": "Get emergency procedures",
                 "description": "Enter the email where we should send your procedures and select the country.",
                 "emailLabel": "Email address",
+                "languageLabel": "Response language",
+                "languageOptions": {
+                    "english": "English",
+                    "polish": "Polish"
+                },
                 "submit": "Proceed to payment",
                 "processing": "Redirecting...",
                 "cancel": "Cancel",

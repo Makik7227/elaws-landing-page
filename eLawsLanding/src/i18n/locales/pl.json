@@ -88,6 +88,11 @@
                 "title": "Pobierz procedury awaryjne",
                 "description": "Podaj adres e-mail do wysyłki i wybierz kraj.",
                 "emailLabel": "Adres e-mail",
+                "languageLabel": "Język odpowiedzi",
+                "languageOptions": {
+                    "english": "Angielski",
+                    "polish": "Polski"
+                },
                 "submit": "Przejdź do płatności",
                 "processing": "Przekierowanie...",
                 "cancel": "Anuluj",
