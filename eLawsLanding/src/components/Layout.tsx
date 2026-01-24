@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import TopBar from "./TopBar";
+import ScrollToTop from "./ScrollToTop";
 import Footer from "./Footer";
 import CookieConsentBanner from "./CookieConsentBanner";
 import LegalDocumentsDialog, { type LegalDocumentType } from "./LegalDocumentsDialog";
@@ -48,6 +49,7 @@ const Layout = () => {
 
     return (
         <>
+            <ScrollToTop />
             <TopBar />
             <Box
                 component="main"
