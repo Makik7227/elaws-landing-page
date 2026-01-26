@@ -1814,7 +1814,7 @@
             "free": {
                 "name": "Free",
                 "subtitle": "New Account",
-                "tokens": "10,000 tokens / mo",
+                "tokens": "10 000 tokens / mo",
                 "features": [
                     "Chat with AI Law Assistant",
                     "Access to “I Was Stopped by the Police” panic button"
@@ -1823,7 +1823,7 @@
             "plus": {
                 "name": "Plus",
                 "subtitle": "Client Account",
-                "tokens": "100,000 tokens / mo",
+                "tokens": "100 000 tokens / mo",
                 "badge": "Best value",
                 "features": [
                     "Secure document generation",
@@ -1835,7 +1835,7 @@
             "premium": {
                 "name": "Premium",
                 "subtitle": "Client/Lawyer Account",
-                "tokens": "500,000 tokens / mo",
+                "tokens": "500 000 tokens / mo",
                 "badge": "Recommended",
                 "features": [
                     "Secure document generation",
