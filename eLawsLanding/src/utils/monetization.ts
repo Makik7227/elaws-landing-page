@@ -39,28 +39,8 @@ const safeSetNumber = (key: string, value: number) => {
     }
 };
 
-const safeFlagGet = (key: string) => {
-    if (typeof window === "undefined") return false;
-    try {
-        return window.localStorage.getItem(key) === "1";
-    } catch {
-        return false;
-    }
-};
-
-const safeFlagSet = (key: string) => {
-    if (typeof window === "undefined") return;
-    try {
-        window.localStorage.setItem(key, "1");
-    } catch {
-        // ignore
-    }
-};
-
 const monthlyKey = (feature: string, uid?: string | null) =>
     `${STORAGE_PREFIX}:${feature}:${uid ?? "anon"}:${monthStamp()}`;
-
-const panicKey = (uid?: string | null) => `${STORAGE_PREFIX}:panic:${uid ?? "anon"}`;
 
 export const getNoteLimit = (tier?: Tier | null) => NOTE_LIMITS[tier ?? "free"];
 export const getDocumentLimit = (tier?: Tier | null) => DOCUMENT_LIMITS[tier ?? "free"];
@@ -70,11 +50,6 @@ export const incrementDocumentRunsThisMonth = (uid?: string | null) => {
     const next = safeGetNumber(key) + 1;
     safeSetNumber(key, next);
     return next;
-};
-
-export const hasUsedFreePanic = (uid?: string | null) => safeFlagGet(panicKey(uid));
-export const markFreePanicUsed = (uid?: string | null) => {
-    safeFlagSet(panicKey(uid));
 };
 
 export const canCreateCase = (tier?: Tier | null) => (tier ?? "free") === "premium";

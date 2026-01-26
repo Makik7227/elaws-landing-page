@@ -21,6 +21,7 @@ import {
     getDocs,
     limit,
     query,
+    setDoc,
     serverTimestamp,
     where,
 } from "firebase/firestore";
@@ -28,12 +29,7 @@ import { useNavigate } from "react-router-dom";
 import CustomCountryPicker from "./CustomCountryPicker";
 import { sendMessageToGPT } from "../api/chat.ts"; // ✅ reuse your picker
 import { useTranslation } from "react-i18next";
-import {
-    canTriggerPanic,
-    hasUsedFreePanic,
-    markFreePanicUsed,
-    type Tier,
-} from "../utils/monetization.ts";
+import { canTriggerPanic, type Tier } from "../utils/monetization.ts";
 
 type ChatRole = "system" | "user" | "assistant";
 type ChatMessage = { role: ChatRole; content: string };
@@ -60,6 +56,7 @@ export default function PanicButtonWeb({
     const [countryCode, setCountryCode] = useState(defaultCode);
     const [loading, setLoading] = useState(false);
     const [panicLocked, setPanicLocked] = useState(false);
+    const [freePanicCount, setFreePanicCount] = useState(0);
     const navigate = useNavigate();
     const { t } = useTranslation();
     const usageLabel = useMemo(() => {
@@ -70,8 +67,28 @@ export default function PanicButtonWeb({
     }, [panicLocked, subscriptionTier, t]);
 
     useEffect(() => {
-        setPanicLocked(hasUsedFreePanic(userId));
-    }, [userId]);
+        if (!userId || subscriptionTier !== "free") {
+            setPanicLocked(false);
+            setFreePanicCount(0);
+            return;
+        }
+        let active = true;
+        (async () => {
+            try {
+                const snap = await getDoc(doc(db, "users", userId));
+                if (!active) return;
+                const count = snap.exists() ? Number(snap.data().freePanicCount ?? 0) : 0;
+                const safeCount = Number.isFinite(count) ? Math.max(0, count) : 0;
+                setFreePanicCount(safeCount);
+                setPanicLocked(safeCount >= 3);
+            } catch (err) {
+                console.error("PanicButtonWeb lock check error:", err);
+            }
+        })();
+        return () => {
+            active = false;
+        };
+    }, [userId, subscriptionTier]);
 
     const handleTriggerClick = () => {
         if (!canTriggerPanic(subscriptionTier, panicLocked)) {
@@ -97,6 +114,15 @@ export default function PanicButtonWeb({
             const subscriptionTier = userDoc.exists()
                 ? userDoc.data().subscriptionTier
                 : "free";
+            const freePanicCount = userDoc.exists() ? Number(userDoc.data().freePanicCount ?? 0) : 0;
+            const freePanicExhausted = Number.isFinite(freePanicCount) && freePanicCount >= 3;
+            if (subscriptionTier === "free" && freePanicExhausted) {
+                setPanicLocked(true);
+                onLockedAttempt?.();
+                setOpen(false);
+                setLoading(false);
+                return;
+            }
 
             const proceduresRef = collection(db, "users", currentUser.uid, "procedures");
 
@@ -166,8 +192,20 @@ export default function PanicButtonWeb({
                 },
             });
             if (subscriptionTier === "free" && !panicLocked) {
-                markFreePanicUsed(userId);
-                setPanicLocked(true);
+                const nextCount = Number.isFinite(freePanicCount) ? freePanicCount + 1 : 1;
+                await setDoc(
+                    doc(db, "users", currentUser.uid),
+                    { freePanicCount: nextCount, lastPanicUsedAt: serverTimestamp() },
+                    { merge: true }
+                );
+                setFreePanicCount(nextCount);
+                setPanicLocked(nextCount >= 3);
+            } else if (subscriptionTier !== "free") {
+                await setDoc(
+                    doc(db, "users", currentUser.uid),
+                    { lastPanicUsedAt: serverTimestamp() },
+                    { merge: true }
+                );
             }
         } catch (err) {
             console.error("PanicButtonWeb error:", err);
@@ -197,14 +235,19 @@ export default function PanicButtonWeb({
                         px: 3,
                         py: 1.5,
                         textTransform: "none",
-                        opacity: panicLocked && subscriptionTier === "free" ? 0.7 : 1,
+                        opacity:
+                            panicLocked && subscriptionTier === "free"
+                                ? 0.7
+                                    : 1,
                         borderStyle: panicLocked && subscriptionTier === "free" ? "dashed" : "solid",
                     }}
                     onClick={handleTriggerClick}
                 >
                     {panicLocked && subscriptionTier === "free"
                         ? t("components.panicButton.lockedCta")
-                        : t("components.panicButton.trigger")}
+                        : subscriptionTier === "free"
+                            ? `${t("components.panicButton.trigger")} (${freePanicCount}/3)`
+                            : t("components.panicButton.trigger")}
                 </Button>
             </Tooltip>
 

@@ -1135,7 +1135,7 @@
             "thinking": "Thinking…"
         },
         "tokens": {
-            "usage": "{{used}} / {{limit}} legal bandwidth",
+            "usage": "{{used}} / {{limit}} monthly tokens",
             "cta": "Upgrade bandwidth",
             "freeWarning": "You’re almost out of Free bandwidth. Upgrade to Plus so chat guidance stays responsive.",
             "plusWarning": "Plus bandwidth is nearly exhausted. Upgrade to Premium to keep legal chat online."
@@ -1196,14 +1196,14 @@
             "close": "Close"
         },
         "panicButton": {
-            "trigger": "Emergency legal shield",
+            "trigger": "I was stopped by the police",
             "dialogTitle": "Police encounter protocol",
-            "dialogDescription": "Confirm your jurisdiction to load the exact stop-and-search procedure. Free plans unlock a single run.",
+            "dialogDescription": "Confirm your jurisdiction to load the exact stop-and-search procedure. Free plans unlock three runs.",
             "submit": "Get procedures",
             "cancel": "Cancel",
-            "trialLabel": "One emergency run on Free",
+            "trialLabel": "Three emergency runs on Free",
             "unlimited": "Unlimited panic runs",
-            "lockedLabel": "Emergency run exhausted",
+            "lockedLabel": "Emergency runs exhausted",
             "lockedHint": "Upgrade to Plus for unlimited emergency guidance.",
             "lockedCta": "Upgrade for safety"
         },
@@ -1226,7 +1226,7 @@
         "primary": "Upgrade now",
         "panic": {
             "title": "Keep your emergency line live",
-            "description": "Free plans include one police-stop protocol. Upgrade to Plus for unlimited panic activations and saved playbooks.",
+            "description": "Free plans include three police-stop protocols. Upgrade to Plus for unlimited panic activations and saved playbooks.",
             "highlight": "Plus members store every stop procedure for instant recall."
         },
         "documents": {
@@ -1240,7 +1240,7 @@
             "highlight": "Premium keeps every case, note, and procedure in one protected workspace."
         },
         "tokens": {
-            "title": "You’re almost out of legal bandwidth",
+            "title": "You’re almost out of monthly tokens",
             "description": "Once your token buffer is depleted, panic runs, chat responses, and document drafts may stall. Upgrade before the wall hits.",
             "highlight": "At 80% usage, we recommend moving to the next tier to avoid outages."
         }
@@ -1908,7 +1908,7 @@
             }
         },
         "usage": {
-            "tokenLabel": "Legal bandwidth",
+            "tokenLabel": "Monthly tokens",
             "actionsTitle": "Protected workflows this month",
             "docUnlimited": "Unlimited document runs",
             "docLabel": "{{remaining}} / {{limit}} document runs left",
