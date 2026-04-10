@@ -28,6 +28,7 @@ import { useTranslation } from "react-i18next";
 import UpgradePromptDialog from "../components/UpgradePromptDialog";
 import { canCreateCase, type Tier } from "../utils/monetization";
 import PageHero from "../components/PageHero";
+import { findUserByIdentifier, sendFriendRequest } from "../api/connections";
 
 type ClientProfile = {
     uid: string;
@@ -46,6 +47,11 @@ const CreateCasePage = () => {
     const [loading, setLoading] = useState(true);
     const [clientsLoading, setClientsLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [inviteIdentifier, setInviteIdentifier] = useState("");
+    const [inviteLoading, setInviteLoading] = useState(false);
+    const [inviteMessage, setInviteMessage] = useState<{ severity: "error" | "success"; text: string } | null>(
+        null
+    );
     const [error, setError] = useState<string | null>(null);
     const [isLawyer, setIsLawyer] = useState(false);
     const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
@@ -68,7 +74,7 @@ const CreateCasePage = () => {
                 Array.from(candidateIds).map(async (clientId) => {
                     const userSnap = await getDoc(doc(db, "users", clientId));
                     if (!userSnap.exists()) return null;
-                    const userData = userSnap.data() as Record<string, any>;
+                    const userData = userSnap.data() as Record<string, unknown>;
                     if (userData.role !== "client") return null;
                     const displayName = [userData.firstName, userData.lastName].filter(Boolean).join(" ").trim();
                     return {
@@ -90,6 +96,73 @@ const CreateCasePage = () => {
             setClientsLoading(false);
         }
     }, [t]);
+
+    const buildClientLabel = useCallback(
+        (profile: { firstName?: string; lastName?: string; email?: string; username?: string }) =>
+            [profile.firstName, profile.lastName].filter(Boolean).join(" ").trim() ||
+            profile.email ||
+            profile.username ||
+            t("createCasePage.clients.unnamed"),
+        [t]
+    );
+
+    const resolveInviteError = useCallback(
+        (error: unknown): string => {
+            if (!(error instanceof Error)) {
+                return t("createCasePage.invite.errors.generic");
+            }
+            switch (error.message) {
+                case "self":
+                    return t("createCasePage.invite.errors.self");
+                case "already-connected":
+                    return t("createCasePage.invite.errors.duplicate");
+                case "already-requested":
+                    return t("createCasePage.invite.errors.pending");
+                default:
+                    return t("createCasePage.invite.errors.generic");
+            }
+        },
+        [t]
+    );
+
+    const handleSendInvite = useCallback(async () => {
+        if (!inviteIdentifier.trim()) {
+            setInviteMessage({
+                severity: "error",
+                text: t("createCasePage.invite.errors.required"),
+            });
+            return;
+        }
+        if (!currentUser) return;
+        setInviteLoading(true);
+        setInviteMessage(null);
+        try {
+            const target = await findUserByIdentifier(inviteIdentifier.trim(), "client");
+            if (!target) {
+                setInviteMessage({
+                    severity: "error",
+                    text: t("createCasePage.invite.errors.notFound"),
+                });
+                return;
+            }
+            await sendFriendRequest(target.uid);
+            setInviteMessage({
+                severity: "success",
+                text: t("createCasePage.invite.success", {
+                    client: buildClientLabel(target),
+                }),
+            });
+            setInviteIdentifier("");
+            await loadClients(currentUser.uid);
+        } catch (err) {
+            setInviteMessage({
+                severity: "error",
+                text: resolveInviteError(err),
+            });
+        } finally {
+            setInviteLoading(false);
+        }
+    }, [inviteIdentifier, currentUser, loadClients, t, buildClientLabel, resolveInviteError]);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (user) => {
@@ -309,6 +382,45 @@ const CreateCasePage = () => {
                         </Stack>
                     </CardContent>
                 </Card>
+
+                {isLawyer && (
+                    <Card sx={{ borderRadius: 3, mt: 3 }}>
+                        <CardContent>
+                            <Stack spacing={2}>
+                                <Stack spacing={0.5}>
+                                    <Typography variant="h6" fontWeight={700}>
+                                        {t("createCasePage.invite.title")}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t("createCasePage.invite.description")}
+                                    </Typography>
+                                </Stack>
+                                <TextField
+                                    label={t("createCasePage.invite.inputLabel")}
+                                    placeholder={t("createCasePage.invite.inputPlaceholder")}
+                                    value={inviteIdentifier}
+                                    onChange={(event) => setInviteIdentifier(event.target.value)}
+                                    fullWidth
+                                />
+                                {inviteMessage && (
+                                    <Alert severity={inviteMessage.severity}>
+                                        {inviteMessage.text}
+                                    </Alert>
+                                )}
+                                <Button
+                                    variant="contained"
+                                    onClick={handleSendInvite}
+                                    disabled={inviteLoading}
+                                    sx={{ alignSelf: { xs: "stretch", sm: "flex-start" } }}
+                                >
+                                    {inviteLoading
+                                        ? t("createCasePage.invite.sending")
+                                        : t("createCasePage.invite.cta")}
+                                </Button>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {upgradePromptOpen && (
                     <UpgradePromptDialog

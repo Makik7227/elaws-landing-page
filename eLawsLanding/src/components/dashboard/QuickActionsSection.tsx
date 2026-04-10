@@ -11,16 +11,14 @@ import {
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import { type Tier } from "../../utils/monetization";
 
 export type QuickActionItem = {
-    key: "chats" | "aiChat" | "createDoc" | "cases" | "stopProcedures" | "connections" | "notes";
+    key: "aiChat" | "createDoc" | "cases" | "stopProcedures" | "notes" | "connections";
     to: string;
     icon: React.ReactNode;
     title: string;
@@ -35,9 +33,6 @@ export type QuickActionItem = {
 type QuickActionsSectionProps = {
     quickActions: QuickActionItem[];
     role: "client" | "lawyer";
-    unreadText: string;
-    chatsTitle: string;
-    chatsActionLabel: string;
     lastCaseTitle: string;
     lastCaseSummary: string;
     lastCaseActionLabel: string;
@@ -46,20 +41,15 @@ type QuickActionsSectionProps = {
     subscriptionTier: Tier | "free";
     menuTitles: {
         account: string;
-        connections: string;
         documents: string;
         cases: string;
     };
     onQuickActionLocked: (action: QuickActionItem) => void;
-    onConnectionsClick?: () => void;
 };
 
 const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
     quickActions,
     role,
-    unreadText,
-    chatsTitle,
-    chatsActionLabel,
     lastCaseTitle,
     lastCaseSummary,
     lastCaseActionLabel,
@@ -68,7 +58,6 @@ const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
     subscriptionTier,
     menuTitles,
     onQuickActionLocked,
-    onConnectionsClick,
 }) => {
     const filteredActions = quickActions.filter((action) => action.key !== "cases" || role === "lawyer");
 
@@ -81,31 +70,22 @@ const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
                             key={action.key}
                             action={action}
                             onLocked={() => onQuickActionLocked(action)}
-                            onAction={action.key === "connections" ? onConnectionsClick : undefined}
                         />
                     ))}
                 </Stack>
             </CardContent>
 
-            <CardContent sx={{ pt: 1 }}>
-                <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap alignItems="stretch">
-                    <InfoCard
-                        to="/userChats"
-                        icon={<ForumRoundedIcon />}
-                        title={chatsTitle}
-                        text={unreadText}
-                        actionLabel={chatsActionLabel}
-                    />
+            {hasLastCase && (
+                <CardContent sx={{ pt: 1 }}>
                     <InfoCard
                         to={lastCaseLink}
                         icon={<AssignmentTurnedInRoundedIcon />}
                         title={lastCaseTitle}
                         text={lastCaseSummary}
-                        disabled={!hasLastCase}
                         actionLabel={lastCaseActionLabel}
                     />
-                </Stack>
-            </CardContent>
+                </CardContent>
+            )}
 
             <CardContent sx={{ pt: subscriptionTier !== "free" ? 1 : 3 }}>
                 <Stack
@@ -117,12 +97,6 @@ const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
                     justifyContent="space-between"
                 >
                     <MenuTile to="/manage" icon={<PersonOutlineRoundedIcon />} title={menuTitles.account} />
-                    <MenuTile
-                        to="/connections"
-                        icon={<PeopleAltRoundedIcon />}
-                        title={menuTitles.connections}
-                        onClick={onConnectionsClick}
-                    />
                     {subscriptionTier !== "free" && (
                         <>
                             <MenuTile to="/documents" icon={<DescriptionRoundedIcon />} title={menuTitles.documents} />
@@ -140,8 +114,7 @@ export default QuickActionsSection;
 const QuickAction: React.FC<{
     action: QuickActionItem;
     onLocked: () => void;
-    onAction?: () => void;
-}> = ({ action, onLocked, onAction }) => {
+}> = ({ action, onLocked }) => {
     const { to, icon, title, locked, helper } = action;
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
@@ -149,10 +122,6 @@ const QuickAction: React.FC<{
             event.preventDefault();
             onLocked();
             return;
-        }
-        if (onAction) {
-            event.preventDefault();
-            onAction();
         }
     };
 

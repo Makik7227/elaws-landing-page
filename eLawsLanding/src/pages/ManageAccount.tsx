@@ -19,7 +19,7 @@ import {
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
@@ -304,6 +304,15 @@ const ManageAccount: React.FC = () => {
                                     >
                                         {t("manageAccount.profile.manageSubscription")}
                                     </Button>
+                                    <Button
+                                        component={RouterLink}
+                                        to="/connections"
+                                        variant="outlined"
+                                        startIcon={<LinkRoundedIcon />}
+                                        sx={{borderRadius: 3}}
+                                    >
+                                        {t("manageAccount.shortcuts.connections")}
+                                    </Button>
                                 </Stack>
                             </Stack>
                         </CardContent>
@@ -400,15 +409,6 @@ const ManageAccount: React.FC = () => {
                                     startIcon={<LocalPoliceRoundedIcon />}
                                 >
                                     {t("manageAccount.shortcuts.procedures")}
-                                </Button>
-                                <Button
-                                    component={RouterLink}
-                                    to="/connections"
-                                    variant="outlined"
-                                    sx={{borderRadius: 3}}
-                                    startIcon={<PeopleAltRoundedIcon />}
-                                >
-                                    {t("manageAccount.shortcuts.connections")}
                                 </Button>
                             </Stack>
                             <Divider sx={{my: 2}}/>

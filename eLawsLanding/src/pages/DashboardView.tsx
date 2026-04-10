@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Container, Stack, Typography } from "@mui/material";
-import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
+import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -15,12 +14,10 @@ import {
     getDoc,
     getDocs,
     limit,
-    onSnapshot,
     orderBy,
     query,
     where,
     Timestamp,
-    QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useTranslation } from "react-i18next";
@@ -30,7 +27,6 @@ import DowngradeNotice from "../components/dashboard/DowngradeNotice.tsx";
 import UsageAndPanicCard from "../components/dashboard/UsageAndPanicCard.tsx";
 import QuickActionsSection, { type QuickActionItem } from "../components/dashboard/QuickActionsSection.tsx";
 import UpgradeCallout from "../components/dashboard/UpgradeCallout.tsx";
-import ConnectionsDrawer from "../components/connections/ConnectionsDrawer.tsx";
 import {
     shouldWarnAboutTokens,
     isTierAtLeast,
@@ -62,15 +58,6 @@ type CaseDoc = {
     updatedAt?: Timestamp | string | number;
 };
 
-type ChatMeta = {
-    id: string;
-    lastMessage?: string;
-    lastMessageWasRead?: boolean;
-    lastMessageSenderId?: string;
-    lastMessageTimestamp?: Timestamp | string | number | null;
-    users?: string[];
-};
-
 type UpgradePromptState = {
     title: string;
     description: string;
@@ -85,12 +72,10 @@ const Dashboard: React.FC = () => {
 
     const [uid, setUid] = useState<string | null>(null);
     const [user, setUser] = useState<UserDoc | null>(null);
-    const [unreadCount, setUnreadCount] = useState<number>(0);
     const [lastCase, setLastCase] = useState<CaseDoc | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [upgradePrompt, setUpgradePrompt] = useState<UpgradePromptState | null>(null);
     const [tokenPromptShown, setTokenPromptShown] = useState(false);
-    const [connectionsOpen, setConnectionsOpen] = useState(false);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -105,7 +90,6 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (!uid) return;
-        let unsubChats: (() => void) | null = null;
 
         (async () => {
             try {
@@ -126,45 +110,6 @@ const Dashboard: React.FC = () => {
                     ...u,
                 };
                 setUser(merged);
-
-                const qChats = query(
-                    collection(db, "userChats"),
-                    where("users", "array-contains", uid),
-                    orderBy("lastMessageTimestamp", "desc"),
-                    limit(20)
-                );
-                unsubChats = onSnapshot(qChats, (ss) => {
-                    const list: ChatMeta[] = ss.docs.map((d: QueryDocumentSnapshot) => {
-                        const raw = d.data() as {
-                            users?: unknown;
-                            lastMessage?: unknown;
-                            lastMessageWasRead?: unknown;
-                            lastMessageSenderId?: unknown;
-                            lastMessageTimestamp?: unknown;
-                        };
-
-                        const users =
-                            Array.isArray(raw.users) && raw.users.every((x) => typeof x === "string")
-                                ? (raw.users as string[])
-                                : [];
-
-                        return {
-                            id: d.id,
-                            users,
-                            lastMessage: typeof raw.lastMessage === "string" ? raw.lastMessage : undefined,
-                            lastMessageWasRead:
-                                typeof raw.lastMessageWasRead === "boolean" ? raw.lastMessageWasRead : false,
-                            lastMessageSenderId:
-                                typeof raw.lastMessageSenderId === "string" ? raw.lastMessageSenderId : undefined,
-                            lastMessageTimestamp:
-                                (raw.lastMessageTimestamp as Timestamp | string | number | null | undefined) ?? null,
-                        };
-                    });
-                    const unread = list.filter(
-                        (c) => c.lastMessage && c.lastMessageSenderId !== uid && !c.lastMessageWasRead
-                    ).length;
-                    setUnreadCount(unread);
-                });
 
                 let last: CaseDoc | null = null;
                 try {
@@ -222,10 +167,6 @@ const Dashboard: React.FC = () => {
                 setLoading(false);
             }
         })();
-
-        return () => {
-            if (unsubChats) unsubChats();
-        };
     }, [uid]);
 
     const {
@@ -288,9 +229,6 @@ const Dashboard: React.FC = () => {
           });
     const initials = ((firstName?.[0] || "") + (lastName?.[0] || "") || "U").toUpperCase();
     const tokenPct = clamp(tokenLimit ? monthlyTokensUsed / tokenLimit : 0);
-    const unreadText = loading
-        ? t("dashboard.info.chats.loading")
-        : t("dashboard.info.chats.unread", { count: unreadCount });
     const lastCaseStatusLabel = lastCase?.status
         ? t(`casesPage.status.${lastCase.status}`)
         : t("dashboard.cases.statusUnknown");
@@ -305,13 +243,6 @@ const Dashboard: React.FC = () => {
     const lastCaseLink = lastCase ? `/cases/${lastCase.id}` : "/dashboard/cases";
     const hasLastCase = Boolean(lastCase);
     const quickActionsConfig: QuickActionItem[] = [
-        {
-            key: "chats",
-            to: "/userChats",
-            icon: <ChatBubbleOutlineRoundedIcon />,
-            title: t("dashboard.quickActions.chats"),
-            minTier: "free",
-        },
         {
             key: "aiChat",
             to: "/ai/chat",
@@ -347,17 +278,17 @@ const Dashboard: React.FC = () => {
             lockCopyKey: "procedures",
         },
         {
-            key: "connections",
-            to: "/connections",
-            icon: <PeopleAltRoundedIcon />,
-            title: t("dashboard.quickActions.connections"),
-            minTier: "free",
-        },
-        {
             key: "notes",
             to: "/dashboard/notes",
             icon: <AutoStoriesIcon />,
             title: t("dashboard.quickActions.notes"),
+            minTier: "free",
+        },
+        {
+            key: "connections",
+            to: "/connections",
+            icon: <LinkRoundedIcon />,
+            title: t("dashboard.quickActions.connections"),
             minTier: "free",
         },
     ];
@@ -383,8 +314,6 @@ const Dashboard: React.FC = () => {
         });
     };
     const closeUpgradePrompt = () => setUpgradePrompt(null);
-    const openConnections = () => setConnectionsOpen(true);
-    const closeConnections = () => setConnectionsOpen(false);
 
     useEffect(() => {
         if (!tokenWarning || tokenPromptShown) return;
@@ -458,9 +387,6 @@ const Dashboard: React.FC = () => {
                     <QuickActionsSection
                         quickActions={quickActions}
                         role={role}
-                        unreadText={unreadText}
-                        chatsTitle={t("dashboard.info.chats.title")}
-                        chatsActionLabel={t("dashboard.common.open")}
                         lastCaseTitle={t("dashboard.info.lastCase.title")}
                         lastCaseSummary={lastCaseSummary}
                         lastCaseActionLabel={t("dashboard.common.open")}
@@ -469,12 +395,10 @@ const Dashboard: React.FC = () => {
                         subscriptionTier={subscriptionTier}
                         menuTitles={{
                             account: t("dashboard.menu.account"),
-                            connections: t("dashboard.menu.connections"),
                             documents: t("dashboard.menu.documents"),
                             cases: t("dashboard.menu.cases"),
                         }}
                         onQuickActionLocked={handleQuickActionLocked}
-                        onConnectionsClick={openConnections}
                     />
 
                     {subscriptionTier === "free" && (
@@ -498,7 +422,6 @@ const Dashboard: React.FC = () => {
                     highlight={upgradePrompt.highlight}
                 />
             )}
-            <ConnectionsDrawer open={connectionsOpen} onClose={closeConnections} />
         </>
     );
 };

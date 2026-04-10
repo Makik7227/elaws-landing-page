@@ -1268,6 +1268,31 @@
         "clients": {
             "unnamed": "Klient bez nazwy"
         }
+        ,
+        "plan": {
+            "banner": "Tworzenie spraw jest zarezerwowane dla planu Premium.",
+            "cta": "Wykup plan",
+            "locked": "Premium utrzymuje przepływy spraw, przypisania i przełączanie ról online.",
+            "dialogTitle": "Ulepsz do zarządzania sprawami",
+            "dialogDescription": "Premium odblokowuje tworzenie spraw, notatki powiązane oraz przypisywanie klientów."
+        },
+        "invite": {
+            "title": "Zaproś nowego klienta",
+            "description": "Wyślij prośbę o połączenie na e-mail lub nazwę użytkownika, by klient pojawił się w przestrzeni roboczej.",
+            "inputLabel": "E-mail klienta lub nazwa użytkownika",
+            "inputPlaceholder": "klient@przyklad.pl lub @klient",
+            "cta": "Wyślij prośbę",
+            "sending": "Wysyłanie…",
+            "success": "Wysłano zaproszenie do {{client}}.",
+            "errors": {
+                "required": "Wprowadź e-mail lub nazwę użytkownika.",
+                "notFound": "Nie znaleziono klienta o takim identyfikatorze.",
+                "self": "Nie możesz zaprosić samego siebie.",
+                "duplicate": "Masz już połączenie z tym klientem.",
+                "pending": "Prośba o połączenie z tym klientem jest już w toku.",
+                "generic": "Nie udało się wysłać prośby. Spróbuj ponownie."
+            }
+        }
     },
     "documentsLanding": {
         "hero": {
@@ -1377,7 +1402,24 @@
             "notes": "Zapisane notatki",
             "procedures": "Procedury",
             "connections": "Zarządzaj kontaktami",
-            "footer": "Zaproś lub usuń współpracowników na stronie Kontaktów."
+            "footer": "Skorzystaj z przycisku Połączenia powyżej, aby zaprosić prawnika lub klienta."
+        },
+        "connect": {
+            "title": "Połącz się z {{target}}",
+            "description": "Wyślij prośbę o połączenie z {{target}} przez e-mail lub nazwę użytkownika, aby współpracować w przestrzeni.",
+            "inputLabel": "E-mail lub nazwa użytkownika {{target}}",
+            "inputPlaceholder": "{{target}} e-mail lub @nazwa",
+            "cta": "Wyślij prośbę",
+            "sending": "Wysyłanie…",
+            "success": "Wysłano prośbę do {{target}}.",
+            "errors": {
+                "required": "Podaj e-mail lub nazwę użytkownika {{target}}.",
+                "notFound": "Nie znaleziono {{target}} o takim identyfikatorze.",
+                "self": "Nie możesz zaprosić siebie.",
+                "duplicate": "Masz już połączenie z tym {{target}}.",
+                "pending": "Prośba do tego {{target}} już oczekuje na odpowiedź.",
+                "generic": "Nie można wysłać prośby. Spróbuj ponownie."
+            }
         },
         "errors": {
             "profileLoad": "Nie udało się wczytać profilu.",
@@ -1394,6 +1436,46 @@
         "success": {
             "profileSaved": "Profil zapisany.",
             "passwordChanged": "Hasło zostało zmienione."
+        }
+    },
+    "connectionsPage": {
+        "hero": {
+            "title": "Połączenia",
+            "subtitle": "Zaproś prawnika lub klienta i uporządkuj współpracę.",
+            "description": "Wyślij prośbę o połączenie przez e-mail lub nazwę użytkownika, a zaakceptowane relacje pojawią się przy sprawach."
+        },
+        "list": {
+            "title": "Twoje połączenia",
+            "empty": "Brak połączeń. Wyślij prośbę i rozpocznij współpracę.",
+            "cta": "{{count}} kontaktów"
+        },
+        "details": {
+            "unknown": "Nieznany kontakt"
+        },
+        "modal": {
+            "title": "Szczegóły połączenia",
+            "contactInfo": "Dane kontaktowe",
+            "email": "Email",
+            "phone": "Telefon",
+            "noContact": "Brak danych kontaktowych."
+        },
+        "actions": {
+            "details": "Zobacz szczegóły",
+            "remove": "Usuń",
+            "close": "Zamknij"
+        },
+        "errors": {
+            "loadConnections": "Nie można teraz wczytać połączeń.",
+            "removeFailed": "Nie udało się usunąć połączenia."
+        },
+        "confirm": {
+            "title": "Usuń połączenie",
+            "description": "Czy na pewno chcesz usunąć {{name}} z połączeń?",
+            "cancel": "Anuluj",
+            "delete": "Usuń"
+        },
+        "success": {
+            "removed": "Usunięto {{name}}."
         }
     },
     "connections": {
@@ -1944,6 +2026,13 @@
                     "client": "Klient",
                     "unknown": "Nieznany"
                 }
+            },
+            "contacts": {
+                "title": "Kontakty",
+                "lawyer": "Prawnik",
+                "client": "Klient",
+                "unknown": "Nieznany",
+                "missing": "Brak danych kontaktowych"
             }
         },
         "pagination": {

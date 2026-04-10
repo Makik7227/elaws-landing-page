@@ -76,6 +76,7 @@ const TopBar = () => {
             { labelKey: "nav.dashboard", to: "/dashboard" },
             { labelKey: "nav.aiChat", to: "/ai/chat" },
             { labelKey: "nav.documents", to: "/documents" },
+            { labelKey: "nav.connections", to: "/connections" },
             { labelKey: "nav.procedures", to: "/procedures" },
             { labelKey: "nav.notes", to: "/dashboard/notes" },
         ],

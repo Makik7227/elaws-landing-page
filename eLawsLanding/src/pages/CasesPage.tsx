@@ -47,6 +47,7 @@ import { auth, db } from "../../firebase";
 import {
     collection,
     doc,
+    getDoc,
     onSnapshot,
     orderBy,
     query,
@@ -107,6 +108,28 @@ type CaseFilters = {
     timeframe: "any" | "7d" | "30d";
 };
 
+type CaseContact = {
+    id: string;
+    role: "lawyer" | "client";
+    name: string;
+    email?: string;
+    phone?: string;
+};
+
+const CONTACT_PHONE_KEYS = ["phone", "phoneNumber", "contactPhone"] as const;
+
+const resolveContactPhone = (data: Record<string, unknown>) => {
+    for (const key of CONTACT_PHONE_KEYS) {
+        const value = data[key];
+        if (typeof value === "string" && value.trim()) {
+            return value.trim();
+        }
+    }
+    return undefined;
+};
+
+const sanitizePhoneForLink = (value: string) => value.replace(/[^0-9+]/g, "");
+
 const getTimestampForRange = (range: CaseFilters["timeframe"]) => {
     if (range === "any") return null;
     const days = range === "7d" ? 7 : 30;
@@ -143,6 +166,7 @@ const CasesPage: React.FC = () => {
     const [editPropName, setEditPropName] = useState<string>("");
     const [editPropValue, setEditPropValue] = useState<string>("");
     const [deleteDialogPropId, setDeleteDialogPropId] = useState<string | null>(null);
+    const [caseContacts, setCaseContacts] = useState<{ lawyer?: CaseContact; client?: CaseContact }>({});
     const [slide, setSlide] = useState<number>(0);
     const [propsPage, setPropsPage] = useState<number>(0);
     const [notesPage, setNotesPage] = useState<number>(0);
@@ -152,7 +176,11 @@ const CasesPage: React.FC = () => {
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
     const [upgradePromptOpen, setUpgradePromptOpen] = useState(false);
-    const planLocked = subscriptionTier !== "premium";
+    const planLocked =
+        !(
+            subscriptionTier === "premium" ||
+            (subscriptionTier === "plus" && userRole === "client")
+        );
     const { t, i18n } = useTranslation();
 
     const propertyKeyMap = useMemo(() => {
@@ -336,6 +364,64 @@ const CasesPage: React.FC = () => {
         return () => unsub();
     }, [selectedCase, t]);
 
+    useEffect(() => {
+        if (!selectedCase) {
+            setCaseContacts({});
+            return;
+        }
+        let cancelled = false;
+        const loadContacts = async () => {
+            const roster = [
+                { role: "lawyer" as const, uid: selectedCase.lawyerId },
+                { role: "client" as const, uid: selectedCase.clientId },
+            ].filter((entry): entry is { role: CaseContact["role"]; uid: string } =>
+                typeof entry.uid === "string" && entry.uid.trim().length > 0
+            );
+
+            const results = await Promise.all(
+                roster.map(async (entry) => {
+                    const userSnap = await getDoc(doc(db, "users", entry.uid));
+                    if (!userSnap.exists()) return null;
+                    const data = userSnap.data() as Record<string, unknown>;
+                    const firstName = typeof data.firstName === "string" ? data.firstName : "";
+                    const lastName = typeof data.lastName === "string" ? data.lastName : "";
+                    const username = typeof data.username === "string" ? data.username : "";
+                    const fallback = t("casesPage.details.contacts.unknown");
+                    const displayName =
+                        [firstName, lastName].filter(Boolean).join(" ").trim() || username || fallback;
+                    const email =
+                        typeof data.email === "string" && data.email.trim()
+                            ? data.email.trim()
+                            : undefined;
+                    const phone = resolveContactPhone(data);
+                    return {
+                        id: entry.uid,
+                        role: entry.role,
+                        name: displayName,
+                        email,
+                        phone,
+                    } as CaseContact;
+                })
+            );
+            if (cancelled) return;
+            const mapped: Record<CaseContact["role"], CaseContact> = {} as Record<
+                CaseContact["role"],
+                CaseContact
+            >;
+            results.forEach((contact) => {
+                if (contact) {
+                    mapped[contact.role] = contact;
+                }
+            });
+            setCaseContacts(mapped);
+        };
+        loadContacts();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [selectedCase, t]);
+
     const visibleCases = useMemo(() => {
         const q = search.trim().toLowerCase();
         if (!q) return cases;
@@ -347,6 +433,9 @@ const CasesPage: React.FC = () => {
         userRole === "lawyer" && user && n.createdBy === user.uid;
 
     const isLawyer = userRole === "lawyer";
+    const contactEntries: CaseContact[] = [];
+    if (caseContacts.lawyer) contactEntries.push(caseContacts.lawyer);
+    if (caseContacts.client) contactEntries.push(caseContacts.client);
     const clearCaseFilter = (key: "status" | "time") => {
         setCaseFilters((prev) =>
             key === "status" ? { ...prev, status: "all" } : { ...prev, timeframe: "any" }
@@ -781,6 +870,71 @@ const CasesPage: React.FC = () => {
                                         sx={{ mb: 2 }}
                                     />
                                     <Typography mb={2}>{selectedCase.description || t("casesPage.details.noDescription")}</Typography>
+
+                                    {contactEntries.length > 0 && (
+                                        <Stack spacing={1} mb={2}>
+                                            <Typography variant="subtitle2" color="text.secondary">
+                                                {t("casesPage.details.contacts.title")}
+                                            </Typography>
+                                            <Stack
+                                                direction={{ xs: "column", sm: "row" }}
+                                                spacing={1}
+                                                flexWrap="wrap"
+                                            >
+                                                {contactEntries.map((contact) => (
+                                                    <Card
+                                                        key={contact.id}
+                                                        sx={{
+                                                            borderRadius: 3,
+                                                            flex: 1,
+                                                            minWidth: { xs: "100%", sm: 240 },
+                                                        }}
+                                                        elevation={0}
+                                                    >
+                                                        <CardContent sx={{ p: 2.5 }}>
+                                                            <Typography variant="caption" color="text.secondary">
+                                                                {t(
+                                                                    `casesPage.details.contacts.${contact.role}`
+                                                                )}
+                                                            </Typography>
+                                                            <Typography variant="subtitle1" fontWeight={700}>
+                                                                {contact.name}
+                                                            </Typography>
+                                                            {contact.email ? (
+                                                                <Typography
+                                                                    component="a"
+                                                                    href={`mailto:${contact.email}`}
+                                                                    variant="body2"
+                                                                    color="primary"
+                                                                    sx={{ display: "block", mt: 0.5 }}
+                                                                >
+                                                                    {contact.email}
+                                                                </Typography>
+                                                            ) : null}
+                                                            {contact.phone ? (
+                                                                <Typography
+                                                                    component="a"
+                                                                    href={`tel:${sanitizePhoneForLink(
+                                                                        contact.phone
+                                                                    )}`}
+                                                                    variant="body2"
+                                                                    color="primary"
+                                                                    sx={{ display: "block" }}
+                                                                >
+                                                                    {contact.phone}
+                                                                </Typography>
+                                                            ) : null}
+                                                            {!contact.email && !contact.phone && (
+                                                                <Typography variant="body2" color="text.secondary" mt={0.5}>
+                                                                    {t("casesPage.details.contacts.missing")}
+                                                                </Typography>
+                                                            )}
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </Stack>
+                                        </Stack>
+                                    )}
 
                                     {isLawyer && (
                                         <Stack direction="row" spacing={1} mb={2} flexWrap="wrap" useFlexGap>

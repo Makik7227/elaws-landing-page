@@ -1311,6 +1311,24 @@
             "dialogTitle": "Upgrade to manage cases",
             "dialogDescription": "Premium unlocks case creation, case-linked notes, and client assignments."
         }
+        ,
+        "invite": {
+            "title": "Invite a new client",
+            "description": "Send a connection request by email or username so the client appears in your workspace.",
+            "inputLabel": "Client email or username",
+            "inputPlaceholder": "client@example.com or @clientUser",
+            "cta": "Send request",
+            "sending": "Sending…",
+            "success": "Connection request sent to {{client}}.",
+            "errors": {
+                "required": "Enter an email or username.",
+                "notFound": "No client was found for that identifier.",
+                "self": "You cannot invite yourself as a client.",
+                "duplicate": "You already have a connection with that client.",
+                "pending": "A connection request to that client is already pending.",
+                "generic": "We couldn’t send the request. Try again."
+            }
+        }
     },
     "documentsLanding": {
         "hero": {
@@ -1436,7 +1454,24 @@
             "notes": "Saved Notes",
             "procedures": "Procedures",
             "connections": "Manage Connections",
-            "footer": "Invite or remove collaborators from the Connections page."
+            "footer": "Use the Connections button above to invite a lawyer or client."
+        },
+        "connect": {
+            "title": "Connect with {{target}}",
+            "description": "Send a connection request to a {{target}} by email or username so you can collaborate in the workspace.",
+            "inputLabel": "{{target}} email or username",
+            "inputPlaceholder": "{{target}} email or @username",
+            "cta": "Send request",
+            "sending": "Sending…",
+            "success": "Connection request sent to {{target}}.",
+            "errors": {
+                "required": "Enter an email or username for a {{target}}.",
+                "notFound": "We couldn’t find a {{target}} with that identifier.",
+                "self": "You cannot invite yourself.",
+                "duplicate": "You already have a connection with that {{target}}.",
+                "pending": "A request to that {{target}} is already pending.",
+                "generic": "Unable to send the request. Try again."
+            }
         },
         "errors": {
             "profileLoad": "Failed to load your profile.",
@@ -1453,6 +1488,46 @@
         "success": {
             "profileSaved": "Profile saved.",
             "passwordChanged": "Password changed successfully."
+        }
+    },
+    "connectionsPage": {
+        "hero": {
+            "title": "Connections",
+            "subtitle": "Invite lawyers or clients and keep every collaboration path clear.",
+            "description": "Send a connection request by email or username and the accepted relationship will appear inside case contacts."
+        },
+        "list": {
+            "title": "Your connections",
+            "empty": "No connections yet. Send a request to start collaborating.",
+            "cta": "{{count}} connections"
+        },
+        "details": {
+            "unknown": "Unknown contact"
+        },
+        "modal": {
+            "title": "Connection details",
+            "contactInfo": "Contact information",
+            "email": "Email",
+            "phone": "Phone",
+            "noContact": "No contact info available."
+        },
+        "actions": {
+            "details": "View details",
+            "remove": "Remove",
+            "close": "Close"
+        },
+        "errors": {
+            "loadConnections": "Unable to load connections right now.",
+            "removeFailed": "Could not remove the connection."
+        },
+        "confirm": {
+            "title": "Remove connection",
+            "description": "Are you sure you want to remove {{name}} from your connections?",
+            "cancel": "Cancel",
+            "delete": "Remove"
+        },
+        "success": {
+            "removed": "{{name}} was removed."
         }
     },
     "connections": {
@@ -2025,6 +2100,13 @@
                     "client": "Client",
                     "unknown": "Unknown"
                 }
+            },
+            "contacts": {
+                "title": "Contacts",
+                "lawyer": "Lawyer",
+                "client": "Client",
+                "unknown": "Unknown",
+                "missing": "Contact info unavailable"
             }
         },
         "pagination": {

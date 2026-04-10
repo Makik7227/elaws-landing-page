@@ -42,7 +42,7 @@ export async function sendMessageToGPT(
         body: JSON.stringify(body),
     });
 
-    let data: any = null;
+    let data: Record<string, unknown> | null = null;
     try {
         data = await response.json();
     } catch (err) {
@@ -50,7 +50,8 @@ export async function sendMessageToGPT(
     }
 
     if (!response.ok) {
-        const errorMessage = data?.error ?? "Failed to generate response.";
+        const errorMessage =
+            typeof data?.error === "string" ? data.error : "Failed to generate response.";
         throw new Error(errorMessage);
     }
 
@@ -59,11 +60,10 @@ export async function sendMessageToGPT(
     const totalTokens =
         typeof data?.tokensUsed === "number" ? data.tokensUsed : inputTokens;
 
-    if (!outputContent) {
+    if (typeof outputContent !== "string" || !outputContent.trim()) {
         console.error("OpenAI error:", data);
         throw new Error("Sorry, something went wrong. Please try again.");
     }
-
     return {
         content: outputContent,
         tokensUsed: totalTokens,
