@@ -28,7 +28,7 @@ import {
 import Grid from "@mui/material/Grid";
 import { Save as SaveIcon, Send as SendIcon, BoltRounded as BoltRoundedIcon } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion";
-import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, collection, serverTimestamp, onSnapshot, getCountFromServer, runTransaction } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { sendMessageToGPT } from "../api/chat";
 import CustomCountryPickerWeb from "../components/CustomCountryPicker";
@@ -36,7 +36,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DashboardBackButton from "../components/DashboardBackButton";
-import { shouldWarnAboutTokens, type Tier } from "../utils/monetization";
+import { getNoteLimit, shouldLockNotes, shouldWarnAboutTokens, type Tier } from "../utils/monetization";
 import PageHero from "../components/PageHero";
 
 interface Message {
@@ -101,8 +101,11 @@ const AiChatPage: React.FC = () => {
     const [tokenLimit, setTokenLimit] = useState(0);
     const [monthlyTokensUsed, setMonthlyTokensUsed] = useState(0);
     const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const [notesCount, setNotesCount] = useState<number | null>(null);
     const [contextOpen, setContextOpen] = useState(false);
     const tokenWarning = shouldWarnAboutTokens(monthlyTokensUsed, tokenLimit);
+    const effectiveNotesCount = typeof notesCount === "number" ? notesCount : null;
+    const notesLocked = effectiveNotesCount !== null ? shouldLockNotes(subscriptionTier, effectiveNotesCount) : false;
     const tokenUsageLabel =
         tokenLimit > 0
             ? t("aiChat.tokens.usage", {
@@ -160,6 +163,7 @@ const AiChatPage: React.FC = () => {
     });
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const messagesScrollRef = useRef<HTMLDivElement | null>(null);
     const skipPersistRef = useRef(false);
     const localizedCountryName = countryCode
         ? t(`countries.${countryCode}`, { defaultValue: country || countryCode })
@@ -182,7 +186,12 @@ const AiChatPage: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const unsub = onAuthStateChanged(auth, async (u) => {
+        let profileUnsub: (() => void) | null = null;
+        const authUnsub = onAuthStateChanged(auth, async (u) => {
+            if (profileUnsub) {
+                profileUnsub();
+                profileUnsub = null;
+            }
             if (!u) {
                 setAuthChecked(true);
                 setProfileLoading(false);
@@ -200,6 +209,7 @@ const AiChatPage: React.FC = () => {
                         monthlyTokensUsed?: number;
                         tokenLimit?: number;
                         subscriptionTier?: Tier;
+                        notesCount?: number;
                     };
                     if (data.country) setCountry(data.country);
                     if (data.countryCode) setCountryCode(data.countryCode);
@@ -210,6 +220,7 @@ const AiChatPage: React.FC = () => {
                         setTokenLimit(data.tokenLimit);
                     }
                     setSubscriptionTier((data.subscriptionTier as Tier) ?? "free");
+                    setNotesCount(typeof data.notesCount === "number" ? data.notesCount : null);
                 }
             } catch (error) {
                 console.error("Failed to load profile", error);
@@ -217,8 +228,40 @@ const AiChatPage: React.FC = () => {
             } finally {
                 setProfileLoading(false);
             }
+
+            profileUnsub = onSnapshot(
+                doc(db, "users", u.uid),
+                (snap) => {
+                    if (!snap.exists()) return;
+                    const data = snap.data() as {
+                        country?: string;
+                        countryCode?: string;
+                        monthlyTokensUsed?: number;
+                        tokenLimit?: number;
+                        subscriptionTier?: Tier;
+                        notesCount?: number;
+                    };
+                    if (data.country) setCountry(data.country);
+                    if (data.countryCode) setCountryCode(data.countryCode);
+                    if (typeof data.monthlyTokensUsed === "number") {
+                        setMonthlyTokensUsed(data.monthlyTokensUsed);
+                    }
+                    if (typeof data.tokenLimit === "number") {
+                        setTokenLimit(data.tokenLimit);
+                    }
+                    setSubscriptionTier((data.subscriptionTier as Tier) ?? "free");
+                    setNotesCount(typeof data.notesCount === "number" ? data.notesCount : null);
+                },
+                (error) => {
+                    console.error("Failed to subscribe to profile", error);
+                    setSnackbar({ visible: true, text: t("aiChat.snackbar.profileError") });
+                }
+            );
         });
-        return () => unsub();
+        return () => {
+            authUnsub();
+            if (profileUnsub) profileUnsub();
+        };
     }, [navigate, t]);
 
     useEffect(() => {
@@ -241,7 +284,9 @@ const AiChatPage: React.FC = () => {
     }, [persistHydrated, selectedTopic, messages, country, countryCode]);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        const scrollEl = messagesScrollRef.current;
+        if (!scrollEl) return;
+        scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: "smooth" });
     }, [messages]);
 
     const sendMessage = async () => {
@@ -291,6 +336,11 @@ const AiChatPage: React.FC = () => {
     const handleClearConversation = () => {
         // Legal: clear must not write chat data to storage.
         skipPersistRef.current = true;
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+        } catch (error) {
+            console.error("Failed to clear AI chat storage", error);
+        }
         setMessages([]);
         setInput("");
     };
@@ -365,19 +415,45 @@ Instructions:
         if (!user || !msg) return;
 
         try {
-            await addDoc(collection(db, "users", user.uid, "notes"), {
-                title: noteDialog.title || msg.content.slice(0, 80),
-                content: msg.content,
-                topic: selectedTopic ? LEGACY_TOPIC_LABELS[selectedTopic] : LEGACY_TOPIC_LABELS.other,
-                country: country ?? "",
-                createdAt: serverTimestamp(),
-                messageId: msg.id,
-                source: "chat",
+            const noteLimit = getNoteLimit(subscriptionTier);
+            const fetchNotesCount = async () => {
+                const countSnap = await getCountFromServer(collection(db, "users", user.uid, "notes"));
+                return countSnap.data().count;
+            };
+            const fallbackCount = typeof notesCount === "number" ? notesCount : await fetchNotesCount();
+            if (noteLimit !== null && fallbackCount >= noteLimit) {
+                setSnackbar({ visible: true, text: t("notesPage.manualDialog.errors.limit") });
+                return;
+            }
+
+            await runTransaction(db, async (tx) => {
+                const userRef = doc(db, "users", user.uid);
+                const noteRef = doc(collection(db, "users", user.uid, "notes"));
+                const userSnap = await tx.get(userRef);
+                const currentCount =
+                    typeof userSnap.data()?.notesCount === "number" ? userSnap.data()?.notesCount : fallbackCount;
+                if (noteLimit !== null && currentCount >= noteLimit) {
+                    throw new Error("notes-limit");
+                }
+                tx.set(noteRef, {
+                    title: noteDialog.title || msg.content.slice(0, 80),
+                    content: msg.content,
+                    topic: selectedTopic ? LEGACY_TOPIC_LABELS[selectedTopic] : LEGACY_TOPIC_LABELS.other,
+                    country: country ?? "",
+                    createdAt: serverTimestamp(),
+                    messageId: msg.id,
+                    source: "chat",
+                });
+                tx.set(userRef, { notesCount: (currentCount ?? 0) + 1 }, { merge: true });
             });
             setSnackbar({ visible: true, text: t("aiChat.snackbar.saveSuccess") });
         } catch (err) {
             console.error("Error saving note:", err);
-            setSnackbar({ visible: true, text: t("aiChat.snackbar.saveError") });
+            if (err instanceof Error && err.message === "notes-limit") {
+                setSnackbar({ visible: true, text: t("notesPage.manualDialog.errors.limit") });
+            } else {
+                setSnackbar({ visible: true, text: t("aiChat.snackbar.saveError") });
+            }
         } finally {
             setNoteDialog({
                 open: false,
@@ -477,6 +553,7 @@ Instructions:
                         flex={1}
                         minHeight={0}
                         overflow="auto"
+                        ref={messagesScrollRef}
                         sx={{
                             px: compact ? 2 : 4,
                             py: compact ? 2 : 3,
@@ -544,7 +621,7 @@ Instructions:
                                                         {m.content}
                                                     </Typography>
                                                 )}
-                                                {m.role === "bot" && m.id !== "0" && !isTyping && (
+                                                {m.role === "bot" && m.id !== "0" && !isTyping && !notesLocked && (
                                                     <Button
                                                         startIcon={<SaveIcon />}
                                                         onClick={() => openNoteDialog(m)}

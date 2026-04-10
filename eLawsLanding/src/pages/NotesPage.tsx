@@ -33,14 +33,15 @@ import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import { auth, db } from "../../firebase";
 import {
-    addDoc,
     collection,
-    deleteDoc,
     doc,
+    getCountFromServer,
     onSnapshot,
     orderBy,
     query,
+    runTransaction,
     serverTimestamp,
+    setDoc,
     Timestamp,
     where,
 } from "firebase/firestore";
@@ -116,6 +117,8 @@ const NotesPage: React.FC = () => {
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [userRole, setUserRole] = useState<"lawyer" | "client" | null>(null);
     const [subscriptionTier, setSubscriptionTier] = useState<Tier>("free");
+    const [notesCount, setNotesCount] = useState<number | null>(null);
+    const [notesCountLoading, setNotesCountLoading] = useState(false);
     const [lawyerCases, setLawyerCases] = useState<CaseSummary[]>([]);
     const [noteFilters, setNoteFilters] = useState<NoteFilters>({ timeframe: "any", caseId: "" });
     const [noteFilterAnchorEl, setNoteFilterAnchorEl] = useState<null | HTMLElement>(null);
@@ -168,6 +171,7 @@ const NotesPage: React.FC = () => {
             if (!snap.exists()) {
                 setUserRole(null);
                 setSubscriptionTier("free");
+                setNotesCount(null);
                 return;
             }
             const data = snap.data();
@@ -175,9 +179,32 @@ const NotesPage: React.FC = () => {
             setUserRole(role ?? null);
             const tier = data.subscriptionTier as "free" | "plus" | "premium" | undefined;
             setSubscriptionTier(tier ?? "free");
+            setNotesCount(typeof data.notesCount === "number" ? data.notesCount : null);
         });
         return () => unsub();
     }, [uid]);
+
+    const fetchNotesCount = async () => {
+        if (!uid) return 0;
+        const countSnap = await getCountFromServer(collection(db, "users", uid, "notes"));
+        return countSnap.data().count;
+    };
+
+    useEffect(() => {
+        if (!uid || notesCount !== null || notesCountLoading) return;
+        setNotesCountLoading(true);
+        fetchNotesCount()
+            .then(async (count) => {
+                setNotesCount(count);
+                await setDoc(doc(db, "users", uid), { notesCount: count }, { merge: true });
+            })
+            .catch((err) => {
+                console.error("Failed to sync notes count", err);
+            })
+            .finally(() => {
+                setNotesCountLoading(false);
+            });
+    }, [uid, notesCount, notesCountLoading]);
 
     const canLinkCase = useMemo(
         () => userRole === "lawyer" && subscriptionTier === "premium",
@@ -229,8 +256,22 @@ const NotesPage: React.FC = () => {
 
     const handleDelete = async () => {
         if (!deleteId || !uid) return;
-        await deleteDoc(doc(db, "users", uid, "notes", deleteId));
-        setDeleteId(null);
+        const fallbackCount = typeof notesCount === "number" ? notesCount : await fetchNotesCount();
+        try {
+            await runTransaction(db, async (tx) => {
+                const userRef = doc(db, "users", uid);
+                const noteRef = doc(db, "users", uid, "notes", deleteId);
+                const userSnap = await tx.get(userRef);
+                const currentCount =
+                    typeof userSnap.data()?.notesCount === "number" ? userSnap.data()?.notesCount : fallbackCount;
+                const nextCount = Math.max(0, (currentCount ?? 0) - 1);
+                tx.delete(noteRef);
+                tx.set(userRef, { notesCount: nextCount }, { merge: true });
+            });
+            setDeleteId(null);
+        } catch (err) {
+            console.error("Failed to delete note", err);
+        }
     };
 
     const resetNoteDialog = () => {
@@ -257,11 +298,6 @@ const NotesPage: React.FC = () => {
 
     const handleSaveNote = async () => {
         if (!uid) return;
-        if (shouldLockNotes(subscriptionTier, notes.length)) {
-            setNoteError(t("notesPage.manualDialog.errors.limit"));
-            showNoteUpgradePrompt();
-            return;
-        }
         if (!noteContent.trim()) {
             setNoteError(t("notesPage.manualDialog.errors.content"));
             return;
@@ -269,6 +305,13 @@ const NotesPage: React.FC = () => {
         setNoteSaving(true);
         setNoteError(null);
         try {
+            const noteLimit = getNoteLimit(subscriptionTier);
+            const fallbackCount = typeof notesCount === "number" ? notesCount : await fetchNotesCount();
+            if (noteLimit !== null && fallbackCount >= noteLimit) {
+                setNoteError(t("notesPage.manualDialog.errors.limit"));
+                showNoteUpgradePrompt();
+                return;
+            }
             const payload: Record<string, unknown> = {
                 title: noteTitle.trim() ? noteTitle.trim() : null,
                 content: noteContent.trim(),
@@ -277,13 +320,29 @@ const NotesPage: React.FC = () => {
             const linked = canLinkCase && noteCaseId ? lawyerCases.find((c) => c.id === noteCaseId) : null;
             payload.linkedCaseId = noteCaseId || null;
             payload.linkedCaseTitle = linked?.title ?? null;
-            await addDoc(collection(db, "users", uid, "notes"), payload);
+            await runTransaction(db, async (tx) => {
+                const userRef = doc(db, "users", uid);
+                const noteRef = doc(collection(db, "users", uid, "notes"));
+                const userSnap = await tx.get(userRef);
+                const currentCount =
+                    typeof userSnap.data()?.notesCount === "number" ? userSnap.data()?.notesCount : fallbackCount;
+                if (noteLimit !== null && currentCount >= noteLimit) {
+                    throw new Error("notes-limit");
+                }
+                tx.set(noteRef, payload);
+                tx.set(userRef, { notesCount: (currentCount ?? 0) + 1 }, { merge: true });
+            });
             setSuccessMsg(t("notesPage.manualDialog.success"));
             setNoteDialogOpen(false);
             resetNoteDialog();
         } catch (err) {
             console.error("Failed to save note", err);
-            setNoteError(t("notesPage.manualDialog.errors.save"));
+            if (err instanceof Error && err.message === "notes-limit") {
+                setNoteError(t("notesPage.manualDialog.errors.limit"));
+                showNoteUpgradePrompt();
+            } else {
+                setNoteError(t("notesPage.manualDialog.errors.save"));
+            }
         } finally {
             setNoteSaving(false);
         }
@@ -321,12 +380,13 @@ const NotesPage: React.FC = () => {
         [t]
     );
     const noteLimit = getNoteLimit(subscriptionTier);
-    const notesLocked = shouldLockNotes(subscriptionTier, notes.length);
+    const effectiveNotesCount = typeof notesCount === "number" ? notesCount : notes.length;
+    const notesLocked = shouldLockNotes(subscriptionTier, effectiveNotesCount);
     const noteLimitLabel =
         noteLimit === null
             ? t("notesPage.limit.unlimited")
             : t("notesPage.limit.label", {
-                  used: Math.min(notes.length, noteLimit),
+                  used: Math.min(effectiveNotesCount, noteLimit),
                   limit: noteLimit,
               });
     const handleCreateNoteClick = () => {

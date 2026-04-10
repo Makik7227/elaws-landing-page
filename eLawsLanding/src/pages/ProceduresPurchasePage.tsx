@@ -10,6 +10,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    MenuItem,
     Stack,
     TextField,
     Typography,
@@ -26,11 +27,14 @@ const FUNCTIONS_BASE_URL =
 
 const ProceduresPurchasePage: React.FC = () => {
     const theme = useTheme();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [email, setEmail] = useState("");
     const [country, setCountry] = useState("");
     const [countryCode, setCountryCode] = useState("");
+    const [responseLanguage, setResponseLanguage] = useState(
+        i18n.language?.toLowerCase().startsWith("pl") ? "Polish" : "English"
+    );
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +67,7 @@ const ProceduresPurchasePage: React.FC = () => {
                 body: JSON.stringify({
                     email: trimmedEmail,
                     country,
+                    language: responseLanguage,
                     successUrl: `${window.location.origin}/procedures-purchase/success`,
                     cancelUrl: `${window.location.origin}/procedures-purchase/cancel`,
                 }),
@@ -158,6 +163,20 @@ const ProceduresPurchasePage: React.FC = () => {
                             autoComplete="email"
                             fullWidth
                         />
+                        <TextField
+                            select
+                            label={t("home.proceduresPurchase.dialog.languageLabel")}
+                            value={responseLanguage}
+                            onChange={(event) => setResponseLanguage(event.target.value)}
+                            fullWidth
+                        >
+                            <MenuItem value="English">
+                                {t("home.proceduresPurchase.dialog.languageOptions.english")}
+                            </MenuItem>
+                            <MenuItem value="Polish">
+                                {t("home.proceduresPurchase.dialog.languageOptions.polish")}
+                            </MenuItem>
+                        </TextField>
                         <CustomCountryPicker
                             country={country}
                             countryCode={countryCode}
